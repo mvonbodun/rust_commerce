@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package order_messages;
+
+import "attributes.proto";
+
+message Item {
+    optional string id = 1;
+    string item_ref = 2;
+    optional string product_id = 3;
+    optional string product_ref = 4;
+    string name = 5;
+    optional string image_url = 6;
+    repeated Attribute attributes = 7;
+    optional string product_display_url = 8;
+}

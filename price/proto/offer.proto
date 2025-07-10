@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package offer_messages;
+
+import "status.proto";
+import "google/protobuf/timestamp.proto";
+
+message OfferCreateRequest {
+    string item_id = 1;
+    optional string item_ref = 2;
+    google.protobuf.Timestamp start_date = 3;
+    google.protobuf.Timestamp end_date = 4;
+    int32 min_quantity = 5;
+    optional int32 max_quantity = 6;
+    repeated OfferPrice offer_prices = 7;
+}
+
+message OfferCreateResponse {
+  optional Offer offer = 1;
+  Status status = 2;
+}
+
+message OfferGetRequest {
+    string id = 1;
+}
+
+message OfferGetResponse {
+  optional Offer offer = 1;
+  Status status = 2;
+}
+
+message OfferDeleteRequest {
+    string id = 1;
+}
+
+message OfferDeleteResponse {
+  Status status = 1;
+}
+
+message Offer {
+    optional string id = 1;
+    string item_id = 2;
+    optional string item_ref = 3;
+    google.protobuf.Timestamp start_date = 4;
+    google.protobuf.Timestamp end_date = 5;
+    int32 min_quantity = 6;
+    optional int32 max_quantity = 7;
+    repeated OfferPrice offer_prices = 8;
+}
+
+message OfferPrice {
+    float price = 1;
+    string currency = 2;
+}

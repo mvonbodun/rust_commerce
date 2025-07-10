@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package order_messages;
+
+message Attribute {
+    optional int32 seq = 1;
+    optional string attribute_ref = 2;
+    string name = 3;
+    string value = 4;
+}

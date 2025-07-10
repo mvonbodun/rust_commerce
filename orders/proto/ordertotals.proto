@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package order_messages;
+
+message OrderTotals {
+    float product_total = 1;
+    optional float tax_total = 2;
+    optional float shipping_total = 3;
+    optional float discount_total = 4;
+}
