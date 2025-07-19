@@ -1,0 +1,128 @@
+[
+  {
+    "id": "TESTPROD001",
+    "name": "Test Product 1",
+    "long_description": "This is a test product for demonstrating import functionality",
+    "brand": "Test Brand",
+    "slug": "/test-product-1",
+    "product_ref": "TEST001",
+    "product_type": "TestType",
+    "seo_title": "Test Product 1 - Best Test Product",
+    "seo_description": "High quality test product for your testing needs",
+    "seo_keywords": "test, product, demo, import",
+    "display_on_site": true,
+    "tax_code": "txcd_99999999",
+    "related_products": [],
+    "reviews": {
+      "bayesian_avg": 4,
+      "count": 10,
+      "rating": 4
+    },
+    "hierarchical_categories": {
+      "lvl0": "Test",
+      "lvl1": "Test > Products",
+      "lvl2": "Test > Products > Demo"
+    },
+    "list_categories": ["Test", "Products", "Demo"],
+    "created_at": null,
+    "updated_at": null,
+    "created_by": null,
+    "updated_by": null,
+    "defining_attributes": {
+      "color": "Color",
+      "size": "Size"
+    },
+    "descriptive_attributes": {
+      "Material": "Synthetic",
+      "Origin": "Test Factory"
+    },
+    "default_variant": "TEST001VAR1",
+    "variants": [
+      {
+        "sku": "TEST001VAR1",
+        "defining_attributes": {
+          "color": "Red",
+          "size": "Medium"
+        },
+        "abbreviated_color": "RED",
+        "abbreviated_size": "M",
+        "height": 10.0,
+        "width": 5.0,
+        "length": 15.0,
+        "weight": 1.5,
+        "weight_unit": "lb",
+        "packaging": {
+          "height": 12.0,
+          "width": 7.0,
+          "length": 17.0,
+          "weight": 2.0,
+          "weight_unit": "lb"
+        },
+        "image_urls": ["https://example.com/test-product-1-red.jpg"]
+      }
+    ]
+  },
+  {
+    "id": "TESTPROD002",
+    "name": "Test Product 2",
+    "long_description": "Another test product for demonstrating batch import",
+    "brand": "Test Brand",
+    "slug": "/test-product-2",
+    "product_ref": "TEST002",
+    "product_type": "TestType",
+    "seo_title": "Test Product 2 - Another Great Test Product",
+    "seo_description": "Second test product for comprehensive testing",
+    "seo_keywords": "test, product, demo, import, batch",
+    "display_on_site": true,
+    "tax_code": "txcd_99999999",
+    "related_products": ["TEST001"],
+    "reviews": {
+      "bayesian_avg": 5,
+      "count": 25,
+      "rating": 5
+    },
+    "hierarchical_categories": {
+      "lvl0": "Test",
+      "lvl1": "Test > Products",
+      "lvl2": "Test > Products > Batch"
+    },
+    "list_categories": ["Test", "Products", "Batch"],
+    "created_at": null,
+    "updated_at": null,
+    "created_by": null,
+    "updated_by": null,
+    "defining_attributes": {
+      "color": "Color",
+      "size": "Size"
+    },
+    "descriptive_attributes": {
+      "Material": "Premium Synthetic",
+      "Origin": "Advanced Test Factory"
+    },
+    "default_variant": "TEST002VAR1",
+    "variants": [
+      {
+        "sku": "TEST002VAR1",
+        "defining_attributes": {
+          "color": "Blue",
+          "size": "Large"
+        },
+        "abbreviated_color": "BLUE",
+        "abbreviated_size": "L",
+        "height": 12.0,
+        "width": 6.0,
+        "length": 18.0,
+        "weight": 2.0,
+        "weight_unit": "lb",
+        "packaging": {
+          "height": 14.0,
+          "width": 8.0,
+          "length": 20.0,
+          "weight": 2.5,
+          "weight_unit": "lb"
+        },
+        "image_urls": ["https://example.com/test-product-2-blue.jpg"]
+      }
+    ]
+  }
+]

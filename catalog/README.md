@@ -112,22 +112,23 @@ The catalog-client is a command-line interface for interacting with the catalog 
 Creates a new product in the catalog.
 
 ```bash
-cargo run --bin catalog-client -- product-create --name <NAME> [--brand <BRAND>]
+cargo run --bin catalog-client -- product-create --name <NAME> --product-ref <PRODUCT_REF> [--brand <BRAND>]
 ```
 
 **Required Arguments:**
 - `--name, -n <NAME>`: The name of the product
+- `--product-ref, -p <PRODUCT_REF>`: The product reference/SKU
 
 **Optional Arguments:**
 - `--brand, -b <BRAND>`: The brand of the product
 
 **Examples:**
 ```bash
-# Create a product with just a name
-cargo run --bin catalog-client -- product-create --name "iPhone 15"
+# Create a product with required fields
+cargo run --bin catalog-client -- product-create --name "iPhone 15" --product-ref "IPH15001"
 
-# Create a product with name and brand
-cargo run --bin catalog-client -- product-create --name "iPhone 15" --brand "Apple"
+# Create a product with name, reference, and brand
+cargo run --bin catalog-client -- product-create --name "iPhone 15" --product-ref "IPH15001" --brand "Apple"
 ```
 
 **Default Values:** The client automatically sets sample values for description, SEO fields, categories, and tax codes.
@@ -192,6 +193,46 @@ cargo run --bin catalog-client -- product-search --brand "Apple"
 cargo run --bin catalog-client -- product-search --query "phone" --brand "Apple" --category "Electronics"
 ```
 
+#### Import
+
+Imports products from a JSON file containing product data. Supports both single product objects and arrays of products.
+
+```bash
+cargo run --bin catalog-client -- import --file <FILE> [--dry-run]
+```
+
+**Required Arguments:**
+- `--file, -f <FILE>`: Path to the JSON file containing product data
+
+**Optional Arguments:**
+- `--dry-run, -d`: Preview what would be imported without actually creating products
+
+**Examples:**
+```bash
+# Preview import without creating products
+cargo run --bin catalog-client -- import --file sample_records_backup/sample_product_mongo_record.json --dry-run
+
+# Import products from a JSON file
+cargo run --bin catalog-client -- import --file products.json
+
+# Import a single product from JSON
+cargo run --bin catalog-client -- import --file single_product.json
+```
+
+**JSON Format:**
+The import command expects JSON files matching the product model structure. It supports:
+- Single product objects (like `sample_product_mongo_record.json`)
+- Arrays of product objects
+- All product fields including variants, categories, reviews, and attributes
+
+**Import Features:**
+- Automatic detection of single products vs arrays
+- Progress reporting during import
+- Error handling for individual product failures
+- Success/failure summary
+- Rate limiting (100ms delay between products) to avoid overwhelming the service
+- Comprehensive status reporting with success/error counts
+
 ### Response Format
 
 All commands return Protocol Buffer responses that include:
@@ -201,18 +242,25 @@ All commands return Protocol Buffer responses that include:
 ### Example Workflow
 
 ```bash
-# 1. Create a new product
-cargo run --bin catalog-client -- product-create --name "MacBook Pro" --brand "Apple"
+# 1. Import products from a JSON file
+cargo run --bin catalog-client -- import --file sample_records_backup/sample_product_mongo_record.json --dry-run
+cargo run --bin catalog-client -- import --file sample_records_backup/sample_product_mongo_record.json
+
+# 2. Create a new product manually
+cargo run --bin catalog-client -- product-create --name "MacBook Pro" --product-ref "MBP001" --brand "Apple"
 # Note the ID from the response
 
-# 2. Retrieve the product by ID
-cargo run --bin catalog-client -- product-get --id "PRODUCT_ID_FROM_STEP_1"
+# 3. Retrieve the product by ID
+cargo run --bin catalog-client -- product-get --id "PRODUCT_ID_FROM_STEP_2"
 
-# 3. Search for products by brand
+# 4. Search for products by brand
 cargo run --bin catalog-client -- product-search --brand "Apple"
 
-# 4. Delete the product
-cargo run --bin catalog-client -- product-delete --id "PRODUCT_ID_FROM_STEP_1"
+# 5. Search for imported products
+cargo run --bin catalog-client -- product-search --brand "Calvin Klein Performance"
+
+# 6. Delete a product
+cargo run --bin catalog-client -- product-delete --id "PRODUCT_ID_FROM_STEP_2"
 ```
 
 ### Help
