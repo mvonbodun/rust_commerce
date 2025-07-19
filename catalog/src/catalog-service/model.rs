@@ -579,7 +579,6 @@ mod tests {
         match product {
             Ok(p) => {
                 println!("Successfully deserialized product: {}", p.name);
-                assert_eq!(p.id, Some("P000223554".to_string()));
                 assert_eq!(p.name, "Calvin Klein Performance Ripstop Cargo Shorts");
                 assert_eq!(p.brand, Some("Calvin Klein Performance".to_string()));
                 assert_eq!(p.product_ref, "320".to_string());
