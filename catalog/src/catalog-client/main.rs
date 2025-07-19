@@ -8,123 +8,15 @@ use serde_json;
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
+use rust_catalog::Product;
 
 pub mod catalog_messages {
     include!(concat!(env!("OUT_DIR"), "/catalog_messages.rs"));
 }
 
-// Define the Product structure for deserializing from JSON
-#[derive(serde::Deserialize, Debug)]
-struct Product {
-    id: Option<String>,
-    name: String,
-    long_description: Option<String>,
-    brand: Option<String>,
-    slug: Option<String>,
-    product_ref: String,
-    product_type: Option<String>,
-    seo_title: Option<String>,
-    seo_description: Option<String>,
-    seo_keywords: Option<String>,
-    display_on_site: bool,
-    tax_code: Option<String>,
-    related_products: Vec<String>,
-    reviews: Option<Reviews>,
-    hierarchical_categories: Option<HierarchicalCategories>,
-    list_categories: Vec<String>,
-    created_at: Option<String>, // Using String for simplicity in JSON parsing
-    updated_at: Option<String>,
-    created_by: Option<String>,
-    updated_by: Option<String>,
-    defining_attributes: HashMap<String, String>,
-    descriptive_attributes: HashMap<String, String>,
-    default_variant: Option<String>,
-    variants: Vec<ProductVariant>,
-}
-
-#[derive(serde::Deserialize, Debug)]
-struct Reviews {
-    bayesian_avg: i32,
-    count: i32,
-    rating: i32,
-}
-
-#[derive(serde::Deserialize, Debug)]
-struct HierarchicalCategories {
-    lvl0: Option<String>,
-    lvl1: Option<String>,
-    lvl2: Option<String>,
-    lvl3: Option<String>,
-}
-
-#[derive(serde::Deserialize, Debug)]
-struct ProductVariant {
-    sku: String,
-    defining_attributes: Option<HashMap<String, String>>,
-    abbreviated_color: Option<String>,
-    abbreviated_size: Option<String>,
-    height: Option<f64>,
-    width: Option<f64>,
-    length: Option<f64>,
-    weight: Option<f64>,
-    weight_unit: Option<String>,
-    packaging: Option<Packaging>,
-    image_urls: Vec<String>,
-}
-
-#[derive(serde::Deserialize, Debug)]
-struct Packaging {
-    height: Option<f64>,
-    width: Option<f64>,
-    length: Option<f64>,
-    weight: Option<f64>,
-    weight_unit: Option<String>,
-}
-
-#[derive(Parser)]
-#[command(version, about, long_about = None)]
-struct Cli {
-    #[command(subcommand)]
-    command: Option<Commands>,
-}
-
-#[derive(Subcommand)]
-enum Commands {
-    ProductCreate {
-        #[arg(short, long)]
-        name: String,
-        #[arg(short, long)]
-        product_ref: String,
-        #[arg(short, long)]
-        brand: Option<String>,
-    },
-    ProductGet {
-        #[arg(short, long)]
-        id: String,
-    },
-    ProductDelete {
-        #[arg(short, long)]
-        id: String,
-    },
-    ProductSearch {
-        #[arg(short, long)]
-        query: Option<String>,
-        #[arg(short, long)]
-        category: Option<String>,
-        #[arg(short, long)]
-        brand: Option<String>,
-    },
-    Import {
-        #[arg(short, long)]
-        file: PathBuf,
-        #[arg(short, long, default_value = "false")]
-        dry_run: bool,
-    },
-}
-
-// Helper function to convert JSON Product to ProductCreateRequest
+// Helper function to convert Product to ProductCreateRequest  
 fn product_to_create_request(product: &Product) -> ProductCreateRequest {
-    ProductCreateRequest {
+    let pcr = ProductCreateRequest {
         name: product.name.clone(),
         long_description: product.long_description.clone(),
         brand: product.brand.clone(),
@@ -170,7 +62,50 @@ fn product_to_create_request(product: &Product) -> ProductCreateRequest {
             }),
             image_urls: v.image_urls.clone(),
         }).collect(),
-    }
+    };
+    println!("ProductCreateRequest: {:?}", pcr);
+    pcr
+}
+
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+struct Cli {
+    #[command(subcommand)]
+    command: Option<Commands>,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    ProductCreate {
+        #[arg(short, long)]
+        name: String,
+        #[arg(short, long)]
+        product_ref: String,
+        #[arg(short, long)]
+        brand: Option<String>,
+    },
+    ProductGet {
+        #[arg(short, long)]
+        id: String,
+    },
+    ProductDelete {
+        #[arg(short, long)]
+        id: String,
+    },
+    ProductSearch {
+        #[arg(short, long)]
+        query: Option<String>,
+        #[arg(short, long)]
+        category: Option<String>,
+        #[arg(short, long)]
+        brand: Option<String>,
+    },
+    Import {
+        #[arg(short, long)]
+        file: PathBuf,
+        #[arg(short, long, default_value = "false")]
+        dry_run: bool,
+    },
 }
 
 #[tokio::main]

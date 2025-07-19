@@ -34,7 +34,7 @@ pub struct Product {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Reviews {
-    pub bayesian_avg: i32,
+    pub bayesian_avg: f32,
     pub count: i32,
     pub rating: i32,
 }
@@ -475,13 +475,13 @@ impl Reviews {
 
 #[derive(Default)]
 pub struct ReviewsBuilder {
-    bayesian_avg: i32,
+    bayesian_avg: f32,
     count: i32,
     rating: i32,
 }
 
 impl ReviewsBuilder {
-    pub fn new(bayesian_avg: i32, count: i32, rating: i32) -> ReviewsBuilder {
+    pub fn new(bayesian_avg: f32, count: i32, rating: i32) -> ReviewsBuilder {
         ReviewsBuilder {
             bayesian_avg,
             count,
@@ -489,7 +489,7 @@ impl ReviewsBuilder {
         }
     }
 
-    pub fn bayesian_avg(&mut self, bayesian_avg: i32) -> &mut Self {
+    pub fn bayesian_avg(&mut self, bayesian_avg: f32) -> &mut Self {
         self.bayesian_avg = bayesian_avg;
         self
     }
@@ -581,7 +581,7 @@ mod tests {
                 println!("Successfully deserialized product: {}", p.name);
                 assert_eq!(p.name, "Calvin Klein Performance Ripstop Cargo Shorts");
                 assert_eq!(p.brand, Some("Calvin Klein Performance".to_string()));
-                assert_eq!(p.product_ref, "320".to_string());
+                assert_eq!(p.product_ref, "P000223554");
                 assert!(!p.variants.is_empty());
                 
                 // Check first variant
@@ -686,7 +686,7 @@ mod tests {
             .add_image_url("https://example.com/blue-large.jpg".to_string())
             .build();
 
-        let reviews = ReviewsBuilder::new(4, 25, 4)
+        let reviews = ReviewsBuilder::new(4.0, 25, 4)
             .build();
 
         let categories = HierarchicalCategoriesBuilder::new()

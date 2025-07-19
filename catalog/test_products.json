@@ -14,7 +14,7 @@
     "tax_code": "txcd_99999999",
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4,
+      "bayesian_avg": 4.2,
       "count": 10,
       "rating": 4
     },
@@ -77,7 +77,7 @@
     "tax_code": "txcd_99999999",
     "related_products": ["TEST001"],
     "reviews": {
-      "bayesian_avg": 5,
+      "bayesian_avg": 4.7,
       "count": 25,
       "rating": 5
     },

@@ -3,6 +3,10 @@ name = "rust-catalog"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "rust_catalog"
+path = "src/lib.rs"
+
 [[bin]]
 name = "catalog-service"
 path = "src/catalog-service/main.rs"

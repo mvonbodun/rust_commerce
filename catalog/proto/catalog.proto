@@ -100,7 +100,7 @@ message Product {
 }
 
 message Reviews {
-    int32 bayesian_avg = 1;
+    float bayesian_avg = 1;
     int32 count = 2;
     int32 rating = 3;
 }
