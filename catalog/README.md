@@ -4,17 +4,33 @@ The catalog service manages product information in the rust_commerce microservic
 
 ## Status
 
-🚧 **Work in Progress** - This service scaffolding has been created but handlers are not yet implemented.
+✅ **Implemented** - Core handlers and CLI client are complete and functional.
 
-## Features (Planned)
+**Completed:**
+- NATS message handlers for all CRUD operations
+- Domain model with builder pattern and UUID generation
+- Protocol Buffer message conversion
+- CLI client with comprehensive command support
+- Error handling and response formatting
 
-- **Product Management**: Create, read, update, and delete products
-- **Product Search**: Search products by name, description, category, and brand
-- **Variant Support**: Handle product variants with different attributes (size, color, etc.)
-- **Category Management**: Hierarchical category structure support
-- **Inventory Tracking**: Quantity tracking per variant
-- **Pricing Information**: Multiple price points (list, sale, MSRP)
-- **SEO Support**: SEO-friendly titles, descriptions, and keywords
+**Next Steps:**
+- Database integration testing
+- Integration tests for NATS messaging
+- Production deployment configuration
+
+## Features
+
+- ✅ **Product Management**: Create, read, update, and delete products
+- ✅ **Product Search**: Search products by name, description, category, and brand
+- ✅ **Variant Support**: Handle product variants with different attributes (size, color, etc.)
+- ✅ **Category Management**: Hierarchical category structure support
+- ✅ **Builder Pattern**: Fluent API for constructing domain models
+- ✅ **UUID Generation**: Automatic ID generation for new products
+- ✅ **Protocol Buffer Integration**: Full message encoding/decoding
+- ✅ **CLI Client**: Command-line interface for testing and administration
+- 🚧 **Inventory Tracking**: Quantity tracking per variant (planned)
+- 🚧 **Pricing Information**: Multiple price points (list, sale, MSRP) (planned)
+- ✅ **SEO Support**: SEO-friendly titles, descriptions, and keywords
 
 ## API Operations
 
@@ -78,6 +94,137 @@ cargo run --bin catalog-client -- product-create --name "Sample Product" --brand
 
 # Test product search
 cargo run --bin catalog-client -- product-search --query "sample"
+```
+
+## Catalog Client CLI
+
+The catalog-client is a command-line interface for interacting with the catalog service via NATS messaging.
+
+### Prerequisites
+
+- NATS server running on `0.0.0.0:4222`
+- Catalog service running and subscribed to catalog topics
+
+### Available Commands
+
+#### Product Create
+
+Creates a new product in the catalog.
+
+```bash
+cargo run --bin catalog-client -- product-create --name <NAME> [--brand <BRAND>]
+```
+
+**Required Arguments:**
+- `--name, -n <NAME>`: The name of the product
+
+**Optional Arguments:**
+- `--brand, -b <BRAND>`: The brand of the product
+
+**Examples:**
+```bash
+# Create a product with just a name
+cargo run --bin catalog-client -- product-create --name "iPhone 15"
+
+# Create a product with name and brand
+cargo run --bin catalog-client -- product-create --name "iPhone 15" --brand "Apple"
+```
+
+**Default Values:** The client automatically sets sample values for description, SEO fields, categories, and tax codes.
+
+#### Product Get
+
+Retrieves a product by its ID.
+
+```bash
+cargo run --bin catalog-client -- product-get --id <ID>
+```
+
+**Required Arguments:**
+- `--id, -i <ID>`: The unique identifier of the product
+
+**Example:**
+```bash
+cargo run --bin catalog-client -- product-get --id "507f1f77bcf86cd799439011"
+```
+
+#### Product Delete
+
+Deletes a product by its ID.
+
+```bash
+cargo run --bin catalog-client -- product-delete --id <ID>
+```
+
+**Required Arguments:**
+- `--id, -i <ID>`: The unique identifier of the product to delete
+
+**Example:**
+```bash
+cargo run --bin catalog-client -- product-delete --id "507f1f77bcf86cd799439011"
+```
+
+#### Product Search
+
+Searches for products based on various criteria.
+
+```bash
+cargo run --bin catalog-client -- product-search [--query <QUERY>] [--category <CATEGORY>] [--brand <BRAND>]
+```
+
+**Optional Arguments:**
+- `--query, -q <QUERY>`: Search query text to match against product names and descriptions
+- `--category, -c <CATEGORY>`: Filter by category name
+- `--brand, -b <BRAND>`: Filter by brand name
+
+**Examples:**
+```bash
+# Search all products (returns up to 10 products)
+cargo run --bin catalog-client -- product-search
+
+# Search by query text
+cargo run --bin catalog-client -- product-search --query "iPhone"
+
+# Search by brand
+cargo run --bin catalog-client -- product-search --brand "Apple"
+
+# Combined search
+cargo run --bin catalog-client -- product-search --query "phone" --brand "Apple" --category "Electronics"
+```
+
+### Response Format
+
+All commands return Protocol Buffer responses that include:
+- **Success responses**: Product data with status code and success message
+- **Error responses**: Status code, error message, and details
+
+### Example Workflow
+
+```bash
+# 1. Create a new product
+cargo run --bin catalog-client -- product-create --name "MacBook Pro" --brand "Apple"
+# Note the ID from the response
+
+# 2. Retrieve the product by ID
+cargo run --bin catalog-client -- product-get --id "PRODUCT_ID_FROM_STEP_1"
+
+# 3. Search for products by brand
+cargo run --bin catalog-client -- product-search --brand "Apple"
+
+# 4. Delete the product
+cargo run --bin catalog-client -- product-delete --id "PRODUCT_ID_FROM_STEP_1"
+```
+
+### Help
+
+To see all available commands:
+```bash
+cargo run --bin catalog-client -- --help
+```
+
+To see help for a specific command:
+```bash
+cargo run --bin catalog-client -- product-create --help
 ```
 
 ## Next Steps

@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Product {
-    #[serde(alias = "_id", skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "_id")]
     pub id: Option<String>,
     pub name: String,
     pub long_description: Option<String>,

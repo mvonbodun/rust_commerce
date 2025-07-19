@@ -1,5 +1,4 @@
 use async_trait::async_trait;
-use bson::oid::ObjectId;
 use mongodb::{Collection, bson::doc};
 use crate::model::Product;
 use std::error::Error;
@@ -27,8 +26,6 @@ impl ProductDaoImpl {
 #[async_trait]
 impl ProductDao for ProductDaoImpl {
     async fn create_product(&self, mut product: Product) -> Result<Product, Box<dyn Error + Send + Sync>> {
-        let object_id = ObjectId::new();
-        product.id = Some(object_id.to_hex());
         let result = self.collection.insert_one(&product).await?;
         // The inserted_id should match what we set, but let's be safe
         if let Some(inserted_object_id) = result.inserted_id.as_object_id() {
@@ -38,17 +35,13 @@ impl ProductDao for ProductDaoImpl {
     }
 
     async fn get_product(&self, id: &str) -> Result<Option<Product>, Box<dyn Error + Send + Sync>> {
-        let object_id = ObjectId::parse_str(id)?;
-        let product = self.collection.find_one(doc! { "_id": object_id }).await?;
+        let product = self.collection.find_one(doc! { "_id": &id }).await?;
         Ok(product)
     }
 
-    async fn update_product(&self, id: &str, mut product: Product) -> Result<Option<Product>, Box<dyn Error + Send + Sync>> {
-        let object_id = ObjectId::parse_str(id)?;
-        product.id = Some(id.to_string());
-        
+    async fn update_product(&self, id: &str, product: Product) -> Result<Option<Product>, Box<dyn Error + Send + Sync>> {
         let result = self.collection.replace_one(
-            doc! { "_id": object_id },
+            doc! { "_id": &id },
             &product,
         ).await?;
         
@@ -60,8 +53,7 @@ impl ProductDao for ProductDaoImpl {
     }
 
     async fn delete_product(&self, id: &str) -> Result<bool, Box<dyn Error + Send + Sync>> {
-        let object_id = ObjectId::parse_str(id)?;
-        let result = self.collection.delete_one(doc! { "_id": object_id }).await?;
+        let result = self.collection.delete_one(doc! { "_id": &id }).await?;
         Ok(result.deleted_count > 0)
     }
 
