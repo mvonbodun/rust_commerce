@@ -62,10 +62,11 @@ pub async fn create_product(
     // Map reviews if present
     if let Some(proto_reviews) = request.reviews {
         let reviews = Reviews {
-            bayesian_avg: proto_reviews.bayesian_avg,
+            bayesian_avg: proto_reviews.bayesian_avg.into(),
             count: proto_reviews.count,
             rating: proto_reviews.rating,
         };
+        debug!("Mapped reviews: {:?}", reviews);
         product_builder.reviews(reviews);
     }
     
@@ -182,7 +183,7 @@ pub async fn update_product(
         tax_code: product.tax_code,
         related_products: product.related_products,
         reviews: product.reviews.map(|proto_reviews| Reviews {
-            bayesian_avg: proto_reviews.bayesian_avg,
+            bayesian_avg: proto_reviews.bayesian_avg.into(),
             count: proto_reviews.count,
             rating: proto_reviews.rating,
         }),

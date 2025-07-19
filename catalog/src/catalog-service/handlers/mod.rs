@@ -505,7 +505,7 @@ fn map_model_product_to_proto_product(product: Product) -> catalog_messages::Pro
         tax_code: product.tax_code,
         related_products: product.related_products,
         reviews: product.reviews.map(|r| catalog_messages::Reviews {
-            bayesian_avg: r.bayesian_avg,
+            bayesian_avg: r.bayesian_avg.into(),
             count: r.count,
             rating: r.rating,
         }),

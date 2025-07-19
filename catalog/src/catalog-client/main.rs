@@ -30,7 +30,7 @@ fn product_to_create_request(product: &Product) -> ProductCreateRequest {
         tax_code: product.tax_code.clone(),
         related_products: product.related_products.clone(),
         reviews: product.reviews.as_ref().map(|r| catalog_messages::Reviews {
-            bayesian_avg: r.bayesian_avg,
+            bayesian_avg: r.bayesian_avg.into(),
             count: r.count,
             rating: r.rating,
         }),

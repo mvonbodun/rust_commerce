@@ -2,6 +2,64 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use uuid::Uuid;
+use rust_decimal::Decimal;
+use rust_decimal_macros::dec;
+
+/// A type-safe wrapper for Bayesian average ratings that ensures values are always rounded to one decimal place.
+/// This prevents precision issues and enforces business rules for rating calculations.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct BayesianAverage(Decimal);
+
+impl BayesianAverage {
+    /// Creates a new BayesianAverage, automatically rounding to one decimal place
+    pub fn new(value: f32) -> Self {
+        let decimal = Decimal::from_f32_retain(value).unwrap_or(dec!(0.0));
+        Self(decimal.round_dp(1))
+    }
+    
+    /// Returns the value as an f32 for compatibility with existing code
+    pub fn as_f32(&self) -> f32 {
+        f32::try_from(self.0).unwrap_or(0.0)
+    }
+    
+    /// Returns the value as a Decimal for precise calculations
+    pub fn as_decimal(&self) -> Decimal {
+        self.0
+    }
+}
+
+impl From<f32> for BayesianAverage {
+    fn from(value: f32) -> Self {
+        Self::new(value)
+    }
+}
+
+impl From<BayesianAverage> for f32 {
+    fn from(avg: BayesianAverage) -> Self {
+        avg.as_f32()
+    }
+}
+
+// Custom serialization to ensure we always serialize as f32 for JSON compatibility
+impl Serialize for BayesianAverage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_f32(self.as_f32())
+    }
+}
+
+// Custom deserialization that automatically rounds to one decimal place
+impl<'de> Deserialize<'de> for BayesianAverage {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = f32::deserialize(deserializer)?;
+        Ok(BayesianAverage::new(value))
+    }
+}
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Product {
@@ -34,7 +92,7 @@ pub struct Product {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Reviews {
-    pub bayesian_avg: f32,
+    pub bayesian_avg: BayesianAverage,
     pub count: i32,
     pub rating: i32,
 }
@@ -506,7 +564,7 @@ impl ReviewsBuilder {
 
     pub fn build(&mut self) -> Reviews {
         Reviews {
-            bayesian_avg: self.bayesian_avg,
+            bayesian_avg: BayesianAverage::new(self.bayesian_avg),
             count: self.count,
             rating: self.rating,
         }
@@ -760,5 +818,50 @@ mod tests {
             assert_eq!(id.len(), 36);
             assert_eq!(id.chars().filter(|&c| c == '-').count(), 4);
         }
+    }
+
+    #[test]
+    fn test_bayesian_average_rounding() {
+        // Test that values are rounded to one decimal place
+        let avg1 = BayesianAverage::new(4.56789);
+        assert_eq!(avg1.as_f32(), 4.6);
+
+        let avg2 = BayesianAverage::new(3.14159);
+        assert_eq!(avg2.as_f32(), 3.1);
+
+        let avg3 = BayesianAverage::new(2.95);
+        assert_eq!(avg3.as_f32(), 3.0);
+    }
+
+    #[test]
+    fn test_bayesian_average_from_trait() {
+        let avg: BayesianAverage = 4.567.into();
+        assert_eq!(avg.as_f32(), 4.6);
+    }
+
+    #[test]
+    fn test_reviews_serialization() {
+        let reviews = Reviews {
+            bayesian_avg: BayesianAverage::new(4.56789),
+            count: 100,
+            rating: 5,
+        };
+
+        let json = serde_json::to_string(&reviews).expect("Failed to serialize");
+        let deserialized: Reviews = serde_json::from_str(&json).expect("Failed to deserialize");
+
+        // Check that the value is properly rounded
+        assert_eq!(deserialized.bayesian_avg.as_f32(), 4.6);
+        assert_eq!(deserialized.count, 100);
+        assert_eq!(deserialized.rating, 5);
+    }
+
+    #[test]
+    fn test_json_deserialization_with_precision() {
+        let json = r#"{"bayesian_avg": 4.56789, "count": 100, "rating": 5}"#;
+        let reviews: Reviews = serde_json::from_str(json).expect("Failed to deserialize");
+        
+        // Should be automatically rounded to one decimal place
+        assert_eq!(reviews.bayesian_avg.as_f32(), 4.6);
     }
 }
