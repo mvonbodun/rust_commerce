@@ -3,6 +3,7 @@ use catalog_messages::{
     ProductCreateRequest, ProductCreateResponse, ProductGetRequest, ProductGetResponse,
     ProductDeleteRequest, ProductDeleteResponse, ProductSearchRequest, ProductSearchResponse,
 };
+use log::{debug, error, info};
 use prost::Message;
 use serde_json;
 use std::collections::HashMap;
@@ -63,7 +64,7 @@ fn product_to_create_request(product: &Product) -> ProductCreateRequest {
             image_urls: v.image_urls.clone(),
         }).collect(),
     };
-    println!("ProductCreateRequest: {:?}", pcr);
+    debug!("ProductCreateRequest: {:?}", pcr);
     pcr
 }
 
