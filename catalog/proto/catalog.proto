@@ -9,7 +9,7 @@ message ProductCreateRequest {
     string name = 1;
     optional string long_description = 2;
     optional string brand = 3;
-    optional int32 product_ref = 4; // Changed from string to int32
+    string product_ref = 4; // Changed to mandatory string
     optional string product_type = 5;
     optional string seo_title = 6;
     optional string seo_description = 7;
@@ -78,7 +78,7 @@ message Product {
     optional string long_description = 3;
     optional string brand = 4;
     optional string slug = 5;
-    optional int32 product_ref = 6; // Changed from string to int32
+    string product_ref = 6; // Changed to mandatory string
     optional string product_type = 7;
     optional string seo_title = 8;
     optional string seo_description = 9;

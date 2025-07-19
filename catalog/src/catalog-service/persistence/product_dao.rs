@@ -27,9 +27,13 @@ impl ProductDaoImpl {
 #[async_trait]
 impl ProductDao for ProductDaoImpl {
     async fn create_product(&self, mut product: Product) -> Result<Product, Box<dyn Error + Send + Sync>> {
-        product.id = Some(ObjectId::new());
+        let object_id = ObjectId::new();
+        product.id = Some(object_id.to_hex());
         let result = self.collection.insert_one(&product).await?;
-        product.id = Some(result.inserted_id.as_object_id().unwrap());
+        // The inserted_id should match what we set, but let's be safe
+        if let Some(inserted_object_id) = result.inserted_id.as_object_id() {
+            product.id = Some(inserted_object_id.to_hex());
+        }
         Ok(product)
     }
 
@@ -41,7 +45,7 @@ impl ProductDao for ProductDaoImpl {
 
     async fn update_product(&self, id: &str, mut product: Product) -> Result<Option<Product>, Box<dyn Error + Send + Sync>> {
         let object_id = ObjectId::parse_str(id)?;
-        product.id = Some(object_id);
+        product.id = Some(id.to_string());
         
         let result = self.collection.replace_one(
             doc! { "_id": object_id },
