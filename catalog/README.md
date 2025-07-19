@@ -32,11 +32,11 @@ The catalog service manages product information in the rust_commerce microservic
 
 The core product entity includes:
 
-- **Basic Info**: name, description, brand, product reference
+- **Basic Info**: name, description, brand, numeric product reference
 - **SEO**: title, description, keywords, slug
-- **Categories**: hierarchical and flat category structures
+- **Categories**: hierarchical and flat category structures  
 - **Attributes**: defining attributes (size, color) and descriptive attributes
-- **Variants**: multiple SKUs per product with individual pricing and inventory
+- **Variants**: multiple SKUs per product with dimensions, weight, and packaging info
 - **Reviews**: aggregate review data
 - **Metadata**: created/updated timestamps and user tracking
 
@@ -46,9 +46,10 @@ Each product can have multiple variants with:
 
 - **SKU**: unique stock keeping unit
 - **Attributes**: defining characteristics (size, color, etc.)
-- **Inventory**: quantity available and reserved
-- **Pricing**: list price, sale price, MSRP
-- **Images**: variant-specific images
+- **Dimensions**: height, width, length, weight with units
+- **Packaging**: separate packaging dimensions and weight
+- **Images**: array of image URLs for the variant
+- **Abbreviated Info**: shortened color and size descriptions
 
 ## Database
 

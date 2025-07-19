@@ -59,7 +59,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 name: name.clone(),
                 long_description: Some("Sample product description".to_string()),
                 brand: brand.clone(),
-                product_ref: Some("SAMPLE001".to_string()),
+                product_ref: Some(12345), // Changed to int32
                 product_type: None,
                 seo_title: Some(name.clone()),
                 seo_description: Some(format!("SEO description for {}", name)),

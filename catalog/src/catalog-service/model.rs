@@ -11,7 +11,7 @@ pub struct Product {
     pub long_description: Option<String>,
     pub brand: Option<String>,
     pub slug: Option<String>,
-    pub product_ref: Option<String>,
+    pub product_ref: Option<i32>, // Changed from String to i32 to match sample
     pub product_type: Option<String>,
     pub seo_title: Option<String>,
     pub seo_description: Option<String>,
@@ -50,38 +50,59 @@ pub struct HierarchicalCategories {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ProductVariant {
     pub sku: String,
-    pub defining_attributes: HashMap<String, String>,
+    pub defining_attributes: Option<HashMap<String, String>>, // Made optional as some variants don't have it
     pub abbreviated_color: Option<String>,
-    pub upc: Option<String>,
-    pub inventory: Option<Inventory>,
-    pub pricing: Option<Pricing>,
-    pub image: Option<Image>,
+    pub abbreviated_size: Option<String>, // Added field from sample data
+    pub height: Option<f64>, // Added dimension fields
+    pub width: Option<f64>,
+    pub length: Option<f64>,
+    pub weight: Option<f64>,
+    pub weight_unit: Option<String>,
+    pub packaging: Option<Packaging>, // Added packaging information
+    pub image_urls: Vec<String>, // Changed from single image to array of URLs
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Inventory {
-    pub quantity_available: i32,
-    pub quantity_reserved: i32,
-    pub status: Option<String>,
+pub struct Packaging {
+    pub height: Option<f64>,
+    pub width: Option<f64>,
+    pub length: Option<f64>,
+    pub weight: Option<f64>,
+    pub weight_unit: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Pricing {
-    pub list_price: Option<Price>,
-    pub sale_price: Option<Price>,
-    pub msrp: Option<Price>,
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Price {
-    pub amount: String,
-    pub currency: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Image {
-    pub url: String,
-    pub alt_text: Option<String>,
-    pub width: Option<i32>,
-    pub height: Option<i32>,
+    #[test]
+    fn test_deserialize_sample_product() {
+        // Read the sample product data
+        let sample_data = fs::read_to_string("sample_records_backup/sample_product_mongo_record.json")
+            .expect("Failed to read sample product file");
+        
+        // Try to deserialize it into our Product model
+        let product: Result<Product, _> = serde_json::from_str(&sample_data);
+        
+        match product {
+            Ok(p) => {
+                println!("Successfully deserialized product: {}", p.name);
+                assert_eq!(p.name, "Calvin Klein Performance Ripstop Cargo Shorts");
+                assert_eq!(p.brand, Some("Calvin Klein Performance".to_string()));
+                assert_eq!(p.product_ref, Some(320));
+                assert!(!p.variants.is_empty());
+                
+                // Check first variant
+                let first_variant = &p.variants[0];
+                assert_eq!(first_variant.sku, "0096234260");
+                assert_eq!(first_variant.abbreviated_color, Some("GRAY".to_string()));
+                assert!(first_variant.image_urls.len() > 0);
+                assert!(first_variant.packaging.is_some());
+            }
+            Err(e) => {
+                panic!("Failed to deserialize sample product: {}", e);
+            }
+        }
+    }
 }

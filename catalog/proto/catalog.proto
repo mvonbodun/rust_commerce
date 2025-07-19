@@ -9,7 +9,7 @@ message ProductCreateRequest {
     string name = 1;
     optional string long_description = 2;
     optional string brand = 3;
-    optional string product_ref = 4;
+    optional int32 product_ref = 4; // Changed from string to int32
     optional string product_type = 5;
     optional string seo_title = 6;
     optional string seo_description = 7;
@@ -78,7 +78,7 @@ message Product {
     optional string long_description = 3;
     optional string brand = 4;
     optional string slug = 5;
-    optional string product_ref = 6;
+    optional int32 product_ref = 6; // Changed from string to int32
     optional string product_type = 7;
     optional string seo_title = 8;
     optional string seo_description = 9;
@@ -116,32 +116,20 @@ message ProductVariant {
     string sku = 1;
     map<string, string> defining_attributes = 2;
     optional string abbreviated_color = 3;
-    optional string upc = 4;
-    optional Inventory inventory = 5;
-    optional Pricing pricing = 6;
-    optional Image image = 7;
+    optional string abbreviated_size = 4; // Added field from sample data
+    optional double height = 5; // Added dimension fields
+    optional double width = 6;
+    optional double length = 7;
+    optional double weight = 8;
+    optional string weight_unit = 9;
+    optional Packaging packaging = 10; // Added packaging information
+    repeated string image_urls = 11; // Changed from single image to array of URLs
 }
 
-message Inventory {
-    int32 quantity_available = 1;
-    int32 quantity_reserved = 2;
-    optional string status = 3;
-}
-
-message Pricing {
-    optional Price list_price = 1;
-    optional Price sale_price = 2;
-    optional Price msrp = 3;
-}
-
-message Price {
-    string amount = 1;
-    string currency = 2;
-}
-
-message Image {
-    string url = 1;
-    optional string alt_text = 2;
-    optional int32 width = 3;
-    optional int32 height = 4;
+message Packaging {
+    optional double height = 1;
+    optional double width = 2;
+    optional double length = 3;
+    optional double weight = 4;
+    optional string weight_unit = 5;
 }
