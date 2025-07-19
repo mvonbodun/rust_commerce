@@ -102,7 +102,6 @@ pub struct HierarchicalCategories {
     pub lvl0: Option<String>,
     pub lvl1: Option<String>,
     pub lvl2: Option<String>,
-    pub lvl3: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -582,7 +581,6 @@ pub struct HierarchicalCategoriesBuilder {
     lvl0: Option<String>,
     lvl1: Option<String>,
     lvl2: Option<String>,
-    lvl3: Option<String>,
 }
 
 impl HierarchicalCategoriesBuilder {
@@ -605,17 +603,11 @@ impl HierarchicalCategoriesBuilder {
         self
     }
 
-    pub fn lvl3(&mut self, lvl3: String) -> &mut Self {
-        self.lvl3 = Some(lvl3);
-        self
-    }
-
     pub fn build(&mut self) -> HierarchicalCategories {
         HierarchicalCategories {
             lvl0: self.lvl0.clone(),
             lvl1: self.lvl1.clone(),
             lvl2: self.lvl2.clone(),
-            lvl3: self.lvl3.clone(),
         }
     }
 }

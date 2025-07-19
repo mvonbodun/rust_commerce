@@ -38,7 +38,6 @@ fn product_to_create_request(product: &Product) -> ProductCreateRequest {
             lvl0: hc.lvl0.clone(),
             lvl1: hc.lvl1.clone(),
             lvl2: hc.lvl2.clone(),
-            lvl3: hc.lvl3.clone(),
         }),
         list_categories: product.list_categories.clone(),
         defining_attributes: product.defining_attributes.clone(),

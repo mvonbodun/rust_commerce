@@ -109,7 +109,6 @@ message HierarchicalCategories {
     optional string lvl0 = 1;
     optional string lvl1 = 2;
     optional string lvl2 = 3;
-    optional string lvl3 = 4;
 }
 
 message ProductVariant {

@@ -513,7 +513,6 @@ fn map_model_product_to_proto_product(product: Product) -> catalog_messages::Pro
             lvl0: hc.lvl0,
             lvl1: hc.lvl1,
             lvl2: hc.lvl2,
-            lvl3: hc.lvl3,
         }),
         list_categories: product.list_categories,
         created_at: product.created_at.map(|dt| prost_types::Timestamp {

@@ -76,7 +76,6 @@ pub async fn create_product(
             lvl0: proto_hc.lvl0,
             lvl1: proto_hc.lvl1,
             lvl2: proto_hc.lvl2,
-            lvl3: proto_hc.lvl3,
         };
         product_builder.hierarchical_categories(hc);
     }
@@ -191,7 +190,6 @@ pub async fn update_product(
             lvl0: proto_hc.lvl0,
             lvl1: proto_hc.lvl1,
             lvl2: proto_hc.lvl2,
-            lvl3: proto_hc.lvl3,
         }),
         list_categories: product.list_categories,
         created_at: product.created_at.map(|ts| {
