@@ -1,0 +1,147 @@
+syntax = "proto3";
+
+package catalog_messages;
+
+import "status.proto";
+import "google/protobuf/timestamp.proto";
+
+message ProductCreateRequest {
+    string name = 1;
+    optional string long_description = 2;
+    optional string brand = 3;
+    optional string product_ref = 4;
+    optional string product_type = 5;
+    optional string seo_title = 6;
+    optional string seo_description = 7;
+    optional string seo_keywords = 8;
+    bool display_on_site = 9;
+    optional string tax_code = 10;
+    repeated string related_products = 11;
+    optional Reviews reviews = 12;
+    optional HierarchicalCategories hierarchical_categories = 13;
+    repeated string list_categories = 14;
+    map<string, string> defining_attributes = 15;
+    map<string, string> descriptive_attributes = 16;
+    optional string default_variant = 17;
+    repeated ProductVariant variants = 18;
+}
+
+message ProductCreateResponse {
+    optional Product product = 1;
+    Status status = 2;
+}
+
+message ProductGetRequest {
+    string id = 1;
+}
+
+message ProductGetResponse {
+    optional Product product = 1;
+    Status status = 2;
+}
+
+message ProductUpdateRequest {
+    string id = 1;
+    Product product = 2;
+}
+
+message ProductUpdateResponse {
+    optional Product product = 1;
+    Status status = 2;
+}
+
+message ProductDeleteRequest {
+    string id = 1;
+}
+
+message ProductDeleteResponse {
+    Status status = 1;
+}
+
+message ProductSearchRequest {
+    optional string query = 1;
+    repeated string categories = 2;
+    optional string brand = 3;
+    optional int32 limit = 4;
+    optional int32 offset = 5;
+}
+
+message ProductSearchResponse {
+    repeated Product products = 1;
+    int32 total_count = 2;
+    Status status = 3;
+}
+
+message Product {
+    optional string id = 1;
+    string name = 2;
+    optional string long_description = 3;
+    optional string brand = 4;
+    optional string slug = 5;
+    optional string product_ref = 6;
+    optional string product_type = 7;
+    optional string seo_title = 8;
+    optional string seo_description = 9;
+    optional string seo_keywords = 10;
+    bool display_on_site = 11;
+    optional string tax_code = 12;
+    repeated string related_products = 13;
+    optional Reviews reviews = 14;
+    optional HierarchicalCategories hierarchical_categories = 15;
+    repeated string list_categories = 16;
+    optional google.protobuf.Timestamp created_at = 17;
+    optional google.protobuf.Timestamp updated_at = 18;
+    optional string created_by = 19;
+    optional string updated_by = 20;
+    map<string, string> defining_attributes = 21;
+    map<string, string> descriptive_attributes = 22;
+    optional string default_variant = 23;
+    repeated ProductVariant variants = 24;
+}
+
+message Reviews {
+    int32 bayesian_avg = 1;
+    int32 count = 2;
+    int32 rating = 3;
+}
+
+message HierarchicalCategories {
+    optional string lvl0 = 1;
+    optional string lvl1 = 2;
+    optional string lvl2 = 3;
+    optional string lvl3 = 4;
+}
+
+message ProductVariant {
+    string sku = 1;
+    map<string, string> defining_attributes = 2;
+    optional string abbreviated_color = 3;
+    optional string upc = 4;
+    optional Inventory inventory = 5;
+    optional Pricing pricing = 6;
+    optional Image image = 7;
+}
+
+message Inventory {
+    int32 quantity_available = 1;
+    int32 quantity_reserved = 2;
+    optional string status = 3;
+}
+
+message Pricing {
+    optional Price list_price = 1;
+    optional Price sale_price = 2;
+    optional Price msrp = 3;
+}
+
+message Price {
+    string amount = 1;
+    string currency = 2;
+}
+
+message Image {
+    string url = 1;
+    optional string alt_text = 2;
+    optional int32 width = 3;
+    optional int32 height = 4;
+}

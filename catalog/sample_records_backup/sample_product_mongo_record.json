@@ -1,0 +1,372 @@
+{
+    "id": "P000223554",
+    "name": "Calvin Klein Performance Ripstop Cargo Shorts",
+    "long_description": "Function and comfort are offered in these shorts by Calvin Klein featuring rip resistant fabric and side cargo pockets for your essentials.",
+    "brand": "Calvin Klein Performance",
+    "slug": "/calvin-klein-performance-ripstop-cargo-shorts-p000223554/p",
+    "product_ref": 320,
+    "product_type": null,
+    "seo_title": "Calvin Klein Performance Ripstop Cargo Shorts",
+    "seo_description": "Function and comfort are offered in these shorts by Calvin Klein featuring rip resistant fabric and side cargo pockets for your essentials.",
+    "seo_keywords": "Calvin Klein Performance Ripstop Cargo Shorts, Calvin Klein Performance, shorts, cargo shorts, ripstop shorts",
+    "display_on_site": true,
+    "tax_code": "txcd_99999999",
+    "related_products": [],
+    "reviews": {
+        "bayesian_avg": 5,
+        "count": 121,
+        "rating": 5
+    },
+    "hierarchical_categories": {
+        "lvl0": "Women",
+        "lvl1": "Women > Misses Apparel",
+        "lvl2": "Women > Misses Apparel > Shorts"
+    },
+    "list_categories": [
+        "Women",
+        "Misses Apparel",
+        "Shorts"
+    ],
+    "created_at": null,
+    "updated_at": null,
+    "created_by": null,
+    "updated_by": null,
+    "defining_attributes": {
+        "color": "Color",
+        "size": "Size"
+    },
+    "descriptive_attributes": {
+        "Country of Origin": "United States",
+        "Material": "Cotton",
+        "Care Instructions": "Machine Wash"
+    },
+    "default_variant": "0096234260",
+    "variants": [
+        {
+            "defining_attributes": {
+                "color": "PALE GRAY",
+                "size": "Small"
+            },
+            "abbreviated_color": "GRAY",
+            "sku": "0096234260",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/155518/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759657628200000"
+            ]
+        },
+        {
+            "defining_attributes": {
+                "color": "PALE GRAY",
+                "size": "Medium"
+            },
+            "abbreviated_color": "GRAY",
+            "sku": "0096234273",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/155518/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759657628200000"
+            ]
+        },
+        {
+            "abbreviated_color": "SEA BLUE",
+            "abbreviated_size": "Small",
+            "sku": "0096234343",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/155581/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759658030970000"
+            ]
+        },
+        {
+            "abbreviated_color": "PALE GRAY",
+            "abbreviated_size": "X Large",
+            "sku": "0096234297",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/155518/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759657628200000"
+            ]
+        },
+        {
+            "abbreviated_color": "SHAMROCK GREEN",
+            "abbreviated_size": "Medium",
+            "sku": "0096234316",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/156043/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759660430200000"
+            ]
+        },
+        {
+            "abbreviated_color": "SEA BLUE",
+            "abbreviated_size": "Medium",
+            "sku": "0096234355",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/155581/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759658030970000"
+            ]
+        },
+        {
+            "abbreviated_color": "SHAMROCK GREEN",
+            "abbreviated_size": "Small",
+            "sku": "0096234303",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/156043/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759660430200000"
+            ]
+        },
+        {
+            "abbreviated_color": "PALE GRAY",
+            "abbreviated_size": "Large",
+            "sku": "0096234285",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/155518/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759657628200000"
+            ]
+        },
+        {
+            "abbreviated_color": "WHITE",
+            "abbreviated_size": "Large",
+            "sku": "0096234246",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/156927/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759663665830000"
+            ]
+        },
+        {
+            "abbreviated_color": "WHITE",
+            "abbreviated_size": "X Large",
+            "sku": "0096234258",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/156927/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759663665830000"
+            ]
+        },
+        {
+            "abbreviated_color": "SHAMROCK GREEN",
+            "abbreviated_size": "Large",
+            "sku": "0096234328",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/156043/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759660430200000"
+            ]
+        },
+        {
+            "abbreviated_color": "WHITE",
+            "abbreviated_size": "Small",
+            "sku": "0096234221",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/156927/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759663665830000"
+            ]
+        },
+        {
+            "abbreviated_color": "WHITE",
+            "abbreviated_size": "Medium",
+            "sku": "0096234233",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/156927/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759663665830000"
+            ]
+        },
+        {
+            "abbreviated_color": "SEA BLUE",
+            "abbreviated_size": "X Large",
+            "sku": "0096234370",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/155581/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759658030970000"
+            ]
+        },
+        {
+            "abbreviated_color": "SEA BLUE",
+            "abbreviated_size": "Large",
+            "sku": "0096234367",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/155581/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759658030970000"
+            ]
+        },
+        {
+            "abbreviated_color": "SHAMROCK GREEN",
+            "abbreviated_size": "X Large",
+            "sku": "0096234330",
+            "height": 0,
+            "width": 0,
+            "length": 0,
+            "weight": 0,
+            "weight_unit": "lb",
+            "packaging": {
+                "height": 0,
+                "width": 0,
+                "length": 0,
+                "weight": 0,
+                "weight_unit": "lb"
+            },
+            "image_urls": [
+                "https://michaelvb.vteximg.com.br/arquivos/ids/156043/Calvin-Klein-Performance-Ripstop-Cargo-Shorts.jpg?v=637759660430200000"
+            ]
+        }
+    ]
+}

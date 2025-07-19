@@ -1,3 +1,3 @@
 [workspace]
-members = ["orders", "price"]
+members = ["orders", "price", "catalog"]
 resolver = "1"
