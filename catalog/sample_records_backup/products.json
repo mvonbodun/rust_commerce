@@ -31,7 +31,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.31,
+      "bayesian_avg": "3.31",
       "count": 69,
       "rating": 3
     },
@@ -100,7 +100,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.72,
+      "bayesian_avg": "3.72",
       "count": 195,
       "rating": 4
     },
@@ -261,7 +261,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.32,
+      "bayesian_avg": "1.32",
       "count": 177,
       "rating": 1
     },
@@ -330,7 +330,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.52,
+      "bayesian_avg": "3.52",
       "count": 185,
       "rating": 4
     },
@@ -514,7 +514,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.5,
+      "bayesian_avg": "4.5",
       "count": 175,
       "rating": 5
     },
@@ -1066,7 +1066,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.37,
+      "bayesian_avg": "1.37",
       "count": 43,
       "rating": 1
     },
@@ -1204,7 +1204,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.75,
+      "bayesian_avg": "0.75",
       "count": 30,
       "rating": 1
     },
@@ -2285,7 +2285,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.04,
+      "bayesian_avg": "4.04",
       "count": 101,
       "rating": 4
     },
@@ -2400,7 +2400,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.8,
+      "bayesian_avg": "2.8",
       "count": 66,
       "rating": 3
     },
@@ -2538,7 +2538,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.11,
+      "bayesian_avg": "0.11",
       "count": 75,
       "rating": 0
     },
@@ -2676,7 +2676,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.86,
+      "bayesian_avg": "3.86",
       "count": 30,
       "rating": 4
     },
@@ -2952,7 +2952,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.23,
+      "bayesian_avg": "2.23",
       "count": 166,
       "rating": 2
     },
@@ -3481,7 +3481,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.78,
+      "bayesian_avg": "1.78",
       "count": 182,
       "rating": 2
     },
@@ -3596,7 +3596,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.85,
+      "bayesian_avg": "1.85",
       "count": 74,
       "rating": 2
     },
@@ -3734,7 +3734,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.33,
+      "bayesian_avg": "4.33",
       "count": 102,
       "rating": 4
     },
@@ -3872,7 +3872,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.86,
+      "bayesian_avg": "4.86",
       "count": 94,
       "rating": 5
     },
@@ -4194,7 +4194,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.65,
+      "bayesian_avg": "0.65",
       "count": 183,
       "rating": 1
     },
@@ -4332,7 +4332,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.07,
+      "bayesian_avg": "3.07",
       "count": 54,
       "rating": 3
     },
@@ -4447,7 +4447,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.65,
+      "bayesian_avg": "3.65",
       "count": 138,
       "rating": 4
     },
@@ -4539,7 +4539,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.56,
+      "bayesian_avg": "1.56",
       "count": 67,
       "rating": 2
     },
@@ -4608,7 +4608,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.01,
+      "bayesian_avg": "0.01",
       "count": 120,
       "rating": 0
     },
@@ -4746,7 +4746,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.37,
+      "bayesian_avg": "2.37",
       "count": 76,
       "rating": 2
     },
@@ -5022,7 +5022,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.44,
+      "bayesian_avg": "4.44",
       "count": 62,
       "rating": 4
     },
@@ -5160,7 +5160,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.34,
+      "bayesian_avg": "2.34",
       "count": 18,
       "rating": 2
     },
@@ -5229,7 +5229,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.95,
+      "bayesian_avg": "1.95",
       "count": 76,
       "rating": 2
     },
@@ -5390,7 +5390,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.21,
+      "bayesian_avg": "0.21",
       "count": 161,
       "rating": 0
     },
@@ -5459,7 +5459,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.15,
+      "bayesian_avg": "0.15",
       "count": 117,
       "rating": 0
     },
@@ -5528,7 +5528,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.02,
+      "bayesian_avg": "3.02",
       "count": 23,
       "rating": 3
     },
@@ -5711,7 +5711,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.95,
+      "bayesian_avg": "0.95",
       "count": 123,
       "rating": 1
     },
@@ -5780,7 +5780,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.53,
+      "bayesian_avg": "0.53",
       "count": 29,
       "rating": 1
     },
@@ -5872,7 +5872,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.87,
+      "bayesian_avg": "0.87",
       "count": 6,
       "rating": 1
     },
@@ -5987,7 +5987,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.41,
+      "bayesian_avg": "1.41",
       "count": 37,
       "rating": 1
     },
@@ -6125,7 +6125,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.63,
+      "bayesian_avg": "0.63",
       "count": 111,
       "rating": 1
     },
@@ -6309,7 +6309,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.99,
+      "bayesian_avg": "4.99",
       "count": 185,
       "rating": 5
     },
@@ -6493,7 +6493,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.46,
+      "bayesian_avg": "4.46",
       "count": 194,
       "rating": 4
     },
@@ -6792,7 +6792,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.59,
+      "bayesian_avg": "2.59",
       "count": 164,
       "rating": 3
     },
@@ -7229,7 +7229,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.25,
+      "bayesian_avg": "3.25",
       "count": 19,
       "rating": 3
     },
@@ -7551,7 +7551,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.58,
+      "bayesian_avg": "0.58",
       "count": 132,
       "rating": 1
     },
@@ -7689,7 +7689,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.38,
+      "bayesian_avg": "0.38",
       "count": 0,
       "rating": 0
     },
@@ -7804,7 +7804,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.27,
+      "bayesian_avg": "0.27",
       "count": 191,
       "rating": 0
     },
@@ -8218,7 +8218,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.75,
+      "bayesian_avg": "1.75",
       "count": 163,
       "rating": 2
     },
@@ -8287,7 +8287,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.3,
+      "bayesian_avg": "0.3",
       "count": 87,
       "rating": 0
     },
@@ -8425,7 +8425,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.56,
+      "bayesian_avg": "1.56",
       "count": 2,
       "rating": 2
     },
@@ -8494,7 +8494,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.28,
+      "bayesian_avg": "3.28",
       "count": 77,
       "rating": 3
     },
@@ -9184,7 +9184,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.31,
+      "bayesian_avg": "4.31",
       "count": 187,
       "rating": 4
     },
@@ -9345,7 +9345,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.2,
+      "bayesian_avg": "4.2",
       "count": 0,
       "rating": 4
     },
@@ -9437,7 +9437,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.34,
+      "bayesian_avg": "2.34",
       "count": 138,
       "rating": 2
     },
@@ -9552,7 +9552,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.47,
+      "bayesian_avg": "2.47",
       "count": 77,
       "rating": 2
     },
@@ -9736,7 +9736,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.44,
+      "bayesian_avg": "4.44",
       "count": 185,
       "rating": 4
     },
@@ -10679,7 +10679,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.16,
+      "bayesian_avg": "3.16",
       "count": 45,
       "rating": 3
     },
@@ -10863,7 +10863,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.58,
+      "bayesian_avg": "1.58",
       "count": 22,
       "rating": 2
     },
@@ -11208,7 +11208,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.22,
+      "bayesian_avg": "4.22",
       "count": 7,
       "rating": 4
     },
@@ -11806,7 +11806,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.84,
+      "bayesian_avg": "2.84",
       "count": 171,
       "rating": 3
     },
@@ -12404,7 +12404,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.87,
+      "bayesian_avg": "4.87",
       "count": 39,
       "rating": 5
     },
@@ -12519,7 +12519,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.97,
+      "bayesian_avg": "3.97",
       "count": 45,
       "rating": 4
     },
@@ -12933,7 +12933,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.09,
+      "bayesian_avg": "4.09",
       "count": 26,
       "rating": 4
     },
@@ -13071,7 +13071,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.18,
+      "bayesian_avg": "3.18",
       "count": 24,
       "rating": 3
     },
@@ -13140,7 +13140,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.27,
+      "bayesian_avg": "1.27",
       "count": 86,
       "rating": 1
     },
@@ -13508,7 +13508,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.51,
+      "bayesian_avg": "2.51",
       "count": 1,
       "rating": 3
     },
@@ -13761,7 +13761,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.12,
+      "bayesian_avg": "1.12",
       "count": 196,
       "rating": 1
     },
@@ -13876,7 +13876,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.41,
+      "bayesian_avg": "4.41",
       "count": 14,
       "rating": 4
     },
@@ -14198,7 +14198,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.87,
+      "bayesian_avg": "1.87",
       "count": 76,
       "rating": 2
     },
@@ -14520,7 +14520,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3,
+      "bayesian_avg": "3",
       "count": 108,
       "rating": 3
     },
@@ -14589,7 +14589,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.58,
+      "bayesian_avg": "2.58",
       "count": 117,
       "rating": 3
     },
@@ -14727,7 +14727,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.36,
+      "bayesian_avg": "0.36",
       "count": 8,
       "rating": 0
     },
@@ -14957,7 +14957,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.25,
+      "bayesian_avg": "1.25",
       "count": 16,
       "rating": 1
     },
@@ -15095,7 +15095,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.18,
+      "bayesian_avg": "0.18",
       "count": 112,
       "rating": 0
     },
@@ -15210,7 +15210,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.07,
+      "bayesian_avg": "4.07",
       "count": 173,
       "rating": 4
     },
@@ -15578,7 +15578,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.58,
+      "bayesian_avg": "0.58",
       "count": 174,
       "rating": 1
     },
@@ -15647,7 +15647,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.77,
+      "bayesian_avg": "2.77",
       "count": 144,
       "rating": 3
     },
@@ -16199,7 +16199,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.5,
+      "bayesian_avg": "0.5",
       "count": 153,
       "rating": 1
     },
@@ -16360,7 +16360,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.35,
+      "bayesian_avg": "0.35",
       "count": 145,
       "rating": 0
     },
@@ -16659,7 +16659,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.38,
+      "bayesian_avg": "2.38",
       "count": 14,
       "rating": 2
     },
@@ -16797,7 +16797,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.08,
+      "bayesian_avg": "0.08",
       "count": 121,
       "rating": 0
     },
@@ -17280,7 +17280,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.11,
+      "bayesian_avg": "0.11",
       "count": 164,
       "rating": 0
     },
@@ -17372,7 +17372,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.79,
+      "bayesian_avg": "2.79",
       "count": 97,
       "rating": 3
     },
@@ -18568,7 +18568,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.93,
+      "bayesian_avg": "4.93",
       "count": 154,
       "rating": 5
     },
@@ -18706,7 +18706,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.04,
+      "bayesian_avg": "0.04",
       "count": 7,
       "rating": 0
     },
@@ -18798,7 +18798,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.19,
+      "bayesian_avg": "3.19",
       "count": 67,
       "rating": 3
     },
@@ -18936,7 +18936,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.09,
+      "bayesian_avg": "1.09",
       "count": 23,
       "rating": 1
     },
@@ -19074,7 +19074,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.21,
+      "bayesian_avg": "3.21",
       "count": 69,
       "rating": 3
     },
@@ -19143,7 +19143,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.97,
+      "bayesian_avg": "4.97",
       "count": 104,
       "rating": 5
     },
@@ -19349,7 +19349,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.54,
+      "bayesian_avg": "3.54",
       "count": 66,
       "rating": 4
     },
@@ -19487,7 +19487,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.36,
+      "bayesian_avg": "1.36",
       "count": 29,
       "rating": 1
     },
@@ -19809,7 +19809,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.64,
+      "bayesian_avg": "3.64",
       "count": 122,
       "rating": 4
     },
@@ -20131,7 +20131,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.49,
+      "bayesian_avg": "3.49",
       "count": 49,
       "rating": 3
     },
@@ -20200,7 +20200,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.75,
+      "bayesian_avg": "1.75",
       "count": 131,
       "rating": 2
     },
@@ -20315,7 +20315,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.56,
+      "bayesian_avg": "1.56",
       "count": 25,
       "rating": 2
     },
@@ -20430,7 +20430,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.39,
+      "bayesian_avg": "0.39",
       "count": 74,
       "rating": 0
     },
@@ -20867,7 +20867,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.25,
+      "bayesian_avg": "0.25",
       "count": 52,
       "rating": 0
     },
@@ -21051,7 +21051,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.67,
+      "bayesian_avg": "0.67",
       "count": 6,
       "rating": 1
     },
@@ -21281,7 +21281,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.6,
+      "bayesian_avg": "0.6",
       "count": 129,
       "rating": 1
     },
@@ -21350,7 +21350,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.02,
+      "bayesian_avg": "0.02",
       "count": 177,
       "rating": 0
     },
@@ -21810,7 +21810,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.98,
+      "bayesian_avg": "3.98",
       "count": 89,
       "rating": 4
     },
@@ -21925,7 +21925,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.45,
+      "bayesian_avg": "2.45",
       "count": 3,
       "rating": 2
     },
@@ -22178,7 +22178,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.24,
+      "bayesian_avg": "2.24",
       "count": 45,
       "rating": 2
     },
@@ -22316,7 +22316,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.99,
+      "bayesian_avg": "3.99",
       "count": 21,
       "rating": 4
     },
@@ -22477,7 +22477,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.83,
+      "bayesian_avg": "3.83",
       "count": 97,
       "rating": 4
     },
@@ -23673,7 +23673,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.6,
+      "bayesian_avg": "3.6",
       "count": 120,
       "rating": 4
     },
@@ -24179,7 +24179,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.62,
+      "bayesian_avg": "4.62",
       "count": 150,
       "rating": 5
     },
@@ -24294,7 +24294,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.76,
+      "bayesian_avg": "3.76",
       "count": 108,
       "rating": 4
     },
@@ -25490,7 +25490,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.95,
+      "bayesian_avg": "4.95",
       "count": 70,
       "rating": 5
     },
@@ -25582,7 +25582,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.57,
+      "bayesian_avg": "1.57",
       "count": 158,
       "rating": 2
     },
@@ -25697,7 +25697,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.7,
+      "bayesian_avg": "4.7",
       "count": 10,
       "rating": 5
     },
@@ -25835,7 +25835,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.44,
+      "bayesian_avg": "1.44",
       "count": 140,
       "rating": 1
     },
@@ -26019,7 +26019,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.56,
+      "bayesian_avg": "1.56",
       "count": 166,
       "rating": 2
     },
@@ -26249,7 +26249,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.03,
+      "bayesian_avg": "0.03",
       "count": 76,
       "rating": 0
     },
@@ -26479,7 +26479,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.79,
+      "bayesian_avg": "1.79",
       "count": 45,
       "rating": 2
     },
@@ -26571,7 +26571,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.94,
+      "bayesian_avg": "0.94",
       "count": 53,
       "rating": 1
     },
@@ -26709,7 +26709,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.57,
+      "bayesian_avg": "2.57",
       "count": 144,
       "rating": 3
     },
@@ -26778,7 +26778,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.33,
+      "bayesian_avg": "1.33",
       "count": 29,
       "rating": 1
     },
@@ -26916,7 +26916,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.41,
+      "bayesian_avg": "1.41",
       "count": 5,
       "rating": 1
     },
@@ -26985,7 +26985,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.71,
+      "bayesian_avg": "2.71",
       "count": 32,
       "rating": 3
     },
@@ -27054,7 +27054,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.04,
+      "bayesian_avg": "4.04",
       "count": 138,
       "rating": 4
     },
@@ -27192,7 +27192,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.79,
+      "bayesian_avg": "0.79",
       "count": 170,
       "rating": 1
     },
@@ -27284,7 +27284,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.05,
+      "bayesian_avg": "0.05",
       "count": 124,
       "rating": 0
     },
@@ -27353,7 +27353,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.37,
+      "bayesian_avg": "2.37",
       "count": 97,
       "rating": 2
     },
@@ -27468,7 +27468,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.73,
+      "bayesian_avg": "3.73",
       "count": 70,
       "rating": 4
     },
@@ -27583,7 +27583,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.32,
+      "bayesian_avg": "3.32",
       "count": 146,
       "rating": 3
     },
@@ -27721,7 +27721,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.38,
+      "bayesian_avg": "1.38",
       "count": 182,
       "rating": 1
     },
@@ -28411,7 +28411,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.78,
+      "bayesian_avg": "4.78",
       "count": 0,
       "rating": 5
     },
@@ -28526,7 +28526,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.69,
+      "bayesian_avg": "1.69",
       "count": 188,
       "rating": 2
     },
@@ -29078,7 +29078,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.55,
+      "bayesian_avg": "4.55",
       "count": 183,
       "rating": 5
     },
@@ -29147,7 +29147,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.47,
+      "bayesian_avg": "3.47",
       "count": 50,
       "rating": 3
     },
@@ -29538,7 +29538,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.96,
+      "bayesian_avg": "3.96",
       "count": 44,
       "rating": 4
     },
@@ -29699,7 +29699,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.02,
+      "bayesian_avg": "4.02",
       "count": 95,
       "rating": 4
     },
@@ -29837,7 +29837,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.36,
+      "bayesian_avg": "0.36",
       "count": 132,
       "rating": 0
     },
@@ -29929,7 +29929,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.84,
+      "bayesian_avg": "3.84",
       "count": 149,
       "rating": 4
     },
@@ -29998,7 +29998,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.79,
+      "bayesian_avg": "1.79",
       "count": 28,
       "rating": 2
     },
@@ -30228,7 +30228,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.87,
+      "bayesian_avg": "1.87",
       "count": 152,
       "rating": 2
     },
@@ -30550,7 +30550,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.95,
+      "bayesian_avg": "3.95",
       "count": 46,
       "rating": 4
     },
@@ -30688,7 +30688,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.67,
+      "bayesian_avg": "0.67",
       "count": 164,
       "rating": 1
     },
@@ -30826,7 +30826,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.76,
+      "bayesian_avg": "2.76",
       "count": 166,
       "rating": 3
     },
@@ -30941,7 +30941,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.36,
+      "bayesian_avg": "2.36",
       "count": 39,
       "rating": 2
     },
@@ -31010,7 +31010,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.91,
+      "bayesian_avg": "0.91",
       "count": 133,
       "rating": 1
     },
@@ -31217,7 +31217,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.3,
+      "bayesian_avg": "3.3",
       "count": 139,
       "rating": 3
     },
@@ -31953,7 +31953,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.96,
+      "bayesian_avg": "4.96",
       "count": 187,
       "rating": 5
     },
@@ -32045,7 +32045,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.5,
+      "bayesian_avg": "3.5",
       "count": 188,
       "rating": 4
     },
@@ -32183,7 +32183,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.92,
+      "bayesian_avg": "3.92",
       "count": 74,
       "rating": 4
     },
@@ -32321,7 +32321,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.92,
+      "bayesian_avg": "0.92",
       "count": 74,
       "rating": 1
     },
@@ -32459,7 +32459,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.74,
+      "bayesian_avg": "1.74",
       "count": 145,
       "rating": 2
     },
@@ -32528,7 +32528,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.37,
+      "bayesian_avg": "1.37",
       "count": 190,
       "rating": 1
     },
@@ -32597,7 +32597,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.56,
+      "bayesian_avg": "0.56",
       "count": 196,
       "rating": 1
     },
@@ -32666,7 +32666,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.71,
+      "bayesian_avg": "1.71",
       "count": 61,
       "rating": 2
     },
@@ -32735,7 +32735,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.96,
+      "bayesian_avg": "0.96",
       "count": 33,
       "rating": 1
     },
@@ -33333,7 +33333,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.63,
+      "bayesian_avg": "1.63",
       "count": 86,
       "rating": 2
     },
@@ -33540,7 +33540,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.33,
+      "bayesian_avg": "2.33",
       "count": 9,
       "rating": 2
     },
@@ -33655,7 +33655,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.6,
+      "bayesian_avg": "3.6",
       "count": 90,
       "rating": 4
     },
@@ -33839,7 +33839,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.52,
+      "bayesian_avg": "0.52",
       "count": 47,
       "rating": 1
     },
@@ -34069,7 +34069,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.79,
+      "bayesian_avg": "4.79",
       "count": 185,
       "rating": 5
     },
@@ -34207,7 +34207,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.75,
+      "bayesian_avg": "3.75",
       "count": 70,
       "rating": 4
     },
@@ -34322,7 +34322,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.66,
+      "bayesian_avg": "2.66",
       "count": 104,
       "rating": 3
     },
@@ -34437,7 +34437,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.6,
+      "bayesian_avg": "2.6",
       "count": 71,
       "rating": 3
     },
@@ -34506,7 +34506,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.53,
+      "bayesian_avg": "1.53",
       "count": 137,
       "rating": 2
     },
@@ -34713,7 +34713,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.29,
+      "bayesian_avg": "0.29",
       "count": 179,
       "rating": 0
     },
@@ -34920,7 +34920,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.96,
+      "bayesian_avg": "0.96",
       "count": 155,
       "rating": 1
     },
@@ -35058,7 +35058,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1,
+      "bayesian_avg": "1",
       "count": 53,
       "rating": 1
     },
@@ -35265,7 +35265,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.85,
+      "bayesian_avg": "4.85",
       "count": 101,
       "rating": 5
     },
@@ -35334,7 +35334,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.07,
+      "bayesian_avg": "4.07",
       "count": 40,
       "rating": 4
     },
@@ -36369,7 +36369,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.94,
+      "bayesian_avg": "3.94",
       "count": 56,
       "rating": 4
     },
@@ -36507,7 +36507,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.17,
+      "bayesian_avg": "2.17",
       "count": 177,
       "rating": 2
     },
@@ -36829,7 +36829,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.03,
+      "bayesian_avg": "1.03",
       "count": 193,
       "rating": 1
     },
@@ -36944,7 +36944,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.06,
+      "bayesian_avg": "1.06",
       "count": 116,
       "rating": 1
     },
@@ -37105,7 +37105,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.89,
+      "bayesian_avg": "4.89",
       "count": 117,
       "rating": 5
     },
@@ -37174,7 +37174,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.88,
+      "bayesian_avg": "2.88",
       "count": 139,
       "rating": 3
     },
@@ -37243,7 +37243,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.89,
+      "bayesian_avg": "0.89",
       "count": 48,
       "rating": 1
     },
@@ -37404,7 +37404,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.34,
+      "bayesian_avg": "3.34",
       "count": 63,
       "rating": 3
     },
@@ -37473,7 +37473,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.7,
+      "bayesian_avg": "4.7",
       "count": 74,
       "rating": 5
     },
@@ -37542,7 +37542,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.2,
+      "bayesian_avg": "3.2",
       "count": 159,
       "rating": 3
     },
@@ -37634,7 +37634,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.71,
+      "bayesian_avg": "3.71",
       "count": 60,
       "rating": 4
     },
@@ -37749,7 +37749,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.01,
+      "bayesian_avg": "4.01",
       "count": 53,
       "rating": 4
     },
@@ -38554,7 +38554,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.82,
+      "bayesian_avg": "1.82",
       "count": 140,
       "rating": 2
     },
@@ -38738,7 +38738,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.11,
+      "bayesian_avg": "4.11",
       "count": 167,
       "rating": 4
     },
@@ -38807,7 +38807,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.65,
+      "bayesian_avg": "4.65",
       "count": 107,
       "rating": 5
     },
@@ -38922,7 +38922,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.8,
+      "bayesian_avg": "3.8",
       "count": 89,
       "rating": 4
     },
@@ -39037,7 +39037,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.34,
+      "bayesian_avg": "2.34",
       "count": 176,
       "rating": 2
     },
@@ -39175,7 +39175,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.27,
+      "bayesian_avg": "1.27",
       "count": 81,
       "rating": 1
     },
@@ -40371,7 +40371,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.83,
+      "bayesian_avg": "2.83",
       "count": 158,
       "rating": 3
     },
@@ -40440,7 +40440,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.7,
+      "bayesian_avg": "3.7",
       "count": 76,
       "rating": 4
     },
@@ -40578,7 +40578,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.33,
+      "bayesian_avg": "3.33",
       "count": 101,
       "rating": 3
     },
@@ -40647,7 +40647,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.91,
+      "bayesian_avg": "4.91",
       "count": 179,
       "rating": 5
     },
@@ -40900,7 +40900,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.59,
+      "bayesian_avg": "3.59",
       "count": 11,
       "rating": 4
     },
@@ -41015,7 +41015,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.43,
+      "bayesian_avg": "3.43",
       "count": 80,
       "rating": 3
     },
@@ -41084,7 +41084,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.32,
+      "bayesian_avg": "1.32",
       "count": 192,
       "rating": 1
     },
@@ -41222,7 +41222,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.55,
+      "bayesian_avg": "2.55",
       "count": 46,
       "rating": 3
     },
@@ -41360,7 +41360,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.1,
+      "bayesian_avg": "1.1",
       "count": 57,
       "rating": 1
     },
@@ -41452,7 +41452,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.93,
+      "bayesian_avg": "4.93",
       "count": 157,
       "rating": 5
     },
@@ -41567,7 +41567,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.29,
+      "bayesian_avg": "0.29",
       "count": 77,
       "rating": 0
     },
@@ -41958,7 +41958,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.18,
+      "bayesian_avg": "1.18",
       "count": 111,
       "rating": 1
     },
@@ -42050,7 +42050,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.02,
+      "bayesian_avg": "1.02",
       "count": 59,
       "rating": 1
     },
@@ -42441,7 +42441,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.85,
+      "bayesian_avg": "4.85",
       "count": 22,
       "rating": 5
     },
@@ -42533,7 +42533,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.36,
+      "bayesian_avg": "3.36",
       "count": 133,
       "rating": 3
     },
@@ -42671,7 +42671,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.93,
+      "bayesian_avg": "1.93",
       "count": 173,
       "rating": 2
     },
@@ -42763,7 +42763,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.7,
+      "bayesian_avg": "0.7",
       "count": 171,
       "rating": 1
     },
@@ -42878,7 +42878,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.5,
+      "bayesian_avg": "2.5",
       "count": 152,
       "rating": 3
     },
@@ -42947,7 +42947,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.41,
+      "bayesian_avg": "0.41",
       "count": 7,
       "rating": 0
     },
@@ -43016,7 +43016,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.01,
+      "bayesian_avg": "0.01",
       "count": 171,
       "rating": 0
     },
@@ -43085,7 +43085,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.17,
+      "bayesian_avg": "1.17",
       "count": 56,
       "rating": 1
     },
@@ -43821,7 +43821,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.31,
+      "bayesian_avg": "3.31",
       "count": 109,
       "rating": 3
     },
@@ -44415,7 +44415,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.36,
+      "bayesian_avg": "4.36",
       "count": 122,
       "rating": 4
     },
@@ -44484,7 +44484,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.42,
+      "bayesian_avg": "1.42",
       "count": 150,
       "rating": 1
     },
@@ -45197,7 +45197,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.76,
+      "bayesian_avg": "4.76",
       "count": 198,
       "rating": 5
     },
@@ -46393,7 +46393,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.44,
+      "bayesian_avg": "3.44",
       "count": 102,
       "rating": 3
     },
@@ -46462,7 +46462,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.95,
+      "bayesian_avg": "2.95",
       "count": 80,
       "rating": 3
     },
@@ -46600,7 +46600,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.3,
+      "bayesian_avg": "1.3",
       "count": 99,
       "rating": 1
     },
@@ -47797,7 +47797,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.33,
+      "bayesian_avg": "0.33",
       "count": 41,
       "rating": 0
     },
@@ -47958,7 +47958,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.65,
+      "bayesian_avg": "1.65",
       "count": 87,
       "rating": 2
     },
@@ -48027,7 +48027,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.35,
+      "bayesian_avg": "2.35",
       "count": 95,
       "rating": 2
     },
@@ -48441,7 +48441,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.04,
+      "bayesian_avg": "2.04",
       "count": 113,
       "rating": 2
     },
@@ -48579,7 +48579,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.58,
+      "bayesian_avg": "4.58",
       "count": 0,
       "rating": 5
     },
@@ -48648,7 +48648,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.02,
+      "bayesian_avg": "4.02",
       "count": 168,
       "rating": 4
     },
@@ -48717,7 +48717,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.95,
+      "bayesian_avg": "4.95",
       "count": 123,
       "rating": 5
     },
@@ -48809,7 +48809,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.02,
+      "bayesian_avg": "0.02",
       "count": 58,
       "rating": 0
     },
@@ -48901,7 +48901,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.05,
+      "bayesian_avg": "2.05",
       "count": 98,
       "rating": 2
     },
@@ -49591,7 +49591,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.3,
+      "bayesian_avg": "1.3",
       "count": 180,
       "rating": 1
     },
@@ -49706,7 +49706,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.73,
+      "bayesian_avg": "4.73",
       "count": 48,
       "rating": 5
     },
@@ -49821,7 +49821,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.37,
+      "bayesian_avg": "1.37",
       "count": 33,
       "rating": 1
     },
@@ -49959,7 +49959,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.18,
+      "bayesian_avg": "1.18",
       "count": 15,
       "rating": 1
     },
@@ -50281,7 +50281,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.12,
+      "bayesian_avg": "2.12",
       "count": 138,
       "rating": 2
     },
@@ -50396,7 +50396,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.26,
+      "bayesian_avg": "4.26",
       "count": 100,
       "rating": 4
     },
@@ -50603,7 +50603,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.9,
+      "bayesian_avg": "4.9",
       "count": 108,
       "rating": 5
     },
@@ -50718,7 +50718,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.33,
+      "bayesian_avg": "0.33",
       "count": 22,
       "rating": 0
     },
@@ -50925,7 +50925,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.2,
+      "bayesian_avg": "4.2",
       "count": 120,
       "rating": 4
     },
@@ -51385,7 +51385,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.2,
+      "bayesian_avg": "3.2",
       "count": 159,
       "rating": 3
     },
@@ -51500,7 +51500,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.16,
+      "bayesian_avg": "4.16",
       "count": 195,
       "rating": 4
     },
@@ -51569,7 +51569,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.47,
+      "bayesian_avg": "3.47",
       "count": 81,
       "rating": 3
     },
@@ -51661,7 +51661,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.62,
+      "bayesian_avg": "3.62",
       "count": 96,
       "rating": 4
     },
@@ -51914,7 +51914,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.15,
+      "bayesian_avg": "3.15",
       "count": 40,
       "rating": 3
     },
@@ -52420,7 +52420,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.89,
+      "bayesian_avg": "0.89",
       "count": 51,
       "rating": 1
     },
@@ -52489,7 +52489,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.13,
+      "bayesian_avg": "4.13",
       "count": 69,
       "rating": 4
     },
@@ -52765,7 +52765,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.3,
+      "bayesian_avg": "0.3",
       "count": 74,
       "rating": 0
     },
@@ -52880,7 +52880,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.08,
+      "bayesian_avg": "2.08",
       "count": 88,
       "rating": 2
     },
@@ -53317,7 +53317,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.69,
+      "bayesian_avg": "2.69",
       "count": 133,
       "rating": 3
     },
@@ -53593,7 +53593,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.93,
+      "bayesian_avg": "1.93",
       "count": 128,
       "rating": 2
     },
@@ -53731,7 +53731,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.19,
+      "bayesian_avg": "2.19",
       "count": 33,
       "rating": 2
     },
@@ -53800,7 +53800,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.97,
+      "bayesian_avg": "0.97",
       "count": 45,
       "rating": 1
     },
@@ -53869,7 +53869,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.37,
+      "bayesian_avg": "0.37",
       "count": 29,
       "rating": 0
     },
@@ -54237,7 +54237,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.79,
+      "bayesian_avg": "3.79",
       "count": 133,
       "rating": 4
     },
@@ -54306,7 +54306,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.62,
+      "bayesian_avg": "4.62",
       "count": 96,
       "rating": 5
     },
@@ -54421,7 +54421,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.8,
+      "bayesian_avg": "1.8",
       "count": 172,
       "rating": 2
     },
@@ -54628,7 +54628,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.38,
+      "bayesian_avg": "4.38",
       "count": 191,
       "rating": 4
     },
@@ -54697,7 +54697,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.34,
+      "bayesian_avg": "3.34",
       "count": 111,
       "rating": 3
     },
@@ -54835,7 +54835,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.35,
+      "bayesian_avg": "0.35",
       "count": 34,
       "rating": 0
     },
@@ -54973,7 +54973,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.73,
+      "bayesian_avg": "1.73",
       "count": 139,
       "rating": 2
     },
@@ -55065,7 +55065,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.68,
+      "bayesian_avg": "4.68",
       "count": 147,
       "rating": 5
     },
@@ -55410,7 +55410,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.99,
+      "bayesian_avg": "2.99",
       "count": 109,
       "rating": 3
     },
@@ -55548,7 +55548,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.94,
+      "bayesian_avg": "1.94",
       "count": 137,
       "rating": 2
     },
@@ -55617,7 +55617,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.37,
+      "bayesian_avg": "1.37",
       "count": 58,
       "rating": 1
     },
@@ -55870,7 +55870,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.34,
+      "bayesian_avg": "2.34",
       "count": 155,
       "rating": 2
     },
@@ -55939,7 +55939,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.42,
+      "bayesian_avg": "2.42",
       "count": 57,
       "rating": 2
     },
@@ -56077,7 +56077,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.44,
+      "bayesian_avg": "1.44",
       "count": 15,
       "rating": 1
     },
@@ -56192,7 +56192,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.89,
+      "bayesian_avg": "1.89",
       "count": 35,
       "rating": 2
     },
@@ -56330,7 +56330,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.33,
+      "bayesian_avg": "1.33",
       "count": 93,
       "rating": 1
     },
@@ -56583,7 +56583,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.93,
+      "bayesian_avg": "1.93",
       "count": 61,
       "rating": 2
     },
@@ -56721,7 +56721,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.93,
+      "bayesian_avg": "4.93",
       "count": 20,
       "rating": 5
     },
@@ -56859,7 +56859,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.99,
+      "bayesian_avg": "0.99",
       "count": 199,
       "rating": 1
     },
@@ -56973,7 +56973,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.29,
+      "bayesian_avg": "1.29",
       "count": 119,
       "rating": 1
     },
@@ -57111,7 +57111,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.77,
+      "bayesian_avg": "3.77",
       "count": 72,
       "rating": 4
     },
@@ -57548,7 +57548,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.21,
+      "bayesian_avg": "3.21",
       "count": 190,
       "rating": 3
     },
@@ -57640,7 +57640,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.47,
+      "bayesian_avg": "0.47",
       "count": 199,
       "rating": 0
     },
@@ -58215,7 +58215,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.31,
+      "bayesian_avg": "0.31",
       "count": 148,
       "rating": 0
     },
@@ -58445,7 +58445,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.86,
+      "bayesian_avg": "3.86",
       "count": 54,
       "rating": 4
     },
@@ -58651,7 +58651,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.74,
+      "bayesian_avg": "0.74",
       "count": 83,
       "rating": 1
     },
@@ -58766,7 +58766,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.53,
+      "bayesian_avg": "4.53",
       "count": 89,
       "rating": 5
     },
@@ -58996,7 +58996,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.94,
+      "bayesian_avg": "1.94",
       "count": 171,
       "rating": 2
     },
@@ -59134,7 +59134,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.42,
+      "bayesian_avg": "2.42",
       "count": 86,
       "rating": 2
     },
@@ -60008,7 +60008,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.8,
+      "bayesian_avg": "4.8",
       "count": 14,
       "rating": 5
     },
@@ -60146,7 +60146,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.64,
+      "bayesian_avg": "4.64",
       "count": 5,
       "rating": 5
     },
@@ -60606,7 +60606,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.68,
+      "bayesian_avg": "2.68",
       "count": 30,
       "rating": 3
     },
@@ -60675,7 +60675,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.49,
+      "bayesian_avg": "2.49",
       "count": 83,
       "rating": 2
     },
@@ -60744,7 +60744,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.7,
+      "bayesian_avg": "3.7",
       "count": 26,
       "rating": 4
     },
@@ -60882,7 +60882,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.48,
+      "bayesian_avg": "2.48",
       "count": 128,
       "rating": 2
     },
@@ -61112,7 +61112,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.44,
+      "bayesian_avg": "2.44",
       "count": 112,
       "rating": 2
     },
@@ -61181,7 +61181,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.74,
+      "bayesian_avg": "1.74",
       "count": 192,
       "rating": 2
     },
@@ -61273,7 +61273,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.43,
+      "bayesian_avg": "2.43",
       "count": 130,
       "rating": 2
     },
@@ -61825,7 +61825,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.27,
+      "bayesian_avg": "3.27",
       "count": 6,
       "rating": 3
     },
@@ -62216,7 +62216,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.48,
+      "bayesian_avg": "4.48",
       "count": 187,
       "rating": 4
     },
@@ -63205,7 +63205,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.38,
+      "bayesian_avg": "2.38",
       "count": 89,
       "rating": 2
     },
@@ -63527,7 +63527,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.04,
+      "bayesian_avg": "4.04",
       "count": 56,
       "rating": 4
     },
@@ -63665,7 +63665,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.08,
+      "bayesian_avg": "1.08",
       "count": 117,
       "rating": 1
     },
@@ -63803,7 +63803,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.89,
+      "bayesian_avg": "0.89",
       "count": 76,
       "rating": 1
     },
@@ -63872,7 +63872,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.45,
+      "bayesian_avg": "3.45",
       "count": 189,
       "rating": 3
     },
@@ -63941,7 +63941,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.61,
+      "bayesian_avg": "0.61",
       "count": 73,
       "rating": 1
     },
@@ -64079,7 +64079,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.64,
+      "bayesian_avg": "4.64",
       "count": 101,
       "rating": 5
     },
@@ -64263,7 +64263,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.27,
+      "bayesian_avg": "1.27",
       "count": 37,
       "rating": 1
     },
@@ -64378,7 +64378,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.85,
+      "bayesian_avg": "1.85",
       "count": 90,
       "rating": 2
     },
@@ -64493,7 +64493,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.33,
+      "bayesian_avg": "3.33",
       "count": 196,
       "rating": 3
     },
@@ -64700,7 +64700,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.66,
+      "bayesian_avg": "3.66",
       "count": 11,
       "rating": 4
     },
@@ -65413,7 +65413,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.81,
+      "bayesian_avg": "0.81",
       "count": 33,
       "rating": 1
     },
@@ -65505,7 +65505,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.73,
+      "bayesian_avg": "0.73",
       "count": 10,
       "rating": 1
     },
@@ -65781,7 +65781,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.33,
+      "bayesian_avg": "3.33",
       "count": 134,
       "rating": 3
     },
@@ -65896,7 +65896,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.1,
+      "bayesian_avg": "0.1",
       "count": 80,
       "rating": 0
     },
@@ -65988,7 +65988,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.02,
+      "bayesian_avg": "3.02",
       "count": 20,
       "rating": 3
     },
@@ -66057,7 +66057,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.76,
+      "bayesian_avg": "2.76",
       "count": 128,
       "rating": 3
     },
@@ -66586,7 +66586,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.69,
+      "bayesian_avg": "0.69",
       "count": 48,
       "rating": 1
     },
@@ -66655,7 +66655,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.84,
+      "bayesian_avg": "4.84",
       "count": 103,
       "rating": 5
     },
@@ -66724,7 +66724,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.4,
+      "bayesian_avg": "2.4",
       "count": 137,
       "rating": 2
     },
@@ -67046,7 +67046,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.69,
+      "bayesian_avg": "4.69",
       "count": 5,
       "rating": 5
     },
@@ -67621,7 +67621,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.74,
+      "bayesian_avg": "2.74",
       "count": 176,
       "rating": 3
     },
@@ -67759,7 +67759,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.74,
+      "bayesian_avg": "3.74",
       "count": 164,
       "rating": 4
     },
@@ -68173,7 +68173,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.09,
+      "bayesian_avg": "0.09",
       "count": 49,
       "rating": 0
     },
@@ -68265,7 +68265,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.47,
+      "bayesian_avg": "3.47",
       "count": 111,
       "rating": 3
     },
@@ -68564,7 +68564,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.44,
+      "bayesian_avg": "2.44",
       "count": 181,
       "rating": 2
     },
@@ -68633,7 +68633,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.37,
+      "bayesian_avg": "2.37",
       "count": 135,
       "rating": 2
     },
@@ -68725,7 +68725,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.5,
+      "bayesian_avg": "3.5",
       "count": 16,
       "rating": 4
     },
@@ -68955,7 +68955,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.82,
+      "bayesian_avg": "3.82",
       "count": 198,
       "rating": 4
     },
@@ -69323,7 +69323,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.59,
+      "bayesian_avg": "1.59",
       "count": 37,
       "rating": 2
     },
@@ -69530,7 +69530,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.39,
+      "bayesian_avg": "0.39",
       "count": 96,
       "rating": 0
     },
@@ -69691,7 +69691,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.01,
+      "bayesian_avg": "1.01",
       "count": 134,
       "rating": 1
     },
@@ -69829,7 +69829,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.89,
+      "bayesian_avg": "4.89",
       "count": 121,
       "rating": 5
     },
@@ -70243,7 +70243,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.03,
+      "bayesian_avg": "0.03",
       "count": 170,
       "rating": 0
     },
@@ -70335,7 +70335,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.34,
+      "bayesian_avg": "3.34",
       "count": 149,
       "rating": 3
     },
@@ -70450,7 +70450,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.57,
+      "bayesian_avg": "1.57",
       "count": 164,
       "rating": 2
     },
@@ -70634,7 +70634,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.21,
+      "bayesian_avg": "0.21",
       "count": 31,
       "rating": 0
     },
@@ -71025,7 +71025,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.2,
+      "bayesian_avg": "2.2",
       "count": 66,
       "rating": 2
     },
@@ -71140,7 +71140,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.17,
+      "bayesian_avg": "1.17",
       "count": 100,
       "rating": 1
     },
@@ -71600,7 +71600,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.5,
+      "bayesian_avg": "0.5",
       "count": 121,
       "rating": 1
     },
@@ -71876,7 +71876,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.53,
+      "bayesian_avg": "1.53",
       "count": 67,
       "rating": 2
     },
@@ -71945,7 +71945,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.67,
+      "bayesian_avg": "2.67",
       "count": 78,
       "rating": 3
     },
@@ -72014,7 +72014,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.31,
+      "bayesian_avg": "4.31",
       "count": 89,
       "rating": 4
     },
@@ -72083,7 +72083,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.18,
+      "bayesian_avg": "0.18",
       "count": 148,
       "rating": 0
     },
@@ -72267,7 +72267,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.92,
+      "bayesian_avg": "1.92",
       "count": 150,
       "rating": 2
     },
@@ -72359,7 +72359,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.09,
+      "bayesian_avg": "4.09",
       "count": 152,
       "rating": 4
     },
@@ -72428,7 +72428,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.27,
+      "bayesian_avg": "0.27",
       "count": 145,
       "rating": 0
     },
@@ -72612,7 +72612,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.74,
+      "bayesian_avg": "0.74",
       "count": 96,
       "rating": 1
     },
@@ -72704,7 +72704,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.68,
+      "bayesian_avg": "2.68",
       "count": 76,
       "rating": 3
     },
@@ -72842,7 +72842,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.86,
+      "bayesian_avg": "2.86",
       "count": 62,
       "rating": 3
     },
@@ -73164,7 +73164,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.14,
+      "bayesian_avg": "1.14",
       "count": 14,
       "rating": 1
     },
@@ -73716,7 +73716,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.54,
+      "bayesian_avg": "1.54",
       "count": 17,
       "rating": 2
     },
@@ -74245,7 +74245,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.23,
+      "bayesian_avg": "4.23",
       "count": 6,
       "rating": 4
     },
@@ -74383,7 +74383,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.8,
+      "bayesian_avg": "3.8",
       "count": 36,
       "rating": 4
     },
@@ -74912,7 +74912,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.02,
+      "bayesian_avg": "1.02",
       "count": 154,
       "rating": 1
     },
@@ -75050,7 +75050,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.99,
+      "bayesian_avg": "2.99",
       "count": 159,
       "rating": 3
     },
@@ -75694,7 +75694,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.39,
+      "bayesian_avg": "2.39",
       "count": 86,
       "rating": 2
     },
@@ -75832,7 +75832,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.66,
+      "bayesian_avg": "2.66",
       "count": 61,
       "rating": 3
     },
@@ -75970,7 +75970,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.64,
+      "bayesian_avg": "3.64",
       "count": 0,
       "rating": 4
     },
@@ -76039,7 +76039,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.47,
+      "bayesian_avg": "4.47",
       "count": 76,
       "rating": 4
     },
@@ -77189,7 +77189,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.36,
+      "bayesian_avg": "4.36",
       "count": 133,
       "rating": 4
     },
@@ -77327,7 +77327,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.42,
+      "bayesian_avg": "2.42",
       "count": 77,
       "rating": 2
     },
@@ -78523,7 +78523,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.3,
+      "bayesian_avg": "4.3",
       "count": 142,
       "rating": 4
     },
@@ -78592,7 +78592,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.01,
+      "bayesian_avg": "4.01",
       "count": 86,
       "rating": 4
     },
@@ -78753,7 +78753,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.83,
+      "bayesian_avg": "2.83",
       "count": 175,
       "rating": 3
     },
@@ -78822,7 +78822,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.61,
+      "bayesian_avg": "3.61",
       "count": 113,
       "rating": 4
     },
@@ -78937,7 +78937,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.33,
+      "bayesian_avg": "3.33",
       "count": 93,
       "rating": 3
     },
@@ -79006,7 +79006,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.47,
+      "bayesian_avg": "4.47",
       "count": 132,
       "rating": 4
     },
@@ -79075,7 +79075,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.8,
+      "bayesian_avg": "3.8",
       "count": 170,
       "rating": 4
     },
@@ -79443,7 +79443,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.14,
+      "bayesian_avg": "2.14",
       "count": 108,
       "rating": 2
     },
@@ -79535,7 +79535,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.69,
+      "bayesian_avg": "0.69",
       "count": 46,
       "rating": 1
     },
@@ -79765,7 +79765,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.34,
+      "bayesian_avg": "4.34",
       "count": 48,
       "rating": 4
     },
@@ -79834,7 +79834,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.29,
+      "bayesian_avg": "4.29",
       "count": 20,
       "rating": 4
     },
@@ -79903,7 +79903,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.69,
+      "bayesian_avg": "4.69",
       "count": 160,
       "rating": 5
     },
@@ -79972,7 +79972,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.75,
+      "bayesian_avg": "3.75",
       "count": 189,
       "rating": 4
     },
@@ -80064,7 +80064,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.08,
+      "bayesian_avg": "1.08",
       "count": 54,
       "rating": 1
     },
@@ -80317,7 +80317,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.4,
+      "bayesian_avg": "2.4",
       "count": 60,
       "rating": 2
     },
@@ -80616,7 +80616,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.2,
+      "bayesian_avg": "3.2",
       "count": 188,
       "rating": 3
     },
@@ -80754,7 +80754,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.57,
+      "bayesian_avg": "1.57",
       "count": 135,
       "rating": 2
     },
@@ -81306,7 +81306,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.96,
+      "bayesian_avg": "0.96",
       "count": 42,
       "rating": 1
     },
@@ -81398,7 +81398,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.54,
+      "bayesian_avg": "0.54",
       "count": 175,
       "rating": 1
     },
@@ -81858,7 +81858,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.6,
+      "bayesian_avg": "2.6",
       "count": 72,
       "rating": 3
     },
@@ -81973,7 +81973,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.06,
+      "bayesian_avg": "4.06",
       "count": 48,
       "rating": 4
     },
@@ -82065,7 +82065,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.63,
+      "bayesian_avg": "1.63",
       "count": 72,
       "rating": 2
     },
@@ -82364,7 +82364,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.36,
+      "bayesian_avg": "4.36",
       "count": 198,
       "rating": 4
     },
@@ -82502,7 +82502,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.63,
+      "bayesian_avg": "4.63",
       "count": 107,
       "rating": 5
     },
@@ -82801,7 +82801,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.98,
+      "bayesian_avg": "4.98",
       "count": 112,
       "rating": 5
     },
@@ -82916,7 +82916,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.6,
+      "bayesian_avg": "3.6",
       "count": 67,
       "rating": 4
     },
@@ -83100,7 +83100,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.61,
+      "bayesian_avg": "0.61",
       "count": 42,
       "rating": 1
     },
@@ -84296,7 +84296,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.88,
+      "bayesian_avg": "4.88",
       "count": 182,
       "rating": 5
     },
@@ -84365,7 +84365,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.4,
+      "bayesian_avg": "3.4",
       "count": 185,
       "rating": 3
     },
@@ -84871,7 +84871,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.03,
+      "bayesian_avg": "4.03",
       "count": 79,
       "rating": 4
     },
@@ -85009,7 +85009,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.77,
+      "bayesian_avg": "3.77",
       "count": 185,
       "rating": 4
     },
@@ -85078,7 +85078,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.52,
+      "bayesian_avg": "1.52",
       "count": 117,
       "rating": 2
     },
@@ -85446,7 +85446,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.98,
+      "bayesian_avg": "0.98",
       "count": 33,
       "rating": 1
     },
@@ -85561,7 +85561,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.07,
+      "bayesian_avg": "0.07",
       "count": 39,
       "rating": 0
     },
@@ -85676,7 +85676,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.97,
+      "bayesian_avg": "3.97",
       "count": 25,
       "rating": 4
     },
@@ -86090,7 +86090,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.28,
+      "bayesian_avg": "2.28",
       "count": 110,
       "rating": 2
     },
@@ -86412,7 +86412,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.27,
+      "bayesian_avg": "2.27",
       "count": 48,
       "rating": 2
     },
@@ -86481,7 +86481,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.99,
+      "bayesian_avg": "1.99",
       "count": 46,
       "rating": 2
     },
@@ -86550,7 +86550,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.69,
+      "bayesian_avg": "1.69",
       "count": 70,
       "rating": 2
     },
@@ -86619,7 +86619,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.98,
+      "bayesian_avg": "2.98",
       "count": 9,
       "rating": 3
     },
@@ -86918,7 +86918,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.92,
+      "bayesian_avg": "1.92",
       "count": 127,
       "rating": 2
     },
@@ -88114,7 +88114,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3,
+      "bayesian_avg": "3",
       "count": 59,
       "rating": 3
     },
@@ -88229,7 +88229,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.95,
+      "bayesian_avg": "1.95",
       "count": 89,
       "rating": 2
     },
@@ -88643,7 +88643,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.31,
+      "bayesian_avg": "2.31",
       "count": 146,
       "rating": 2
     },
@@ -88873,7 +88873,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.34,
+      "bayesian_avg": "3.34",
       "count": 72,
       "rating": 3
     },
@@ -89356,7 +89356,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2,
+      "bayesian_avg": "2",
       "count": 151,
       "rating": 2
     },
@@ -89494,7 +89494,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.51,
+      "bayesian_avg": "2.51",
       "count": 43,
       "rating": 3
     },
@@ -89655,7 +89655,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.07,
+      "bayesian_avg": "3.07",
       "count": 49,
       "rating": 3
     },
@@ -89885,7 +89885,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.53,
+      "bayesian_avg": "3.53",
       "count": 16,
       "rating": 4
     },
@@ -89954,7 +89954,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.18,
+      "bayesian_avg": "0.18",
       "count": 144,
       "rating": 0
     },
@@ -90092,7 +90092,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.79,
+      "bayesian_avg": "2.79",
       "count": 51,
       "rating": 3
     },
@@ -90299,7 +90299,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.8,
+      "bayesian_avg": "1.8",
       "count": 166,
       "rating": 2
     },
@@ -90437,7 +90437,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.4,
+      "bayesian_avg": "4.4",
       "count": 131,
       "rating": 4
     },
@@ -90506,7 +90506,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.03,
+      "bayesian_avg": "2.03",
       "count": 178,
       "rating": 2
     },
@@ -90575,7 +90575,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.36,
+      "bayesian_avg": "1.36",
       "count": 33,
       "rating": 1
     },
@@ -90713,7 +90713,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.43,
+      "bayesian_avg": "4.43",
       "count": 151,
       "rating": 4
     },
@@ -90828,7 +90828,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.91,
+      "bayesian_avg": "0.91",
       "count": 145,
       "rating": 1
     },
@@ -90897,7 +90897,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.5,
+      "bayesian_avg": "2.5",
       "count": 10,
       "rating": 3
     },
@@ -90989,7 +90989,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.53,
+      "bayesian_avg": "4.53",
       "count": 33,
       "rating": 5
     },
@@ -91058,7 +91058,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.69,
+      "bayesian_avg": "2.69",
       "count": 69,
       "rating": 3
     },
@@ -91127,7 +91127,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.19,
+      "bayesian_avg": "3.19",
       "count": 9,
       "rating": 3
     },
@@ -91518,7 +91518,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.94,
+      "bayesian_avg": "0.94",
       "count": 116,
       "rating": 1
     },
@@ -91748,7 +91748,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 4.26,
+      "bayesian_avg": "4.26",
       "count": 110,
       "rating": 4
     },
@@ -91840,7 +91840,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.11,
+      "bayesian_avg": "2.11",
       "count": 80,
       "rating": 2
     },
@@ -91955,7 +91955,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 3.32,
+      "bayesian_avg": "3.32",
       "count": 117,
       "rating": 3
     },
@@ -92070,7 +92070,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.48,
+      "bayesian_avg": "1.48",
       "count": 19,
       "rating": 1
     },
@@ -92139,7 +92139,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 0.82,
+      "bayesian_avg": "0.82",
       "count": 6,
       "rating": 1
     },
@@ -92208,7 +92208,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.82,
+      "bayesian_avg": "2.82",
       "count": 43,
       "rating": 3
     },
@@ -92323,7 +92323,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.1,
+      "bayesian_avg": "2.1",
       "count": 19,
       "rating": 2
     },
@@ -92461,7 +92461,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 2.03,
+      "bayesian_avg": "2.03",
       "count": 51,
       "rating": 2
     },
@@ -92599,7 +92599,7 @@
     "product_type": null,
     "related_products": [],
     "reviews": {
-      "bayesian_avg": 1.38,
+      "bayesian_avg": "1.38",
       "count": 6,
       "rating": 1
     },

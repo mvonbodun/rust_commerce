@@ -40,23 +40,27 @@ impl From<BayesianAverage> for f32 {
     }
 }
 
-// Custom serialization to ensure we always serialize as f32 for JSON compatibility
+// Custom serialization to ensure we always serialize as string with one decimal place for MongoDB storage
 impl Serialize for BayesianAverage {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
     {
-        serializer.serialize_f32(self.as_f32())
+        // Serialize as a string with exactly one decimal place
+        let formatted_value = format!("{:.1}", self.as_f32());
+        serializer.serialize_str(&formatted_value)
     }
 }
 
-// Custom deserialization that automatically rounds to one decimal place
+// Custom deserialization that expects string input with automatic rounding to one decimal place
 impl<'de> Deserialize<'de> for BayesianAverage {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
-        let value = f32::deserialize(deserializer)?;
+        let value_str = String::deserialize(deserializer)?;
+        let value = value_str.parse::<f32>()
+            .map_err(serde::de::Error::custom)?;
         Ok(BayesianAverage::new(value))
     }
 }
@@ -840,6 +844,10 @@ mod tests {
         };
 
         let json = serde_json::to_string(&reviews).expect("Failed to serialize");
+        
+        // Verify that bayesian_avg is serialized as a string with one decimal place
+        assert!(json.contains(r#""bayesian_avg":"4.6""#));
+        
         let deserialized: Reviews = serde_json::from_str(&json).expect("Failed to deserialize");
 
         // Check that the value is properly rounded
@@ -850,10 +858,44 @@ mod tests {
 
     #[test]
     fn test_json_deserialization_with_precision() {
-        let json = r#"{"bayesian_avg": 4.56789, "count": 100, "rating": 5}"#;
-        let reviews: Reviews = serde_json::from_str(json).expect("Failed to deserialize");
+        // Test deserialization from string value
+        let json_string = r#"{"bayesian_avg": "4.56789", "count": 100, "rating": 5}"#;
+        let reviews_string: Reviews = serde_json::from_str(json_string).expect("Failed to deserialize string");
         
         // Should be automatically rounded to one decimal place
-        assert_eq!(reviews.bayesian_avg.as_f32(), 4.6);
+        assert_eq!(reviews_string.bayesian_avg.as_f32(), 4.6);
+        
+        // Test deserialization from properly formatted string
+        let json_formatted = r#"{"bayesian_avg": "4.6", "count": 100, "rating": 5}"#;
+        let reviews_formatted: Reviews = serde_json::from_str(json_formatted).expect("Failed to deserialize formatted string");
+        
+        // Should maintain the single decimal place
+        assert_eq!(reviews_formatted.bayesian_avg.as_f32(), 4.6);
+    }
+
+    #[test]
+    fn test_bayesian_average_string_serialization() {
+        // Test direct BayesianAverage serialization to ensure it's always a string
+        let avg1 = BayesianAverage::new(4.56789);
+        let json1 = serde_json::to_string(&avg1).expect("Failed to serialize");
+        assert_eq!(json1, r#""4.6""#);
+        
+        let avg2 = BayesianAverage::new(3.14159);
+        let json2 = serde_json::to_string(&avg2).expect("Failed to serialize");
+        assert_eq!(json2, r#""3.1""#);
+        
+        let avg3 = BayesianAverage::new(2.95);
+        let json3 = serde_json::to_string(&avg3).expect("Failed to serialize");
+        assert_eq!(json3, r#""3.0""#);
+        
+        // Test deserialization from these strings
+        let deserialized1: BayesianAverage = serde_json::from_str(&json1).expect("Failed to deserialize");
+        assert_eq!(deserialized1.as_f32(), 4.6);
+        
+        let deserialized2: BayesianAverage = serde_json::from_str(&json2).expect("Failed to deserialize");
+        assert_eq!(deserialized2.as_f32(), 3.1);
+        
+        let deserialized3: BayesianAverage = serde_json::from_str(&json3).expect("Failed to deserialize");
+        assert_eq!(deserialized3.as_f32(), 3.0);
     }
 }
