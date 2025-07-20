@@ -26,6 +26,10 @@ pub async fn create_product(
         product_builder.brand(brand);
     }
     
+    if let Some(slug) = request.slug {
+        product_builder.slug(slug);
+    }
+    
     if let Some(long_description) = request.long_description {
         product_builder.long_description(long_description);
     }
