@@ -9,7 +9,9 @@ use iso_currency::Currency;
 use log::{debug, error};
 use prost::Message as ProstMessage;
 use prost_types::Timestamp;
+use bson::Decimal128;
 use rust_decimal::Decimal;
+use std::str::FromStr;
 use uuid::Uuid;
 
 use crate::{
@@ -254,12 +256,12 @@ fn map_proto_offer_to_model_offer(offer: offer_messages::OfferCreateRequest) -> 
             .parse::<DateTime<Utc>>()
             .unwrap(),
         min_quantity: offer.min_quantity,
-        max_quanity: offer.max_quantity,
+        max_quantity: offer.max_quantity,
         offer_prices: offer
             .offer_prices
             .iter()
             .map(|op| model::OfferPrice {
-                price: Decimal::from_f32_retain(op.price).unwrap(),
+                price: Decimal128::from_str(&Decimal::from_f32_retain(op.price).unwrap().to_string()).unwrap(),
                 currency: Currency::from_code(op.currency.as_str()).expect("currency is not valid"),
             })
             .collect(),
@@ -281,7 +283,7 @@ fn map_model_offer_to_proto_offer(offer: model::Offer) -> offer_messages::Offer 
             nanos: offer.end_date.nanosecond() as i32,
         }),
         min_quantity: offer.min_quantity,
-        max_quantity: offer.max_quanity,
+        max_quantity: offer.max_quantity,
         offer_prices: offer
             .offer_prices
             .iter()
@@ -335,9 +337,9 @@ mod tests {
             start_date: Utc::now(),
             end_date: Utc::now(),
             min_quantity: 10,
-            max_quanity: Some(100),
+            max_quantity: Some(100),
             offer_prices: vec![model::OfferPrice {
-                price: Decimal::from_f32_retain(10.5).unwrap(),
+                price: Decimal128::from_str("10.5").unwrap(),
                 currency: Currency::USD,
             }],
         };

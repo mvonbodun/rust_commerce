@@ -26,10 +26,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             seconds: 1632055200,
             nanos: 0,
         }),
-        min_quantity: 10,
-        max_quantity: Some(100),
+        min_quantity: 1,
+        max_quantity: Some(500),
         offer_prices: vec![offer_messages::OfferPrice {
-            price: 10.5,
+            price: 50.74,
             currency: "USD".to_string(),
         }],
     };
@@ -60,11 +60,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         id: offer_id.clone(),
     };
 
-    let mut buf = vec![];
-    offer_delete_request.encode(&mut buf)?;
-    let result = client.request("offers.delete_offer", buf.into()).await?;
-    let response = OfferDeleteResponse::decode(result.payload)?;
-    println!("response from delete_offer: {:?}", response);
+    // let mut buf = vec![];
+    // offer_delete_request.encode(&mut buf)?;
+    // let result = client.request("offers.delete_offer", buf.into()).await?;
+    // let response = OfferDeleteResponse::decode(result.payload)?;
+    // println!("response from delete_offer: {:?}", response);
 
     Ok(())
 }

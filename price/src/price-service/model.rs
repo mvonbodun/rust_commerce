@@ -1,5 +1,5 @@
+use bson::Decimal128;
 use chrono::{DateTime, Utc};
-use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use uuid::Uuid;
@@ -13,13 +13,13 @@ pub struct Offer {
     pub start_date: DateTime<Utc>,
     pub end_date: DateTime<Utc>,
     pub min_quantity: i32,
-    pub max_quanity: Option<i32>,
+    pub max_quantity: Option<i32>,
     pub offer_prices: Vec<OfferPrice>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct OfferPrice {
-    pub price: Decimal,
+    pub price: Decimal128,
     pub currency: iso_currency::Currency,
 }
 
@@ -37,7 +37,7 @@ pub struct OfferBuilder {
     start_date: DateTime<Utc>,
     end_date: DateTime<Utc>,
     min_quantity: i32,
-    max_quanity: Option<i32>,
+    max_quantity: Option<i32>,
     offer_prices: Vec<OfferPrice>,
 }
 
@@ -56,7 +56,7 @@ impl OfferBuilder {
             start_date,
             end_date,
             min_quantity,
-            max_quanity: None,
+            max_quantity: None,
             offer_prices,
         }
     }
@@ -65,7 +65,7 @@ impl OfferBuilder {
         self
     }
     pub fn max_quantity(&mut self, max_quantity: i32) -> &mut Self {
-        self.max_quanity = Some(max_quantity);
+        self.max_quantity = Some(max_quantity);
         self
     }
     pub fn build(&mut self) -> Offer {
@@ -76,7 +76,7 @@ impl OfferBuilder {
             start_date: self.start_date,
             end_date: self.end_date,
             min_quantity: self.min_quantity,
-            max_quanity: self.max_quanity,
+            max_quantity: self.max_quantity,
             offer_prices: self.offer_prices.clone(),
         }
     }
@@ -97,6 +97,7 @@ pub enum DBError {
 #[cfg(test)]
 mod tests {
     use chrono::Datelike;
+    use std::str::FromStr;
 
     use super::*;
 
@@ -109,11 +110,11 @@ mod tests {
             1,
             vec![
                 OfferPrice {
-                    price: Decimal::new(100, 2),
+                    price: Decimal128::from_str("1.00").unwrap(),
                     currency: iso_currency::Currency::USD,
                 },
                 OfferPrice {
-                    price: Decimal::new(200, 2),
+                    price: Decimal128::from_str("2.00").unwrap(),
                     currency: iso_currency::Currency::EUR,
                 },
             ],
