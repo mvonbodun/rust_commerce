@@ -3,7 +3,7 @@ use catalog_messages::{
     ProductCreateRequest, ProductCreateResponse, ProductGetRequest, ProductGetResponse,
     ProductDeleteRequest, ProductDeleteResponse, ProductSearchRequest, ProductSearchResponse,
 };
-use log::{debug, error, info};
+use log::debug;
 use prost::Message;
 use serde_json;
 use std::collections::HashMap;

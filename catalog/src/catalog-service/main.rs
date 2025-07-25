@@ -2,7 +2,10 @@ mod handlers;
 mod model;
 mod persistence;
 
-use handlers::{create_product, delete_product, get_product, search_products, update_product, Router};
+use bson::doc;
+use handlers::{
+    create_product, delete_product, get_product, search_products, update_product, Router,
+};
 use persistence::product_dao::ProductDaoImpl;
 use std::{env, error::Error, sync::Arc};
 
@@ -11,7 +14,7 @@ use log::{debug, error, info};
 
 use futures::StreamExt;
 use model::Product;
-use mongodb::{Client, Collection};
+use mongodb::{Client, Collection, IndexModel};
 
 pub mod catalog_messages {
     include!(concat!(env!("OUT_DIR"), "/catalog_messages.rs"));
@@ -36,6 +39,25 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let client = Client::with_uri_str(uri).await?;
     let database = client.database("db_catalog");
     let products_coll: Collection<Product> = database.collection("products");
+    let indexes = vec![
+        IndexModel::builder()
+            .keys(doc! { "product_ref": 1})
+            .options(
+                mongodb::options::IndexOptions::builder()
+                    .unique(true)
+                    .build(),
+            )
+            .build(),
+        IndexModel::builder()
+            .keys(doc! { "slug": 1 })
+            .options(
+                mongodb::options::IndexOptions::builder()
+                    .unique(true)
+                    .build(),
+            )
+            .build(),
+    ];
+    products_coll.create_indexes(indexes).await?;
 
     let product_dao = Arc::new(ProductDaoImpl::new(products_coll)).clone();
 
@@ -79,7 +101,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             let pd = app_state.product_dao.clone();
             let routes = routes.clone();
             let client_clone = nats_client.clone();
-            
+
             async move {
                 let subject_parts: Vec<&str> = request.subject.split('.').collect();
                 if subject_parts.len() < 2 {
