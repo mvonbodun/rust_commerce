@@ -261,7 +261,7 @@ fn map_proto_offer_to_model_offer(offer: offer_messages::OfferCreateRequest) -> 
             .offer_prices
             .iter()
             .map(|op| model::OfferPrice {
-                price: Decimal128::from_str(&Decimal::from_f32_retain(op.price).unwrap().to_string()).unwrap(),
+                price: Decimal128::from_str(&op.price).unwrap(),
                 currency: Currency::from_code(op.currency.as_str()).expect("currency is not valid"),
             })
             .collect(),
@@ -288,11 +288,7 @@ fn map_model_offer_to_proto_offer(offer: model::Offer) -> offer_messages::Offer 
             .offer_prices
             .iter()
             .map(|op| offer_messages::OfferPrice {
-                price: op
-                    .price
-                    .to_string()
-                    .parse::<f32>()
-                    .expect("failed to convert decimal to f32"),
+                price: op.price.to_string(),
                 currency: op.currency.to_string(),
             })
             .collect(),
@@ -320,7 +316,7 @@ mod tests {
             min_quantity: 10,
             max_quantity: Some(100),
             offer_prices: vec![offer_messages::OfferPrice {
-                price: 10.5,
+                price: "10.5".to_string(),
                 currency: "USD".to_string(),
             }],
         };

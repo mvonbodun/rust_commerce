@@ -29,7 +29,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         min_quantity: 1,
         max_quantity: Some(500),
         offer_prices: vec![offer_messages::OfferPrice {
-            price: 50.74,
+            price: "50.74".to_string(),
             currency: "USD".to_string(),
         }],
     };

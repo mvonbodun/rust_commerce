@@ -4,13 +4,16 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use uuid::Uuid;
 
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Offer {
     #[serde(rename = "_id")]
     pub id: Option<String>,
     pub item_id: String,
     pub item_ref: Option<String>,
+    #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
     pub start_date: DateTime<Utc>,
+    #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
     pub end_date: DateTime<Utc>,
     pub min_quantity: i32,
     pub max_quantity: Option<i32>,
