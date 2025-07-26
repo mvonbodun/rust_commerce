@@ -1,70 +1,294 @@
+use clap::{Parser, Subcommand};
 use offer_messages::{
-    OfferCreateRequest, OfferCreateResponse, OfferDeleteRequest, OfferDeleteResponse,
-    OfferGetRequest, OfferGetResponse,
+    OfferCreateRequest, OfferCreateResponse, OfferGetRequest, OfferGetResponse,
+    OfferDeleteRequest, OfferDeleteResponse,
 };
+use log::debug;
 use prost::Message;
+use serde::Deserialize;
+use serde_json;
+use std::fs;
+use std::path::PathBuf;
+use std::str::FromStr;
+use rust_price::Offer;
+use bson::Decimal128;
+use iso_currency::Currency;
 use prost_types::Timestamp;
-use uuid::Uuid;
+use chrono::{DateTime, Utc};
 
 pub mod offer_messages {
     include!(concat!(env!("OUT_DIR"), "/offer_messages.rs"));
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let client = async_nats::connect("0.0.0.0:4222").await?;
+// Structs for JSON import (handles string dates and prices)
+#[derive(Deserialize, Debug, Clone)]
+pub struct OfferImport {
+    pub sku: String,
+    pub start_date: String,
+    pub end_date: String,
+    pub min_quantity: i32,
+    pub max_quantity: Option<i32>,
+    pub offer_prices: Vec<OfferPriceImport>,
+}
 
-    // Create an offer
-    let offer = OfferCreateRequest {
-        item_id: Uuid::new_v4().to_string(),
-        item_ref: Some("item_ref1".to_string()),
+#[derive(Deserialize, Debug, Clone)]
+pub struct OfferPriceImport {
+    pub price: String,
+    pub currency: String,
+}
+
+// Convert import struct to domain model
+impl OfferImport {
+    fn to_offer(&self) -> Result<Offer, Box<dyn std::error::Error>> {
+        Ok(Offer {
+            id: None,
+            sku: self.sku.clone(),
+            start_date: DateTime::parse_from_rfc3339(&self.start_date)?
+                .with_timezone(&Utc),
+            end_date: DateTime::parse_from_rfc3339(&self.end_date)?
+                .with_timezone(&Utc),
+            min_quantity: self.min_quantity,
+            max_quantity: self.max_quantity,
+            offer_prices: self.offer_prices.iter()
+                .map(|op| Ok(rust_price::OfferPrice {
+                    price: Decimal128::from_str(&op.price)?,
+                    currency: Currency::from_code(&op.currency)
+                        .ok_or_else(|| format!("Invalid currency code: {}", op.currency))?,
+                }))
+                .collect::<Result<Vec<_>, Box<dyn std::error::Error>>>()?,
+        })
+    }
+}
+
+// Helper function to convert Offer to OfferCreateRequest
+fn offer_to_create_request(offer: &Offer) -> OfferCreateRequest {
+    let ocr = OfferCreateRequest {
+        sku: offer.sku.clone(),
         start_date: Some(Timestamp {
-            seconds: 1629459200,
-            nanos: 0,
+            seconds: offer.start_date.timestamp(),
+            nanos: offer.start_date.timestamp_subsec_nanos() as i32,
         }),
         end_date: Some(Timestamp {
-            seconds: 1632055200,
-            nanos: 0,
+            seconds: offer.end_date.timestamp(),
+            nanos: offer.end_date.timestamp_subsec_nanos() as i32,
         }),
-        min_quantity: 1,
-        max_quantity: Some(500),
-        offer_prices: vec![offer_messages::OfferPrice {
-            price: "50.74".to_string(),
-            currency: "USD".to_string(),
-        }],
+        min_quantity: offer.min_quantity,
+        max_quantity: offer.max_quantity,
+        offer_prices: offer.offer_prices.iter().map(|op| offer_messages::OfferPrice {
+            price: op.price.to_string(),
+            currency: op.currency.code().to_string(),
+        }).collect(),
     };
+    debug!("OfferCreateRequest: {:?}", ocr);
+    ocr
+}
 
-    let mut buf = vec![];
-    offer.encode(&mut buf)?;
-    let result = client.request("offers.create_offer", buf.into()).await?;
-    let response = OfferCreateResponse::decode(result.payload)?;
-    println!("response: {:?}", response);
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+struct Cli {
+    #[command(subcommand)]
+    command: Option<Commands>,
+}
 
-    let offer_id = response
-        .offer
-        .expect("failed to create offer")
-        .id
-        .expect("failed to get id from offer");
-    // Get Offer
-    let offer_get_request = OfferGetRequest {
-        id: offer_id.clone(),
-    };
+#[derive(Subcommand)]
+enum Commands {
+    OfferCreate {
+        #[arg(short, long)]
+        sku: String,
+        #[arg(short, long)]
+        price: String,
+        #[arg(short, long, default_value = "USD")]
+        currency: String,
+        #[arg(short = 'n', long, default_value = "1")]
+        min_quantity: i32,
+        #[arg(short = 'x', long)]
+        max_quantity: Option<i32>,
+    },
+    OfferGet {
+        #[arg(short, long)]
+        id: String,
+    },
+    OfferDelete {
+        #[arg(short, long)]
+        id: String,
+    },
+    Import {
+        #[arg(short, long)]
+        file: PathBuf,
+        #[arg(short, long, default_value = "false")]
+        dry_run: bool,
+    },
+}
 
-    let mut buf = vec![];
-    offer_get_request.encode(&mut buf)?;
-    let result = client.request("offers.get_offer", buf.into()).await?;
-    let response = OfferGetResponse::decode(result.payload)?;
-    println!("response from get_offer: {:?}", response);
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    pretty_env_logger::init();
+    
+    let cli = Cli::parse();
 
-    let offer_delete_request = OfferDeleteRequest {
-        id: offer_id.clone(),
-    };
+    // Connect to the nats server
+    let client = async_nats::connect("0.0.0.0:4222").await?;
 
-    // let mut buf = vec![];
-    // offer_delete_request.encode(&mut buf)?;
-    // let result = client.request("offers.delete_offer", buf.into()).await?;
-    // let response = OfferDeleteResponse::decode(result.payload)?;
-    // println!("response from delete_offer: {:?}", response);
+    match &cli.command {
+        Some(Commands::OfferCreate { sku, price, currency, min_quantity, max_quantity }) => {
+            // Validate currency
+            Currency::from_code(currency)
+                .ok_or_else(|| format!("Invalid currency: {}", currency))?;
+
+            // Validate price format
+            Decimal128::from_str(price)
+                .map_err(|_| format!("Invalid price format: {}", price))?;
+
+            // Create an offer
+            let offer_request = OfferCreateRequest {
+                sku: sku.clone(),
+                start_date: Some(Timestamp {
+                    seconds: chrono::Utc::now().timestamp(),
+                    nanos: 0,
+                }),
+                end_date: Some(Timestamp {
+                    seconds: (chrono::Utc::now() + chrono::Duration::days(30)).timestamp(),
+                    nanos: 0,
+                }),
+                min_quantity: *min_quantity,
+                max_quantity: *max_quantity,
+                offer_prices: vec![offer_messages::OfferPrice {
+                    price: price.clone(),
+                    currency: currency.clone(),
+                }],
+            };
+
+            let request_bytes = offer_request.encode_to_vec();
+            
+            println!("Sending create_offer request...");
+            let response = client
+                .request("offers.create_offer", request_bytes.into())
+                .await?;
+
+            let create_response = OfferCreateResponse::decode(&*response.payload)?;
+            println!("Create response: {:?}", create_response);
+        }
+        Some(Commands::OfferGet { id }) => {
+            let get_request = OfferGetRequest {
+                id: id.clone(),
+            };
+
+            let request_bytes = get_request.encode_to_vec();
+            
+            println!("Sending get_offer request for ID: {}", id);
+            let response = client
+                .request("offers.get_offer", request_bytes.into())
+                .await?;
+
+            let get_response = OfferGetResponse::decode(&*response.payload)?;
+            println!("Get response: {:?}", get_response);
+        }
+        Some(Commands::OfferDelete { id }) => {
+            let delete_request = OfferDeleteRequest {
+                id: id.clone(),
+            };
+
+            let request_bytes = delete_request.encode_to_vec();
+            
+            println!("Sending delete_offer request for ID: {}", id);
+            let response = client
+                .request("offers.delete_offer", request_bytes.into())
+                .await?;
+
+            let delete_response = OfferDeleteResponse::decode(&*response.payload)?;
+            println!("Delete response: {:?}", delete_response);
+        }
+        Some(Commands::Import { file, dry_run }) => {
+            println!("Importing offers from file: {:?}", file);
+            
+            // Read and parse the JSON file
+            let file_content = fs::read_to_string(file)?;
+            
+            // Try parsing as a single offer first
+            let import_offers: Vec<OfferImport> = if let Ok(single_offer) = serde_json::from_str::<OfferImport>(&file_content) {
+                vec![single_offer]
+            } else {
+                // Try parsing as an array of offers
+                serde_json::from_str::<Vec<OfferImport>>(&file_content)?
+            };
+            
+            println!("Found {} offer(s) to import", import_offers.len());
+            
+            if *dry_run {
+                println!("DRY RUN: Would import the following offers:");
+                for (i, offer) in import_offers.iter().enumerate() {
+                    println!("  {}. SKU: {} (min_qty: {}, max_qty: {:?})", 
+                        i + 1, offer.sku, offer.min_quantity, offer.max_quantity);
+                    for price in &offer.offer_prices {
+                        println!("    - {} {}", price.price, price.currency);
+                    }
+                }
+                return Ok(());
+            }
+            
+            let mut successful_imports = 0;
+            let mut failed_imports = 0;
+            
+            for (i, import_offer) in import_offers.iter().enumerate() {
+                println!("Importing offer {} of {}: SKU {} (min_qty: {}, max_qty: {:?})", 
+                    i + 1, import_offers.len(), import_offer.sku, import_offer.min_quantity, import_offer.max_quantity);
+                
+                // Convert import struct to domain model
+                let offer = match import_offer.to_offer() {
+                    Ok(offer) => offer,
+                    Err(e) => {
+                        println!("  ❌ Failed to parse offer SKU {}: {}", import_offer.sku, e);
+                        failed_imports += 1;
+                        continue;
+                    }
+                };
+                
+                let offer_request = offer_to_create_request(&offer);
+                let request_bytes = offer_request.encode_to_vec();
+                
+                match client.request("offers.create_offer", request_bytes.into()).await {
+                    Ok(response) => {
+                        match OfferCreateResponse::decode(&*response.payload) {
+                            Ok(create_response) => {
+                                if let Some(status) = &create_response.status {
+                                    if status.code == offer_messages::Code::Ok as i32 {
+                                        println!("  ✅ Successfully imported: SKU {}", offer.sku);
+                                        successful_imports += 1;
+                                    } else {
+                                        println!("  ❌ Failed to import SKU {}: {} ({})", 
+                                            offer.sku, status.message, status.code);
+                                        failed_imports += 1;
+                                    }
+                                } else {
+                                    println!("  ❌ Failed to import SKU {}: No status in response", offer.sku);
+                                    failed_imports += 1;
+                                }
+                            }
+                            Err(e) => {
+                                println!("  ❌ Failed to decode response for SKU {}: {}", offer.sku, e);
+                                failed_imports += 1;
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        println!("  ❌ Failed to send request for SKU {}: {}", offer.sku, e);
+                        failed_imports += 1;
+                    }
+                }
+                
+                // Add a small delay to avoid overwhelming the service
+                tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+            }
+            
+            println!("\nImport Summary:");
+            println!("  ✅ Successful: {}", successful_imports);
+            println!("  ❌ Failed: {}", failed_imports);
+            println!("  📊 Total: {}", import_offers.len());
+        }
+        None => {
+            println!("No command specified. Use --help for available commands.");
+        }
+    }
 
     Ok(())
 }

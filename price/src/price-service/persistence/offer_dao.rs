@@ -2,6 +2,7 @@ use log::{debug, error, info};
 
 use async_trait::async_trait;
 use bson::doc;
+use chrono::NaiveDate;
 use mongodb::Collection;
 
 use crate::model::{DBError, Offer};
@@ -11,6 +12,13 @@ pub trait OfferDao {
     async fn create_offer(&self, offer: Offer) -> Result<Offer, DBError>;
     async fn delete_offer(&self, offer_id: String) -> Result<(), DBError>;
     async fn get_offer(&self, offer_id: String) -> Result<Option<Offer>, DBError>;
+    async fn find_best_offer_price(
+        &self,
+        sku: &str,
+        quantity: i32,
+        date: NaiveDate,
+        currency: &str,
+    ) -> Result<Option<Offer>, DBError>;
 }
 
 pub struct OfferDaoImpl {
@@ -78,5 +86,80 @@ impl OfferDao for OfferDaoImpl {
 
         info!("Deleted offer result: {:?}", delete_result);
         Ok(())
+    }
+
+    // Find the best offer price for given parameters
+    async fn find_best_offer_price(
+        &self,
+        sku: &str,
+        quantity: i32,
+        date: NaiveDate,
+        currency: &str,
+    ) -> Result<Option<Offer>, DBError> {
+        debug!(
+            "Finding best offer price for sku: {}, quantity: {}, date: {}, currency: {}",
+            sku, quantity, date, currency
+        );
+
+        // Convert NaiveDate to BSON DateTime for MongoDB query
+        let bson_date = bson::DateTime::from_chrono(
+            date.and_hms_opt(0, 0, 0)
+                .unwrap()
+                .and_local_timezone(chrono::Utc)
+                .unwrap(),
+        );
+
+        // Build the MongoDB query based on playground-1.mongodb.js line 20
+        let query = doc! {
+            "sku": sku,
+            "min_quantity": { "$lte": quantity },
+            "max_quantity": { "$gte": quantity },
+            "start_date": { "$lte": bson_date },
+            "end_date": { "$gte": bson_date },
+            "offer_prices": { "$elemMatch": { "currency": currency } }
+        };
+
+        debug!("MongoDB query: {:?}", query);
+
+        // Execute the query with sort and limit using find() instead of find_one() 
+        // because find_one() doesn't support sorting
+        let find_options = mongodb::options::FindOptions::builder()
+            .sort(doc! { "offer_prices.price": 1 })
+            .limit(1)
+            .build();
+
+        let mut cursor = self
+            .collection
+            .find(query)
+            .with_options(find_options)
+            .await
+            .map_err(|error| {
+                error!("DB error in find_best_offer_price: {:?}", error);
+                DBError::Other(Box::new(error))
+            })?;
+
+        // Get the first result from the cursor
+        use futures::stream::StreamExt;
+        let find_result = cursor.next().await;
+
+        match find_result {
+            Some(result) => match result {
+                Ok(offer) => {
+                    debug!("Found best offer: {:?}", offer);
+                    Ok(Some(offer))
+                }
+                Err(error) => {
+                    error!("DB cursor error in find_best_offer_price: {:?}", error);
+                    Err(DBError::Other(Box::new(error)))
+                }
+            },
+            None => {
+                debug!(
+                    "No offer found for sku: {}, quantity: {}, date: {}, currency: {}",
+                    sku, quantity, date, currency
+                );
+                Ok(None)
+            }
+        }
     }
 }

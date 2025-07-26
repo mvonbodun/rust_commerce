@@ -9,8 +9,7 @@ use uuid::Uuid;
 pub struct Offer {
     #[serde(rename = "_id")]
     pub id: Option<String>,
-    pub item_id: String,
-    pub item_ref: Option<String>,
+    pub sku: String,
     #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
     pub start_date: DateTime<Utc>,
     #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
@@ -35,8 +34,7 @@ impl Offer {
 #[derive(Default)]
 pub struct OfferBuilder {
     id: Option<String>,
-    item_id: String,
-    item_ref: Option<String>,
+    sku: String,
     start_date: DateTime<Utc>,
     end_date: DateTime<Utc>,
     min_quantity: i32,
@@ -46,7 +44,7 @@ pub struct OfferBuilder {
 
 impl OfferBuilder {
     pub fn new(
-        item_id: String,
+        sku: String,
         start_date: DateTime<Utc>,
         end_date: DateTime<Utc>,
         min_quantity: i32,
@@ -54,8 +52,7 @@ impl OfferBuilder {
     ) -> Self {
         OfferBuilder {
             id: Some(Uuid::new_v4().to_string()),
-            item_id,
-            item_ref: None,
+            sku,
             start_date,
             end_date,
             min_quantity,
@@ -63,8 +60,8 @@ impl OfferBuilder {
             offer_prices,
         }
     }
-    pub fn item_ref(&mut self, item_ref: String) -> &mut Self {
-        self.item_ref = Some(item_ref);
+    pub fn sku(&mut self, sku: String) -> &mut Self {
+        self.sku = sku;
         self
     }
     pub fn max_quantity(&mut self, max_quantity: i32) -> &mut Self {
@@ -74,8 +71,7 @@ impl OfferBuilder {
     pub fn build(&mut self) -> Offer {
         Offer {
             id: self.id.clone(),
-            item_id: self.item_id.clone(),
-            item_ref: self.item_ref.clone(),
+            sku: self.sku.clone(),
             start_date: self.start_date,
             end_date: self.end_date,
             min_quantity: self.min_quantity,
@@ -107,7 +103,7 @@ mod tests {
     #[test]
     fn offer_builder_test() {
         let offer = OfferBuilder::new(
-            Uuid::new_v4().to_string(),
+            "SKU123".to_string(),
             Utc::now(),
             Utc::now().with_month(12).unwrap(),
             1,

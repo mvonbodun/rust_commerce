@@ -10,7 +10,6 @@ use log::{debug, error};
 use prost::Message as ProstMessage;
 use prost_types::Timestamp;
 use bson::Decimal128;
-use rust_decimal::Decimal;
 use std::str::FromStr;
 use uuid::Uuid;
 
@@ -241,8 +240,7 @@ pub async fn delete_offer(offer_dao: Arc<OfferDaoImpl>, offer_delete_request: Re
 fn map_proto_offer_to_model_offer(offer: offer_messages::OfferCreateRequest) -> model::Offer {
     model::Offer {
         id: Some(Uuid::new_v4().to_string()),
-        item_id: offer.item_id.clone(),
-        item_ref: offer.item_ref.clone(),
+        sku: offer.sku.clone(),
         start_date: offer
             .start_date
             .unwrap()
@@ -272,8 +270,7 @@ fn map_proto_offer_to_model_offer(offer: offer_messages::OfferCreateRequest) -> 
 fn map_model_offer_to_proto_offer(offer: model::Offer) -> offer_messages::Offer {
     offer_messages::Offer {
         id: offer.id,
-        item_id: offer.item_id,
-        item_ref: offer.item_ref,
+        sku: offer.sku,
         start_date: Some(Timestamp {
             seconds: offer.start_date.second() as i64,
             nanos: offer.start_date.nanosecond() as i32,
@@ -303,8 +300,7 @@ mod tests {
     #[test]
     fn test_map_proto_offer_to_model_offer() {
         let offer_create_request = offer_messages::OfferCreateRequest {
-            item_id: "item1".to_string(),
-            item_ref: Some("item_ref1".to_string()),
+            sku: "SKU123".to_string(),
             start_date: Some(Timestamp {
                 seconds: 1629459200,
                 nanos: 0,
@@ -328,8 +324,7 @@ mod tests {
     fn test_map_model_offer_to_proto_offer() {
         let model_offer = model::Offer {
             id: Some(Uuid::new_v4().to_string()),
-            item_id: "item1".to_string(),
-            item_ref: Some("item_ref1".to_string()),
+            sku: "SKU123".to_string(),
             start_date: Utc::now(),
             end_date: Utc::now(),
             min_quantity: 10,

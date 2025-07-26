@@ -6,13 +6,12 @@ import "status.proto";
 import "google/protobuf/timestamp.proto";
 
 message OfferCreateRequest {
-    string item_id = 1;
-    optional string item_ref = 2;
-    google.protobuf.Timestamp start_date = 3;
-    google.protobuf.Timestamp end_date = 4;
-    int32 min_quantity = 5;
-    optional int32 max_quantity = 6;
-    repeated OfferPrice offer_prices = 7;
+    string sku = 1;
+    google.protobuf.Timestamp start_date = 2;
+    google.protobuf.Timestamp end_date = 3;
+    int32 min_quantity = 4;
+    optional int32 max_quantity = 5;
+    repeated OfferPrice offer_prices = 6;
 }
 
 message OfferCreateResponse {
@@ -39,16 +38,34 @@ message OfferDeleteResponse {
 
 message Offer {
     optional string id = 1;
-    string item_id = 2;
-    optional string item_ref = 3;
-    google.protobuf.Timestamp start_date = 4;
-    google.protobuf.Timestamp end_date = 5;
-    int32 min_quantity = 6;
-    optional int32 max_quantity = 7;
-    repeated OfferPrice offer_prices = 8;
+    string sku = 2;
+    google.protobuf.Timestamp start_date = 3;
+    google.protobuf.Timestamp end_date = 4;
+    int32 min_quantity = 5;
+    optional int32 max_quantity = 6;
+    repeated OfferPrice offer_prices = 7;
 }
 
 message OfferPrice {
     string price = 1;
     string currency = 2;
+}
+
+message GetBestOfferPriceRequest {
+    string sku = 1;
+    int32 quantity = 2;
+    optional string date = 3; // ISO 8601 format, defaults to current date
+    string currency = 4;
+}
+
+message GetBestOfferPriceResponse {
+    optional Offer offer = 1;
+    bool found = 2;
+}
+
+service OfferService {
+    rpc CreateOffer(OfferCreateRequest) returns (OfferCreateResponse);
+    rpc GetOffer(OfferGetRequest) returns (OfferGetResponse);
+    rpc DeleteOffer(OfferDeleteRequest) returns (OfferDeleteResponse);
+    rpc GetBestOfferPrice(GetBestOfferPriceRequest) returns (GetBestOfferPriceResponse);
 }

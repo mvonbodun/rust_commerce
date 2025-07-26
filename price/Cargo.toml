@@ -3,6 +3,10 @@ name = "rust-price"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "rust_price"
+path = "src/lib.rs"
+
 [[bin]]
 name = "price-service"
 path = "src/price-service/main.rs"
@@ -27,13 +31,13 @@ pretty_env_logger = "0.5.0"
 iso_currency = { version = "0.5.0", features = ["with-serde"] }
 rust_decimal = "1.36.0"
 rust_decimal_macros = "1.36.0"
-async-nats = { version = "0.36.0", features = ["service"] } 
+async-nats = { version = "0.36.0", features = ["service"] }
+clap = { version = "4.5.17", features = ["derive"] }
+chrono = { version = "0.4.38", features = ["serde"] } 
 futures = "0.3.30"
 bytes = "1.7.1"
 prost = { version = "0.13.2", features = ["derive"] }
 prost-types = "0.13.2"
-clap = { version = "4.5.17", features = ["derive"] }
-chrono = { version = "0.4.38", features = ["serde"] }
 
 
 [build-dependencies]
