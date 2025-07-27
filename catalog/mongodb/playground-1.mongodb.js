@@ -18,10 +18,45 @@ use('db_prices');
 
 // Find prices with min_quantity > 10 and max_quantity < 200
 db.getCollection('prices').find({ 
- min_quantity: { $gte: 2 }, 
- max_quantity: { $lte: 200 } 
-});
+ sku: { $eq: '0096234303' },
+ min_quantity: { $lte: 21 },
+ max_quantity: { $gte: 21 },
+ start_date: { $lte: ISODate('2025-07-26') },
+ end_date: { $gte: ISODate('2025-07-26') },
+ offer_prices: { $elemMatch: { currency: 'USD' } } // Correct syntax for querying array elements
+}).sort({ "offer_prices.price": 1 }).limit(1); // Sort by price ascending and return only one document
 
+// db.db_prices.aggregate([
+//   {
+//     $match: {
+//       "offer_prices.currency": "USD" // Match documents where any offer_price has currency USD
+//     }
+//   },
+//   {
+//     $unwind: "$offer_prices" // Deconstruct the offer_prices array into separate documents
+//   },
+//   {
+//     $match: {
+//       "offer_prices.currency": "USD" // Filter again to ensure we only process USD offers
+//     }
+//   },
+//   {
+//     $sort: {
+//       "offer_prices.price": 1 // Sort by the price of the USD offer in ascending order
+//     }
+//   },
+//   {
+//     $group: {
+//       _id: "$_id", // Group back by the original document ID
+//       sku: { $first: "$0096234303" },
+//       start_date: { $first: { $lte: ISODate('2025-07-26') } },
+//       end_date: { $first: { $gte: ISODate('2025-07-26') } },
+//       min_quantity: { $first: { $lte: 21 } },
+//       max_quantity: { $first: { $gte: 21 }   },
+//       offer_prices: { $push: "$offer_prices" } // Reconstruct the offer_prices array
+//     }
+//   }
+// ])
 // Run a find command to view items sold on April 4th, 2014.
 // const salesOnApril4th = db.getCollection('sales').find({
 //   date: { $gte: new Date('2014-04-04'), $lt: new Date('2014-04-05') }

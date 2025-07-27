@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand};
 use offer_messages::{
     OfferCreateRequest, OfferCreateResponse, OfferGetRequest, OfferGetResponse,
-    OfferDeleteRequest, OfferDeleteResponse,
+    OfferDeleteRequest, OfferDeleteResponse, GetBestOfferPriceRequest, GetBestOfferPriceResponse,
 };
 use log::debug;
 use prost::Message;
@@ -112,6 +112,16 @@ enum Commands {
         #[arg(short, long)]
         id: String,
     },
+    GetBestOfferPrice {
+        #[arg(short, long)]
+        sku: String,
+        #[arg(short, long)]
+        quantity: i32,
+        #[arg(short, long, default_value = "USD")]
+        currency: String,
+        #[arg(short, long)]
+        date: Option<String>,
+    },
     Import {
         #[arg(short, long)]
         file: PathBuf,
@@ -197,6 +207,51 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let delete_response = OfferDeleteResponse::decode(&*response.payload)?;
             println!("Delete response: {:?}", delete_response);
+        }
+        Some(Commands::GetBestOfferPrice { sku, quantity, currency, date }) => {
+            // Validate currency
+            Currency::from_code(currency)
+                .ok_or_else(|| format!("Invalid currency: {}", currency))?;
+
+            let get_best_offer_request = GetBestOfferPriceRequest {
+                sku: sku.clone(),
+                quantity: *quantity,
+                date: date.clone(),
+                currency: currency.clone(),
+            };
+
+            let request_bytes = get_best_offer_request.encode_to_vec();
+            
+            println!("Sending get_best_offer_price request for SKU: {} (quantity: {}, currency: {})", 
+                sku, quantity, currency);
+            if let Some(date) = date {
+                println!("  Date: {}", date);
+            }
+            
+            let response = client
+                .request("offers.get_best_offer_price", request_bytes.into())
+                .await?;
+
+            let best_offer_response = GetBestOfferPriceResponse::decode(&*response.payload)?;
+            
+            if best_offer_response.found {
+                if let Some(offer) = best_offer_response.offer {
+                    println!("✅ Found best offer:");
+                    println!("  Offer ID: {}", offer.id.unwrap_or_else(|| "N/A".to_string()));
+                    println!("  SKU: {}", offer.sku);
+                    println!("  Min Quantity: {}", offer.min_quantity);
+                    println!("  Max Quantity: {}", offer.max_quantity.map_or("N/A".to_string(), |q| q.to_string()));
+                    println!("  Prices:");
+                    for price in &offer.offer_prices {
+                        println!("    - {} {}", price.price, price.currency);
+                    }
+                } else {
+                    println!("⚠️ Found offer but no details returned");
+                }
+            } else {
+                println!("❌ No offer found for SKU: {} with quantity: {} in currency: {}", 
+                    sku, quantity, currency);
+            }
         }
         Some(Commands::Import { file, dry_run }) => {
             println!("Importing offers from file: {:?}", file);

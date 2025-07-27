@@ -1,10 +1,12 @@
 use log::{debug, error};
+use chrono::NaiveDate;
 
 use crate::model::Offer;
 use crate::persistence::offer_dao::OfferDao;
 
 pub enum HandlerError {
     InternalError(String),
+    ValidationError(String),
 }
 
 pub async fn create_offer(
@@ -58,6 +60,71 @@ pub async fn delete_offer(
             error!("Error deleting offer: {}", e);
             Err(HandlerError::InternalError(format!(
                 "Failed to delete offer: {}",
+                e
+            )))
+        }
+    }
+}
+
+pub async fn get_best_offer_price(
+    sku: String,
+    quantity: i32,
+    date: Option<String>,
+    currency: String,
+    offer_dao: &(dyn OfferDao + Send + Sync),
+) -> Result<Option<Offer>, HandlerError> {
+    debug!("Before call to get_best_offer_price");
+
+    // Validate input parameters
+    if sku.trim().is_empty() {
+        return Err(HandlerError::ValidationError("SKU cannot be empty".to_string()));
+    }
+
+    if quantity <= 0 {
+        return Err(HandlerError::ValidationError("Quantity must be positive".to_string()));
+    }
+
+    // Validate currency (only USD and EUR allowed)
+    if currency != "USD" && currency != "EUR" {
+        return Err(HandlerError::ValidationError(
+            "Currency must be USD or EUR".to_string(),
+        ));
+    }
+
+    // Parse date or use current date
+    let parsed_date = match date {
+        Some(date_str) => {
+            match NaiveDate::parse_from_str(&date_str, "%Y-%m-%d") {
+                Ok(date) => date,
+                Err(_) => {
+                    return Err(HandlerError::ValidationError(
+                        "Date must be in YYYY-MM-DD format".to_string(),
+                    ));
+                }
+            }
+        }
+        None => chrono::Utc::now().date_naive(),
+    };
+
+    debug!(
+        "Validated parameters - sku: {}, quantity: {}, date: {}, currency: {}",
+        sku, quantity, parsed_date, currency
+    );
+
+    // Call DAO method
+    let result = offer_dao
+        .find_best_offer_price(&sku, quantity, parsed_date, &currency)
+        .await;
+
+    match result {
+        Ok(offer) => {
+            debug!("Successfully found best offer: {:?}", offer);
+            Ok(offer)
+        }
+        Err(e) => {
+            error!("Error finding best offer price: {}", e);
+            Err(HandlerError::InternalError(format!(
+                "Failed to find best offer price: {}",
                 e
             )))
         }

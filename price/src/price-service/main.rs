@@ -2,7 +2,7 @@ mod handlers;
 mod model;
 mod persistence;
 
-use handlers::{create_offer, delete_offer, get_offer, Router};
+use handlers::{create_offer, delete_offer, get_offer, get_best_offer_price, Router};
 use persistence::offer_dao::OfferDaoImpl;
 use std::{borrow::Borrow, env, error::Error, sync::Arc};
 use tokio::signal;
@@ -47,6 +47,10 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         .add_route(
             "delete_offer".to_owned(),
             Box::new(|d, m| Box::pin(delete_offer(d, m))),
+        )
+        .add_route(
+            "get_best_offer_price".to_owned(),
+            Box::new(|d, m| Box::pin(get_best_offer_price(d, m))),
         );
 
     // Connect to the nats server

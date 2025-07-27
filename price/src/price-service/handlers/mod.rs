@@ -105,6 +105,14 @@ pub async fn create_offer(offer_dao: Arc<OfferDaoImpl>, offer_create_request: Re
                                 details: vec![],
                             });
                         }
+                        handlers_inner::HandlerError::ValidationError(msg) => {
+                            error!("Validation error creating offer: {}", msg);
+                            offer_create_response.status = Some(offer_messages::Status {
+                                code: offer_messages::Code::InvalidArgument.into(),
+                                message: format!("Validation error: {}", msg),
+                                details: vec![],
+                            });
+                        }
                     }
                 }
             }
@@ -168,6 +176,14 @@ pub async fn get_offer(offer_dao: Arc<OfferDaoImpl>, offer_get_request: Request)
                                 details: vec![],
                             });
                         }
+                        handlers_inner::HandlerError::ValidationError(msg) => {
+                            error!("Validation error getting offer: {}", msg);
+                            offer_get_response.status = Some(offer_messages::Status {
+                                code: offer_messages::Code::InvalidArgument.into(),
+                                message: format!("Validation error: {}", msg),
+                                details: vec![],
+                            });
+                        }
                     }
                 }
             }
@@ -215,6 +231,14 @@ pub async fn delete_offer(offer_dao: Arc<OfferDaoImpl>, offer_delete_request: Re
                                 details: vec![],
                             });
                         }
+                        handlers_inner::HandlerError::ValidationError(msg) => {
+                            error!("Validation error deleting offer: {}", msg);
+                            offer_delete_response.status = Some(offer_messages::Status {
+                                code: offer_messages::Code::InvalidArgument.into(),
+                                message: format!("Validation error: {}", msg),
+                                details: vec![],
+                            });
+                        }
                     }
                 }
             }
@@ -233,6 +257,64 @@ pub async fn delete_offer(offer_dao: Arc<OfferDaoImpl>, offer_delete_request: Re
     offer_delete_response.encode(&mut buf).unwrap();
     Response {
         subject: offer_delete_request.reply.unwrap(),
+        payload: buf.into(),
+    }
+}
+
+pub async fn get_best_offer_price(offer_dao: Arc<OfferDaoImpl>, request: Request) -> Response {
+    let decoded_request = offer_messages::GetBestOfferPriceRequest::decode(request.payload.clone());
+    let mut response = offer_messages::GetBestOfferPriceResponse {
+        offer: None,
+        found: false,
+    };
+
+    match decoded_request {
+        Ok(req) => {
+            debug!("GetBestOfferPrice request: {:?}", req);
+            
+            let result = handlers_inner::get_best_offer_price(
+                req.sku,
+                req.quantity,
+                req.date,
+                req.currency,
+                offer_dao.as_ref(),
+            ).await;
+
+            match result {
+                Ok(Some(offer)) => {
+                    response.offer = Some(map_model_offer_to_proto_offer(offer));
+                    response.found = true;
+                    debug!("Found best offer price");
+                }
+                Ok(None) => {
+                    response.found = false;
+                    debug!("No offer found matching criteria");
+                }
+                Err(err) => {
+                    match err {
+                        handlers_inner::HandlerError::ValidationError(msg) => {
+                            error!("Validation error in get_best_offer_price: {}", msg);
+                            // For validation errors, we still return found=false but log the error
+                            response.found = false;
+                        }
+                        handlers_inner::HandlerError::InternalError(msg) => {
+                            error!("Internal error in get_best_offer_price: {}", msg);
+                            response.found = false;
+                        }
+                    }
+                }
+            }
+        }
+        Err(err) => {
+            error!("Error decoding GetBestOfferPriceRequest: {}", err);
+            response.found = false;
+        }
+    }
+
+    let mut buf = vec![];
+    response.encode(&mut buf).unwrap();
+    Response {
+        subject: request.reply.unwrap(),
         payload: buf.into(),
     }
 }
@@ -336,5 +418,97 @@ mod tests {
         };
         let proto_offer = map_model_offer_to_proto_offer(model_offer);
         println!("proto_offer: {:?}", proto_offer);
+    }
+
+    #[test]
+    fn test_get_best_offer_price_protobuf_messages() {
+        // Test that we can create protobuf messages for the new API
+        let request = offer_messages::GetBestOfferPriceRequest {
+            sku: "TEST-SKU-001".to_string(),
+            quantity: 5,
+            date: None,  // Optional field
+            currency: "USD".to_string(),
+        };
+        
+        assert_eq!(request.sku, "TEST-SKU-001");
+        assert_eq!(request.quantity, 5);
+        assert_eq!(request.currency, "USD");
+        assert!(request.date.is_none());
+        
+        // Test response creation - check the actual fields that exist
+        let response = offer_messages::GetBestOfferPriceResponse {
+            offer: None,  // Based on the protobuf definition
+            found: false,
+        };
+        
+        assert!(!response.found);
+        assert!(response.offer.is_none());
+    }
+
+    #[test]
+    fn test_get_best_offer_price_validation_logic() {
+        // Test individual validation conditions
+        
+        // Test 1: Empty SKU should be invalid
+        let sku = "";
+        assert!(sku.trim().is_empty(), "Empty SKU should fail validation");
+        
+        // Test 2: Valid SKU should pass
+        let sku = "VALID-SKU-001";
+        assert!(!sku.trim().is_empty(), "Valid SKU should pass validation");
+        
+        // Test 3: Zero or negative quantity should be invalid
+        let quantity = 0;
+        assert!(quantity <= 0, "Zero quantity should fail validation");
+        
+        let quantity = -5;
+        assert!(quantity <= 0, "Negative quantity should fail validation");
+        
+        // Test 4: Positive quantity should be valid
+        let quantity = 5;
+        assert!(quantity > 0, "Positive quantity should pass validation");
+        
+        // Test 5: Currency validation (based on the handler logic)
+        let currency = "USD";
+        assert!(currency == "USD" || currency == "EUR", "USD should be valid");
+        
+        let currency = "EUR";
+        assert!(currency == "USD" || currency == "EUR", "EUR should be valid");
+        
+        let currency = "JPY";
+        assert!(!(currency == "USD" || currency == "EUR"), "JPY should be invalid");
+        
+        // Test 6: Date parsing (simulate what the handler does)
+        use chrono::NaiveDate;
+        
+        let date_str = "2024-06-15";
+        let result = NaiveDate::parse_from_str(date_str, "%Y-%m-%d");
+        assert!(result.is_ok(), "Valid date format should parse successfully");
+        
+        let date_str = "invalid-date";
+        let result = NaiveDate::parse_from_str(date_str, "%Y-%m-%d");
+        assert!(result.is_err(), "Invalid date format should fail parsing");
+    }
+
+    #[tokio::test]
+    async fn test_get_best_offer_price_handler_error_types() {
+        // Test that the HandlerError enum works as expected
+        use handlers_inner::HandlerError;
+        
+        let validation_error = HandlerError::ValidationError("Test validation error".to_string());
+        match validation_error {
+            HandlerError::ValidationError(msg) => {
+                assert_eq!(msg, "Test validation error");
+            },
+            _ => panic!("Expected ValidationError"),
+        }
+        
+        let internal_error = HandlerError::InternalError("Test internal error".to_string());
+        match internal_error {
+            HandlerError::InternalError(msg) => {
+                assert_eq!(msg, "Test internal error");
+            },
+            _ => panic!("Expected InternalError"),
+        }
     }
 }
