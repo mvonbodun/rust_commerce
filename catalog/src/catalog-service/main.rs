@@ -4,7 +4,7 @@ mod persistence;
 
 use bson::doc;
 use handlers::{
-    create_product, delete_product, get_product, search_products, update_product, Router,
+    create_product, delete_product, get_product, search_products, export_products, update_product, Router,
 };
 use persistence::product_dao::ProductDaoImpl;
 use std::{env, error::Error, sync::Arc};
@@ -84,6 +84,10 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         .add_route(
             "search_products".to_owned(),
             Box::new(|d, c, m| Box::pin(search_products(d, c, m))),
+        )
+        .add_route(
+            "export_products".to_owned(),
+            Box::new(|d, c, m| Box::pin(export_products(d, c, m))),
         );
 
     // Connect to the nats server

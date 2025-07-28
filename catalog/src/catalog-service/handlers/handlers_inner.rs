@@ -294,3 +294,27 @@ pub async fn search_products(
         }
     }
 }
+
+pub async fn export_products(
+    batch_size: Option<i64>,
+    offset: Option<u64>,
+    product_dao: &(dyn ProductDao + Send + Sync),
+) -> Result<Vec<Product>, HandlerError> {
+    debug!("Before call to export_products handler_inner");
+    let result = if offset.is_some() {
+        product_dao.export_products_batch(batch_size, offset).await
+    } else {
+        product_dao.export_all_products(batch_size).await
+    };
+
+    match result {
+        Ok(products) => Ok(products),
+        Err(e) => {
+            error!("Error exporting products: {}", e);
+            Err(HandlerError::InternalError(format!(
+                "Failed to export products: {}",
+                e
+            )))
+        }
+    }
+}

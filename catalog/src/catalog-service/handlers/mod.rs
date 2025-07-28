@@ -3,7 +3,7 @@ use async_nats::{Client, Message};
 use log::{debug, error, warn};
 use prost::Message as ProstMessage;
 use crate::{
-    catalog_messages::{self, ProductCreateRequest, ProductCreateResponse, ProductGetRequest, ProductGetResponse, ProductUpdateRequest, ProductUpdateResponse, ProductDeleteRequest, ProductDeleteResponse, ProductSearchRequest, ProductSearchResponse},
+    catalog_messages::{self, ProductCreateRequest, ProductCreateResponse, ProductGetRequest, ProductGetResponse, ProductUpdateRequest, ProductUpdateResponse, ProductDeleteRequest, ProductDeleteResponse, ProductSearchRequest, ProductSearchResponse, ProductExportRequest, ProductExportResponse},
     persistence::product_dao::ProductDao,
     model::Product,
 };
@@ -466,6 +466,89 @@ pub async fn search_products(
         Err(err) => {
             warn!("Invalid product search request format: {:?}", err);
             let response = ProductSearchResponse {
+                products: vec![],
+                total_count: 0,
+                status: Some(catalog_messages::Status {
+                    code: catalog_messages::Code::InvalidArgument.into(),
+                    message: "Invalid request format".to_string(),
+                    details: vec![],
+                }),
+            };
+            
+            let response_bytes = response.encode_to_vec();
+            
+            if let Some(reply) = msg.reply {
+                if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                    error!("Failed to send error response: {}", e);
+                }
+            }
+        }
+    }
+    
+    Ok(())
+}
+
+pub async fn export_products(
+    product_dao: Arc<dyn ProductDao + Send + Sync>,
+    client: Client,
+    msg: Message,
+) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    debug!("Processing export_products request");
+    
+    let request = ProductExportRequest::decode(&*msg.payload);
+    match request {
+        Ok(request) => {
+            let result = handlers_inner::export_products(
+                request.batch_size.map(|b| b as i64),
+                request.offset.map(|o| o as u64),
+                product_dao.as_ref(),
+            ).await;
+            
+            match result {
+                Ok(products) => {
+                    let response = ProductExportResponse {
+                        products: products.iter().map(|p| map_model_product_to_proto_product(p.clone())).collect(),
+                        total_count: products.len() as i32,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::Ok.into(),
+                            message: "Products exported successfully".to_string(),
+                            details: vec![],
+                        }),
+                    };
+                    
+                    let response_bytes = response.encode_to_vec();
+                    
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send response: {}", e);
+                        }
+                    }
+                }
+                Err(handlers_inner::HandlerError::InternalError(error_msg)) => {
+                    error!("Error exporting products: {}", error_msg);
+                    let response = ProductExportResponse {
+                        products: vec![],
+                        total_count: 0,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::Internal.into(),
+                            message: "Internal server error".to_string(),
+                            details: vec![],
+                        }),
+                    };
+                    
+                    let response_bytes = response.encode_to_vec();
+                    
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {}", e);
+                        }
+                    }
+                }
+            }
+        }
+        Err(err) => {
+            warn!("Invalid product export request format: {:?}", err);
+            let response = ProductExportResponse {
                 products: vec![],
                 total_count: 0,
                 status: Some(catalog_messages::Status {

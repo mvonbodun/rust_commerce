@@ -11,6 +11,8 @@ pub trait ProductDao {
     async fn update_product(&self, id: &str, product: Product) -> Result<Option<Product>, Box<dyn Error + Send + Sync>>;
     async fn delete_product(&self, id: &str) -> Result<bool, Box<dyn Error + Send + Sync>>;
     async fn search_products(&self, query: Option<&str>, categories: &[String], brand: Option<&str>, limit: Option<i64>, offset: Option<u64>) -> Result<Vec<Product>, Box<dyn Error + Send + Sync>>;
+    async fn export_all_products(&self, batch_size: Option<i64>) -> Result<Vec<Product>, Box<dyn Error + Send + Sync>>;
+    async fn export_products_batch(&self, batch_size: Option<i64>, offset: Option<u64>) -> Result<Vec<Product>, Box<dyn Error + Send + Sync>>;
 }
 
 pub struct ProductDaoImpl {
@@ -86,6 +88,36 @@ impl ProductDao for ProductDaoImpl {
         }
         
         let cursor = find_options.await?;
+        let products: Vec<Product> = cursor.try_collect().await?;
+        
+        Ok(products)
+    }
+
+    async fn export_all_products(&self, batch_size: Option<i64>) -> Result<Vec<Product>, Box<dyn Error + Send + Sync>> {
+        // Use a much smaller batch size to avoid NATS payload limits
+        // NATS has a default max payload of 1MB, so we need to be conservative
+        let batch_size = batch_size.unwrap_or(50); // Reduced default batch size to 50
+        
+        let cursor = self.collection
+            .find(doc! {})
+            .limit(batch_size)
+            .await?;
+        
+        let products: Vec<Product> = cursor.try_collect().await?;
+        
+        Ok(products)
+    }
+
+    async fn export_products_batch(&self, batch_size: Option<i64>, offset: Option<u64>) -> Result<Vec<Product>, Box<dyn Error + Send + Sync>> {
+        let batch_size = batch_size.unwrap_or(50); // Conservative batch size
+        let offset = offset.unwrap_or(0);
+        
+        let cursor = self.collection
+            .find(doc! {})
+            .limit(batch_size)
+            .skip(offset)
+            .await?;
+        
         let products: Vec<Product> = cursor.try_collect().await?;
         
         Ok(products)

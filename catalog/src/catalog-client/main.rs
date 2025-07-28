@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 use catalog_messages::{
     ProductCreateRequest, ProductCreateResponse, ProductGetRequest, ProductGetResponse,
     ProductDeleteRequest, ProductDeleteResponse, ProductSearchRequest, ProductSearchResponse,
+    ProductExportRequest, ProductExportResponse,
 };
 use log::debug;
 use prost::Message;
@@ -106,6 +107,12 @@ enum Commands {
         file: PathBuf,
         #[arg(short, long, default_value = "false")]
         dry_run: bool,
+    },
+    Export {
+        #[arg(short, long)]
+        file: PathBuf,
+        #[arg(short, long, default_value = "50")]
+        batch_size: i32,
     },
 }
 
@@ -280,6 +287,135 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("  ✅ Successful: {}", successful_imports);
             println!("  ❌ Failed: {}", failed_imports);
             println!("  📊 Total: {}", products.len());
+        }
+        Some(Commands::Export { file, batch_size }) => {
+            println!("Exporting all products to file: {:?}", file);
+            println!("Using batch size: {}", batch_size);
+            
+            let mut all_products: Vec<Product> = Vec::new();
+            let mut offset = 0i32;
+            let mut total_exported = 0;
+            
+            loop {
+                println!("Fetching batch starting at offset {}...", offset);
+                
+                let export_request = ProductExportRequest {
+                    batch_size: Some(*batch_size),
+                    offset: Some(offset),
+                };
+
+                let request_bytes = export_request.encode_to_vec();
+                
+                let response = client
+                    .request("catalog.export_products", request_bytes.into())
+                    .await?;
+
+                let export_response = ProductExportResponse::decode(&*response.payload)?;
+                
+                match export_response.status {
+                    Some(status) if status.code == catalog_messages::Code::Ok as i32 => {
+                        let batch_count = export_response.products.len();
+                        println!("Received {} products in this batch", batch_count);
+                        
+                        if batch_count == 0 {
+                            println!("No more products to export");
+                            break;
+                        }
+                        
+                        // Convert proto products to domain products
+                        for proto_product in export_response.products {
+                            let product = Product {
+                                id: proto_product.id,
+                                name: proto_product.name,
+                                long_description: proto_product.long_description,
+                                brand: proto_product.brand,
+                                slug: proto_product.slug,
+                                product_ref: proto_product.product_ref,
+                                product_type: proto_product.product_type,
+                                seo_title: proto_product.seo_title,
+                                seo_description: proto_product.seo_description,
+                                seo_keywords: proto_product.seo_keywords,
+                                display_on_site: proto_product.display_on_site,
+                                tax_code: proto_product.tax_code,
+                                related_products: proto_product.related_products,
+                                reviews: proto_product.reviews.map(|r| rust_catalog::Reviews {
+                                    bayesian_avg: r.bayesian_avg.into(),
+                                    count: r.count,
+                                    rating: r.rating,
+                                }),
+                                hierarchical_categories: proto_product.hierarchical_categories.map(|hc| rust_catalog::HierarchicalCategories {
+                                    lvl0: hc.lvl0,
+                                    lvl1: hc.lvl1,
+                                    lvl2: hc.lvl2,
+                                }),
+                                list_categories: proto_product.list_categories,
+                                created_at: proto_product.created_at.map(|ts| {
+                                    use chrono::{DateTime, Utc};
+                                    DateTime::<Utc>::from_timestamp(ts.seconds, ts.nanos as u32).unwrap()
+                                }),
+                                updated_at: proto_product.updated_at.map(|ts| {
+                                    use chrono::{DateTime, Utc};
+                                    DateTime::<Utc>::from_timestamp(ts.seconds, ts.nanos as u32).unwrap()
+                                }),
+                                created_by: proto_product.created_by,
+                                updated_by: proto_product.updated_by,
+                                defining_attributes: proto_product.defining_attributes,
+                                descriptive_attributes: proto_product.descriptive_attributes,
+                                default_variant: proto_product.default_variant,
+                                variants: proto_product.variants.into_iter().map(|v| rust_catalog::ProductVariant {
+                                    sku: v.sku,
+                                    defining_attributes: Some(v.defining_attributes),
+                                    abbreviated_color: v.abbreviated_color,
+                                    abbreviated_size: v.abbreviated_size,
+                                    height: v.height,
+                                    width: v.width,
+                                    length: v.length,
+                                    weight: v.weight,
+                                    weight_unit: v.weight_unit,
+                                    packaging: v.packaging.map(|p| rust_catalog::Packaging {
+                                        height: p.height,
+                                        width: p.width,
+                                        length: p.length,
+                                        weight: p.weight,
+                                        weight_unit: p.weight_unit,
+                                    }),
+                                    image_urls: v.image_urls,
+                                }).collect(),
+                            };
+                            all_products.push(product);
+                        }
+                        
+                        total_exported += batch_count;
+                        offset += *batch_size;
+                        
+                        // If we got fewer than batch_size, we've reached the end
+                        if (batch_count as i32) < *batch_size {
+                            println!("Received fewer products than batch size, finished");
+                            break;
+                        }
+                    }
+                    Some(status) => {
+                        println!("❌ Failed to export products: {} ({})", status.message, status.code);
+                        break;
+                    }
+                    None => {
+                        println!("❌ Invalid response from server");
+                        break;
+                    }
+                }
+                
+                // Add a small delay to avoid overwhelming the service
+                tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+            }
+            
+            // Write all products to file
+            println!("Writing {} products to file...", all_products.len());
+            let json_content = serde_json::to_string_pretty(&all_products)?;
+            fs::write(file, json_content)?;
+            
+            println!("✅ Export completed!");
+            println!("  📁 File: {:?}", file);
+            println!("  📦 Total products: {}", total_exported);
         }
         None => {
             println!("No command specified. Use --help for available commands.");
