@@ -1,0 +1,30 @@
+[
+  {
+    "sku": "LAPTOP-001",
+    "quantity": 50,
+    "reserved_quantity": 5,
+    "min_stock_level": 10,
+    "location": "WAREHOUSE_A"
+  },
+  {
+    "sku": "MOUSE-001",
+    "quantity": 200,
+    "reserved_quantity": 0,
+    "min_stock_level": 25,
+    "location": "WAREHOUSE_A"
+  },
+  {
+    "sku": "KEYBOARD-001",
+    "quantity": 15,
+    "reserved_quantity": 2,
+    "min_stock_level": 20,
+    "location": "WAREHOUSE_B"
+  },
+  {
+    "sku": "MONITOR-001",
+    "quantity": 30,
+    "reserved_quantity": 0,
+    "min_stock_level": 5,
+    "location": "WAREHOUSE_A"
+  }
+]
