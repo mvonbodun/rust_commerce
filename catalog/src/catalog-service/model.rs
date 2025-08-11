@@ -899,3 +899,220 @@ mod tests {
         assert_eq!(deserialized3.as_f32(), 3.0);
     }
 }
+
+// ==================== CATEGORY MODELS ====================
+
+/// Category model for hierarchical category management
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Category {
+    #[serde(rename = "_id", skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>, // UUID v4 format
+    pub slug: String,
+    pub name: String,
+    pub short_description: String,
+    pub full_description: Option<String>,
+    pub path: String,
+    pub ancestors: Vec<String>, // UUIDs of ancestor categories
+    pub parent_id: Option<String>, // UUID of parent category
+    pub level: i32,
+    pub children_count: i32,
+    pub product_count: i32,
+    pub is_active: bool,
+    pub display_order: i32,
+    pub seo: CategorySeo,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+/// SEO metadata for categories
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CategorySeo {
+    pub meta_title: Option<String>,
+    pub meta_description: Option<String>,
+    pub keywords: Vec<String>,
+}
+
+/// Simplified category for tree cache
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CategoryTreeNode {
+    pub id: String,
+    pub name: String,
+    pub slug: String,
+    pub level: i32,
+    pub product_count: i32,
+    pub children: HashMap<String, CategoryTreeNode>,
+}
+
+/// Tree cache document
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CategoryTreeCache {
+    #[serde(rename = "_id")]
+    pub id: String,
+    pub version: i32,
+    pub last_updated: DateTime<Utc>,
+    pub tree: HashMap<String, CategoryTreeNode>,
+}
+
+impl Category {
+    /// Creates a new category with a generated UUID v4 ID
+    pub fn new(
+        slug: String,
+        name: String,
+        short_description: String,
+        parent_id: Option<String>,
+        display_order: i32,
+    ) -> Self {
+        let id = Uuid::new_v4().to_string();
+        let now = Utc::now();
+        
+        Self {
+            id: Some(id),
+            slug,
+            name,
+            short_description,
+            full_description: None,
+            path: String::new(), // Will be calculated when saved
+            ancestors: Vec::new(), // Will be calculated when saved
+            parent_id,
+            level: 0, // Will be calculated when saved
+            children_count: 0,
+            product_count: 0,
+            is_active: true,
+            display_order,
+            seo: CategorySeo {
+                meta_title: None,
+                meta_description: None,
+                keywords: Vec::new(),
+            },
+            created_at: now,
+            updated_at: now,
+        }
+    }
+
+    /// Generates the path string based on ancestor hierarchy
+    pub fn generate_path(&self, ancestors: &[Category]) -> String {
+        let mut path_parts = Vec::new();
+        
+        // Add ancestor slugs in order
+        for ancestor in ancestors {
+            path_parts.push(ancestor.slug.clone());
+        }
+        
+        // Add current category slug
+        path_parts.push(self.slug.clone());
+        
+        path_parts.join(".")
+    }
+
+    /// Calculates the level based on the number of ancestors
+    pub fn calculate_level(&self) -> i32 {
+        self.ancestors.len() as i32
+    }
+}
+
+impl CategorySeo {
+    /// Creates default SEO metadata for a category
+    pub fn default_for_category(category_name: &str, description: &str) -> Self {
+        Self {
+            meta_title: Some(format!("{} - Shop Now", category_name)),
+            meta_description: Some(description.to_string()),
+            keywords: vec![category_name.to_lowercase()],
+        }
+    }
+}
+
+#[cfg(test)]
+mod category_tests {
+    use super::*;
+
+    #[test]
+    fn test_category_creation() {
+        let category = Category::new(
+            "electronics".to_string(),
+            "Electronics".to_string(),
+            "Electronic devices and accessories".to_string(),
+            None,
+            1,
+        );
+
+        assert!(category.id.is_some());
+        assert_eq!(category.slug, "electronics");
+        assert_eq!(category.name, "Electronics");
+        assert_eq!(category.level, 0);
+        assert_eq!(category.children_count, 0);
+        assert_eq!(category.product_count, 0);
+        assert!(category.is_active);
+        assert_eq!(category.display_order, 1);
+    }
+
+    #[test]
+    fn test_path_generation() {
+        let root = Category::new(
+            "electronics".to_string(),
+            "Electronics".to_string(),
+            "Root category".to_string(),
+            None,
+            1,
+        );
+
+        let child = Category::new(
+            "smartphones".to_string(),
+            "Smartphones".to_string(),
+            "Mobile phones".to_string(),
+            root.id.clone(),
+            1,
+        );
+
+        let path = child.generate_path(&[root]);
+        assert_eq!(path, "electronics.smartphones");
+    }
+
+    #[test]
+    fn test_level_calculation() {
+        let mut category = Category::new(
+            "smartphones".to_string(),
+            "Smartphones".to_string(),
+            "Mobile phones".to_string(),
+            None,
+            1,
+        );
+
+        // Root level
+        assert_eq!(category.calculate_level(), 0);
+
+        // First level
+        category.ancestors = vec!["root-id".to_string()];
+        assert_eq!(category.calculate_level(), 1);
+
+        // Second level
+        category.ancestors = vec!["root-id".to_string(), "electronics-id".to_string()];
+        assert_eq!(category.calculate_level(), 2);
+    }
+
+    #[test]
+    fn test_default_seo() {
+        let seo = CategorySeo::default_for_category("Electronics", "Best electronic devices");
+        
+        assert_eq!(seo.meta_title, Some("Electronics - Shop Now".to_string()));
+        assert_eq!(seo.meta_description, Some("Best electronic devices".to_string()));
+        assert_eq!(seo.keywords, vec!["electronics".to_string()]);
+    }
+
+    #[test]
+    fn test_category_serialization() {
+        let category = Category::new(
+            "electronics".to_string(),
+            "Electronics".to_string(),
+            "Electronic devices".to_string(),
+            None,
+            1,
+        );
+
+        let json = serde_json::to_string(&category).expect("Failed to serialize");
+        let deserialized: Category = serde_json::from_str(&json).expect("Failed to deserialize");
+
+        assert_eq!(category.slug, deserialized.slug);
+        assert_eq!(category.name, deserialized.name);
+        assert_eq!(category.level, deserialized.level);
+    }
+}

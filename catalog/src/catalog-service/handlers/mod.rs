@@ -9,6 +9,8 @@ use crate::{
 };
 
 mod handlers_inner;
+pub mod category_service;
+pub mod category_handlers;
 
 pub type NatsFn = Box<
     dyn Fn(
