@@ -1,8 +1,9 @@
 use std::sync::Arc;
+use log::debug;
 use crate::{
     model::{Category, CategorySeo},
     persistence::category_dao::CategoryDao,
-    catalog_messages::{CreateCategoryRequest, CategoryResponse},
+    catalog_messages::{CreateCategoryRequest, CategoryResponse, UpdateCategoryRequest},
 };
 
 pub struct CategoryService {
@@ -93,6 +94,97 @@ impl CategoryService {
         };
 
         Ok(categories.into_iter().map(|cat| self.category_to_response(cat)).collect())
+    }
+
+    /// Update an existing category
+    pub async fn update_category(&self, request: UpdateCategoryRequest) -> Result<CategoryResponse, Box<dyn std::error::Error + Send + Sync>> {
+        debug!("Updating category with ID: {}", request.id);
+
+        // Validate required fields
+        if request.id.is_empty() {
+            return Err("Category ID is required".into());
+        }
+
+        // Check if category exists
+        let existing_category = self.category_dao.get_category(&request.id).await?
+            .ok_or("Category not found")?;
+
+        // Create updated category from request
+        let mut updated_category = existing_category.clone();
+        
+        if let Some(name) = request.name {
+            if !name.is_empty() {
+                updated_category.name = name;
+            }
+        }
+        
+        if let Some(short_description) = request.short_description {
+            if !short_description.is_empty() {
+                updated_category.short_description = short_description;
+            }
+        }
+        
+        if let Some(full_desc) = request.full_description {
+            updated_category.full_description = Some(full_desc);
+        }
+        
+        // Handle slug update (regenerate if name changed or explicit slug provided)
+        if let Some(new_slug) = request.slug {
+            if !new_slug.is_empty() {
+                // Check if slug is already taken by another category
+                if let Some(existing_with_slug) = self.category_dao.get_category_by_slug(&new_slug).await? {
+                    if existing_with_slug.id != Some(request.id.clone()) {
+                        return Err("Slug already exists".into());
+                    }
+                }
+                updated_category.slug = new_slug;
+            }
+        }
+        
+        if let Some(is_active) = request.is_active {
+            updated_category.is_active = is_active;
+        }
+        
+        if let Some(display_order) = request.display_order {
+            updated_category.display_order = display_order;
+        }
+        
+        // Handle SEO update
+        if let Some(seo_request) = request.seo {
+            updated_category.seo.meta_title = seo_request.meta_title;
+            updated_category.seo.meta_description = seo_request.meta_description;
+            updated_category.seo.keywords = seo_request.keywords;
+        }
+
+        // Update the category
+        match self.category_dao.update_category(&request.id, updated_category).await? {
+            Some(category) => Ok(self.category_to_response(category)),
+            None => Err("Failed to update category".into()),
+        }
+    }
+
+    /// Delete a category
+    pub async fn delete_category(&self, id: &str) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
+        debug!("Deleting category with ID: {}", id);
+
+        if id.is_empty() {
+            return Err("Category ID is required".into());
+        }
+
+        // Check if category exists
+        let _existing = self.category_dao.get_category(id).await?
+            .ok_or("Category not found")?;
+
+        // Check if category has children
+        let children = self.category_dao.get_children(id).await?;
+        if !children.is_empty() {
+            return Err("Cannot delete category with children".into());
+        }
+
+        // TODO: Check if category has products assigned
+        // This would require integration with product service
+        
+        self.category_dao.delete_category(id).await
     }
 
     /// Helper method to convert Category model to CategoryResponse

@@ -5,15 +5,20 @@ mod persistence;
 use bson::doc;
 use handlers::{
     create_product, delete_product, get_product, search_products, export_products, update_product, Router,
+    category_service::CategoryService,
+    category_handlers::{handle_create_category, handle_get_category, handle_get_category_by_slug, handle_export_categories, handle_update_category, handle_delete_category},
 };
-use persistence::product_dao::ProductDaoImpl;
+use persistence::{
+    product_dao::ProductDaoImpl,
+    category_dao::CategoryDaoImpl,
+};
 use std::{env, error::Error, sync::Arc};
 
 use dotenvy::dotenv;
 use log::{debug, error, info};
 
 use futures::StreamExt;
-use model::Product;
+use model::{Product, Category, CategoryTreeCache};
 use mongodb::{Client, Collection, IndexModel};
 
 pub mod catalog_messages {
@@ -23,6 +28,7 @@ pub mod catalog_messages {
 #[derive(Clone)]
 pub struct AppState {
     pub product_dao: Arc<dyn persistence::product_dao::ProductDao + Send + Sync>,
+    pub category_service: Arc<CategoryService>,
 }
 
 #[tokio::main]
@@ -38,6 +44,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     // connect to MongoDB
     let client = Client::with_uri_str(uri).await?;
     let database = client.database("db_catalog");
+    
+    // Product collection setup
     let products_coll: Collection<Product> = database.collection("products");
     let indexes = vec![
         IndexModel::builder()
@@ -59,9 +67,46 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     ];
     products_coll.create_indexes(indexes).await?;
 
-    let product_dao = Arc::new(ProductDaoImpl::new(products_coll)).clone();
+    // Category collection setup
+    let categories_coll: Collection<Category> = database.collection("categories");
+    let category_cache_coll: Collection<CategoryTreeCache> = database.collection("category_tree_cache");
+    
+    // Create category indexes
+    let category_indexes = vec![
+        IndexModel::builder()
+            .keys(doc! { "slug": 1 })
+            .options(
+                mongodb::options::IndexOptions::builder()
+                    .unique(true)
+                    .build(),
+            )
+            .build(),
+        IndexModel::builder()
+            .keys(doc! { "path": 1 })
+            .build(),
+        IndexModel::builder()
+            .keys(doc! { "parent_id": 1 })
+            .build(),
+        IndexModel::builder()
+            .keys(doc! { "ancestors": 1 })
+            .build(),
+        IndexModel::builder()
+            .keys(doc! { "level": 1 })
+            .build(),
+        IndexModel::builder()
+            .keys(doc! { "is_active": 1, "display_order": 1 })
+            .build(),
+    ];
+    categories_coll.create_indexes(category_indexes).await?;
 
-    let app_state = AppState { product_dao };
+    let product_dao = Arc::new(ProductDaoImpl::new(products_coll));
+    let category_dao = Arc::new(CategoryDaoImpl::new(categories_coll, category_cache_coll));
+    let category_service = Arc::new(CategoryService::new(category_dao));
+
+    let app_state = AppState { 
+        product_dao,
+        category_service,
+    };
 
     let mut router = Router::new();
     router
@@ -103,6 +148,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     requests
         .for_each_concurrent(25, |request| {
             let pd = app_state.product_dao.clone();
+            let cs = app_state.category_service.clone();
             let routes = routes.clone();
             let client_clone = nats_client.clone();
 
@@ -116,14 +162,94 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                 let operation = subject_parts[1].to_string();
                 debug!("Processing catalog operation: {}", operation);
 
-                if let Some(handler) = routes.get(&operation) {
-                    let result = handler(pd, client_clone, request).await;
-                    match result {
-                        Ok(_) => debug!("Successfully processed {}", operation),
-                        Err(e) => error!("Error processing {}: {:?}", operation, e),
+                // Handle category operations separately
+                let result = match operation.as_str() {
+                    "create_category" => {
+                        let response = handle_create_category(&request, cs).await;
+                        match response {
+                            Ok(response_bytes) => {
+                                if let Some(reply) = request.reply {
+                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                }
+                                Ok(())
+                            }
+                            Err(e) => Err(e),
+                        }
                     }
-                } else {
-                    error!("No handler found for operation: {}", operation);
+                    "get_category" => {
+                        let response = handle_get_category(&request, cs).await;
+                        match response {
+                            Ok(response_bytes) => {
+                                if let Some(reply) = request.reply {
+                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                }
+                                Ok(())
+                            }
+                            Err(e) => Err(e),
+                        }
+                    }
+                    "get_category_by_slug" => {
+                        let response = handle_get_category_by_slug(&request, cs).await;
+                        match response {
+                            Ok(response_bytes) => {
+                                if let Some(reply) = request.reply {
+                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                }
+                                Ok(())
+                            }
+                            Err(e) => Err(e),
+                        }
+                    }
+                    "export_categories" => {
+                        let response = handle_export_categories(&request, cs).await;
+                        match response {
+                            Ok(response_bytes) => {
+                                if let Some(reply) = request.reply {
+                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                }
+                                Ok(())
+                            }
+                            Err(e) => Err(e),
+                        }
+                    }
+                    "update_category" => {
+                        let response = handle_update_category(&request, cs).await;
+                        match response {
+                            Ok(response_bytes) => {
+                                if let Some(reply) = request.reply {
+                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                }
+                                Ok(())
+                            }
+                            Err(e) => Err(e),
+                        }
+                    }
+                    "delete_category" => {
+                        let response = handle_delete_category(&request, cs).await;
+                        match response {
+                            Ok(response_bytes) => {
+                                if let Some(reply) = request.reply {
+                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                }
+                                Ok(())
+                            }
+                            Err(e) => Err(e),
+                        }
+                    }
+                    _ => {
+                        // Handle product operations through existing router
+                        if let Some(handler) = routes.get(&operation) {
+                            handler(pd, client_clone, request).await
+                        } else {
+                            error!("No handler found for operation: {}", operation);
+                            Ok(())
+                        }
+                    }
+                };
+
+                match result {
+                    Ok(_) => debug!("Successfully processed {}", operation),
+                    Err(e) => error!("Error processing {}: {:?}", operation, e),
                 }
             }
         })

@@ -6,6 +6,7 @@ use crate::{
     catalog_messages::{self, ProductCreateRequest, ProductCreateResponse, ProductGetRequest, ProductGetResponse, ProductUpdateRequest, ProductUpdateResponse, ProductDeleteRequest, ProductDeleteResponse, ProductSearchRequest, ProductSearchResponse, ProductExportRequest, ProductExportResponse},
     persistence::product_dao::ProductDao,
     model::Product,
+    AppState,
 };
 
 mod handlers_inner;
