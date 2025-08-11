@@ -187,6 +187,79 @@ impl CategoryService {
         self.category_dao.delete_category(id).await
     }
 
+    /// Import multiple categories with validation and error handling
+    pub async fn import_categories(&self, category_requests: Vec<CreateCategoryRequest>, dry_run: bool) -> Result<ImportResult, Box<dyn std::error::Error + Send + Sync>> {
+        debug!("Importing {} categories, dry_run: {}", category_requests.len(), dry_run);
+        
+        let mut successful_imports = 0;
+        let mut failed_imports = 0;
+        let mut errors = Vec::new();
+        let total_processed = category_requests.len();
+
+        for (index, request) in category_requests.into_iter().enumerate() {
+            match self.validate_category_request(&request).await {
+                Ok(_) => {
+                    if !dry_run {
+                        match self.create_category(request).await {
+                            Ok(_) => {
+                                successful_imports += 1;
+                                debug!("Successfully imported category {}/{}", index + 1, total_processed);
+                            }
+                            Err(e) => {
+                                failed_imports += 1;
+                                let error_msg = format!("Failed to create category {}: {}", index + 1, e);
+                                errors.push(error_msg);
+                            }
+                        }
+                    } else {
+                        successful_imports += 1;
+                        debug!("Validated category {}/{} (dry run)", index + 1, total_processed);
+                    }
+                }
+                Err(e) => {
+                    failed_imports += 1;
+                    let error_msg = format!("Validation failed for category {}: {}", index + 1, e);
+                    errors.push(error_msg);
+                }
+            }
+        }
+
+        Ok(ImportResult {
+            successful_imports,
+            failed_imports,
+            total_processed,
+            errors,
+        })
+    }
+
+    /// Validate a category request before import
+    async fn validate_category_request(&self, request: &CreateCategoryRequest) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        // Basic validation
+        if request.name.is_empty() {
+            return Err("Category name cannot be empty".into());
+        }
+
+        if request.slug.is_empty() {
+            return Err("Category slug cannot be empty".into());
+        }
+
+        // Check if slug already exists
+        if let Some(_) = self.category_dao.get_category_by_slug(&request.slug).await? {
+            return Err(format!("Category with slug '{}' already exists", request.slug).into());
+        }
+
+        // Validate parent if specified
+        if let Some(parent_id) = &request.parent_id {
+            if !parent_id.is_empty() {
+                if self.category_dao.get_category(parent_id).await?.is_none() {
+                    return Err(format!("Parent category with ID '{}' not found", parent_id).into());
+                }
+            }
+        }
+
+        Ok(())
+    }
+
     /// Helper method to convert Category model to CategoryResponse
     fn category_to_response(&self, category: Category) -> CategoryResponse {
         CategoryResponse {

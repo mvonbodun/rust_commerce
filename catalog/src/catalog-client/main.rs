@@ -5,6 +5,7 @@ use catalog_messages::{
     ProductExportRequest, ProductExportResponse,
     CreateCategoryRequest, CategoryResponse, GetCategoryRequest, GetCategoryBySlugRequest,
     UpdateCategoryRequest, DeleteCategoryRequest, CategoryExportRequest, CategoryExportResponse,
+    CategoryImportRequest, CategoryImportResponse,
 };
 use log::debug;
 use prost::Message;
@@ -157,6 +158,12 @@ enum Commands {
         file: PathBuf,
         #[arg(short, long, default_value = "50")]
         batch_size: Option<i64>,
+    },
+    CategoryImport {
+        #[arg(short, long)]
+        file: PathBuf,
+        #[arg(short, long, default_value = "false")]
+        dry_run: bool,
     },
 }
 
@@ -588,6 +595,57 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             // For now, just write a simple message to the file
             let message = format!("Exported {} categories successfully", export_response.categories.len());
             fs::write(file, message)?;
+        }
+        Some(Commands::CategoryImport { file, dry_run }) => {
+            println!("Importing categories from file: {:?}", file);
+            
+            // Read and parse the file
+            let file_content = fs::read_to_string(file)?;
+            let categories: Vec<serde_json::Value> = serde_json::from_str(&file_content)?;
+            
+            // Convert JSON to CreateCategoryRequest objects
+            let category_requests: Vec<CreateCategoryRequest> = categories.into_iter().map(|cat| {
+                CreateCategoryRequest {
+                    name: cat["name"].as_str().unwrap_or("Unknown").to_string(),
+                    slug: cat["slug"].as_str().unwrap_or("unknown").to_string(),
+                    short_description: cat["short_description"].as_str().unwrap_or("").to_string(),
+                    full_description: cat["full_description"].as_str().map(|s| s.to_string()),
+                    parent_id: cat["parent_id"].as_str().map(|s| s.to_string()),
+                    display_order: cat["display_order"].as_i64().unwrap_or(0) as i32,
+                    seo: None,
+                }
+            }).collect();
+
+            let request = CategoryImportRequest {
+                categories: category_requests,
+                dry_run: *dry_run,
+            };
+
+            let request_bytes = request.encode_to_vec();
+            
+            if *dry_run {
+                println!("🧪 Dry run mode - validating {} categories...", request.categories.len());
+            } else {
+                println!("📥 Importing {} categories...", request.categories.len());
+            }
+            
+            let response = client
+                .request("catalog.import_categories", request_bytes.into())
+                .await?;
+            
+            let import_response = CategoryImportResponse::decode(&*response.payload)?;
+            
+            println!("✅ Import completed!");
+            println!("  📦 Total processed: {}", import_response.total_processed);
+            println!("  ✅ Successful: {}", import_response.successful_imports);
+            println!("  ❌ Failed: {}", import_response.failed_imports);
+            
+            if !import_response.errors.is_empty() {
+                println!("  🚨 Errors:");
+                for error in import_response.errors {
+                    println!("    - {}", error);
+                }
+            }
         }
         None => {
             println!("No command specified. Use --help for available commands.");

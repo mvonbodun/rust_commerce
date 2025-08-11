@@ -932,6 +932,16 @@ pub struct CategorySeo {
     pub keywords: Vec<String>,
 }
 
+impl Default for CategorySeo {
+    fn default() -> Self {
+        CategorySeo {
+            meta_title: None,
+            meta_description: None,
+            keywords: vec![],
+        }
+    }
+}
+
 /// Simplified category for tree cache
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CategoryTreeNode {

@@ -550,18 +550,18 @@ db.category_tree_cache.createIndex({ "version": 1 });
 - [ ] Implement export/import message handlers
 
 ### Phase 5: Client & Testing (Week 5)
-- [ ] Extend CLI client with category commands
-- [ ] Add category import/export CLI commands (following product patterns)
-- [ ] Create comprehensive unit tests
+- [x] Extend CLI client with category commands
+- [x] Add category import/export CLI commands (following product patterns)
+- [x] Create comprehensive unit tests
 - [ ] Add integration tests with MongoDB
-- [ ] Performance testing with large hierarchies
-- [ ] Test import/export with various file formats and sizes
+- [x] Performance testing with large hierarchies
+- [x] Test import/export with various file formats and sizes
 
 ### Phase 6: Optimization (Week 6)
-- [ ] Implement tree cache refresh strategies
+- [x] Implement tree cache refresh strategies
 - [ ] Add background product count updates
-- [ ] Optimize query performance
-- [ ] Add monitoring and metrics
+- [x] Optimize query performance
+- [x] Add monitoring and metrics
 
 ---
 

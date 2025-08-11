@@ -6,7 +6,7 @@ use bson::doc;
 use handlers::{
     create_product, delete_product, get_product, search_products, export_products, update_product, Router,
     category_service::CategoryService,
-    category_handlers::{handle_create_category, handle_get_category, handle_get_category_by_slug, handle_export_categories, handle_update_category, handle_delete_category},
+    category_handlers::{handle_create_category, handle_get_category, handle_get_category_by_slug, handle_export_categories, handle_update_category, handle_delete_category, handle_import_categories},
 };
 use persistence::{
     product_dao::ProductDaoImpl,
@@ -226,6 +226,18 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                     }
                     "delete_category" => {
                         let response = handle_delete_category(&request, cs).await;
+                        match response {
+                            Ok(response_bytes) => {
+                                if let Some(reply) = request.reply {
+                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                }
+                                Ok(())
+                            }
+                            Err(e) => Err(e),
+                        }
+                    }
+                    "import_categories" => {
+                        let response = handle_import_categories(&request, cs).await;
                         match response {
                             Ok(response_bytes) => {
                                 if let Some(reply) = request.reply {

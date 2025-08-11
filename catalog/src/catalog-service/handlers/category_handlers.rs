@@ -6,6 +6,7 @@ use crate::{
     catalog_messages::{
         CreateCategoryRequest, CategoryResponse, GetCategoryRequest, GetCategoryBySlugRequest,
         CategoryExportRequest, CategoryExportResponse, UpdateCategoryRequest, DeleteCategoryRequest,
+        CategoryImportRequest, CategoryImportResponse,
         Status, Code,
     },
     handlers::category_service::CategoryService,
@@ -290,6 +291,54 @@ pub async fn handle_delete_category(
                 code: Code::Internal as i32,
                 message: format!("Failed to delete category: {}", e),
                 details: vec![],
+            };
+            
+            Ok(error_response.encode_to_vec())
+        }
+    }
+}
+
+/// Handle import categories requests
+pub async fn handle_import_categories(
+    msg: &Message,
+    category_service: Arc<CategoryService>,
+) -> Result<Vec<u8>, Box<dyn std::error::Error + Send + Sync>> {
+    debug!("Handling import categories request");
+
+    let request = CategoryImportRequest::decode(&*msg.payload)?;
+    debug!("Decoded request with {} categories", request.categories.len());
+
+    match category_service.import_categories(request.categories, request.dry_run).await {
+        Ok(import_result) => {
+            debug!("Categories import completed: {:?}", import_result);
+            
+            let response = CategoryImportResponse {
+                successful_imports: import_result.successful_imports as i32,
+                failed_imports: import_result.failed_imports as i32,
+                total_processed: import_result.total_processed as i32,
+                errors: import_result.errors,
+                status: Some(Status {
+                    code: Code::Ok as i32,
+                    message: "Import completed".to_string(),
+                    details: vec![],
+                }),
+            };
+            
+            Ok(response.encode_to_vec())
+        }
+        Err(e) => {
+            error!("Failed to import categories: {}", e);
+            
+            let error_response = CategoryImportResponse {
+                successful_imports: 0,
+                failed_imports: 0,
+                total_processed: 0,
+                errors: vec![format!("Import failed: {}", e)],
+                status: Some(Status {
+                    code: Code::Internal as i32,
+                    message: format!("Failed to import categories: {}", e),
+                    details: vec![],
+                }),
             };
             
             Ok(error_response.encode_to_vec())
