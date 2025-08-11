@@ -1,7 +1,8 @@
 use async_trait::async_trait;
 use mongodb::{Collection, bson::doc};
-use crate::model::{Category, CategoryTreeCache};
+use crate::model::{Category, CategoryTreeCache, CategoryTreeNode};
 use std::error::Error;
+use std::collections::HashMap;
 use futures::TryStreamExt;
 use uuid::Uuid;
 use chrono::Utc;
@@ -319,9 +320,8 @@ impl CategoryDao for CategoryDaoImpl {
         
         let categories: Vec<Category> = cursor.try_collect().await?;
         
-        // Build tree structure
-        // This is a simplified implementation - in practice, you'd want more sophisticated tree building
-        let tree = std::collections::HashMap::new(); // TODO: Implement tree building logic
+        // Build tree structure using recursive algorithm
+        let tree = self.build_category_tree(categories);
         
         let cache = CategoryTreeCache {
             id: "category_tree_v1".to_string(),
@@ -336,6 +336,7 @@ impl CategoryDao for CategoryDaoImpl {
                 doc! { "_id": &cache.id },
                 &cache,
             )
+            .upsert(true)
             .await?;
 
         Ok(cache)
@@ -402,8 +403,80 @@ impl CategoryDao for CategoryDaoImpl {
     }
 }
 
+impl CategoryDaoImpl {
+    /// Helper function to build a tree structure from categories
+    fn build_category_tree(&self, categories: Vec<Category>) -> HashMap<String, CategoryTreeNode> {
+        // Create a map of all categories by ID for quick lookup
+        let mut category_map = HashMap::new();
+        for category in &categories {
+            if let Some(ref id) = category.id {
+                category_map.insert(id.clone(), category);
+            }
+        }
+        
+        // Recursive function to build a node and its children
+        fn build_node(
+            category: &Category,
+            category_map: &HashMap<String, &Category>,
+            processed: &mut std::collections::HashSet<String>
+        ) -> CategoryTreeNode {
+            let id = category.id.as_ref().unwrap();
+            
+            // Prevent infinite loops
+            if processed.contains(id) {
+                return CategoryTreeNode {
+                    id: id.clone(),
+                    name: category.name.clone(),
+                    slug: category.slug.clone(),
+                    level: category.level,
+                    product_count: category.product_count,
+                    children: HashMap::new(),
+                };
+            }
+            processed.insert(id.clone());
+            
+            let mut children = HashMap::new();
+            
+            // Find all children of this category
+            for (child_id, child_category) in category_map {
+                if child_category.parent_id.as_ref() == Some(id) {
+                    let child_node = build_node(child_category, category_map, processed);
+                    children.insert(child_id.clone(), child_node);
+                }
+            }
+            
+            CategoryTreeNode {
+                id: id.clone(),
+                name: category.name.clone(),
+                slug: category.slug.clone(),
+                level: category.level,
+                product_count: category.product_count,
+                children,
+            }
+        }
+        
+        // Build tree starting from root categories (those without parents)
+        let mut tree = HashMap::new();
+        let mut processed = std::collections::HashSet::new();
+        
+        for category in &categories {
+            if category.parent_id.is_none() {
+                if let Some(ref id) = category.id {
+                    let root_node = build_node(category, &category_map, &mut processed);
+                    tree.insert(id.clone(), root_node);
+                }
+            }
+        }
+        
+        tree
+    }
+}
+
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use mongodb::Collection;
+    
     // Note: These tests would require a MongoDB test instance
     // For now, they serve as documentation of expected behavior
 
@@ -433,5 +506,189 @@ mod tests {
     async fn test_delete_category_with_children() {
         // This test would verify that deleting a category
         // with children properly fails
+    }
+
+    #[tokio::test]
+    #[ignore] // Requires MongoDB connection
+    async fn test_build_tree_cache_integration() {
+        // Connect to MongoDB test database
+        let client = mongodb::Client::with_uri_str("mongodb://localhost:27017")
+            .await
+            .expect("Failed to connect to MongoDB");
+        
+        let db = client.database("test_catalog_tree_cache");
+        let categories_collection: Collection<Category> = db.collection("categories");
+        let cache_collection: Collection<CategoryTreeCache> = db.collection("category_tree_cache");
+        
+        // Clean up any existing data
+        categories_collection.drop().await.ok();
+        cache_collection.drop().await.ok();
+        
+        let dao = CategoryDaoImpl::new(categories_collection, cache_collection);
+        
+        // Create test categories
+        let electronics = Category::new(
+            "electronics".to_string(),
+            "Electronics".to_string(),
+            "Electronics description".to_string(),
+            None,
+            0
+        );
+        let electronics_id = electronics.id.clone().unwrap();
+        let _created_electronics = dao.create_category(electronics).await.unwrap();
+        
+        let phones = Category::new(
+            "phones".to_string(),
+            "Phones".to_string(),
+            "Phones description".to_string(),
+            Some(electronics_id.clone()),
+            1
+        );
+        let phones_id = phones.id.clone().unwrap();
+        let _created_phones = dao.create_category(phones).await.unwrap();
+        
+        let smartphones = Category::new(
+            "smartphones".to_string(),
+            "Smartphones".to_string(),
+            "Smartphones description".to_string(),
+            Some(phones_id.clone()),
+            2
+        );
+        let _created_smartphones = dao.create_category(smartphones).await.unwrap();
+        
+        // Build tree cache
+        let tree_cache = dao.rebuild_tree_cache().await.unwrap();
+        
+        // Verify tree structure
+        assert_eq!(tree_cache.tree.len(), 1); // One root category
+        assert_eq!(tree_cache.version, 1);
+        assert_eq!(tree_cache.id, "category_tree_v1");
+        
+        // Verify Electronics is the root
+        let electronics_node = tree_cache.tree.get(&electronics_id).unwrap();
+        assert_eq!(electronics_node.name, "Electronics");
+        assert_eq!(electronics_node.level, 0);
+        assert_eq!(electronics_node.children.len(), 1);
+        
+        // Verify Phones is a child of Electronics
+        let phones_node = electronics_node.children.get(&phones_id).unwrap();
+        assert_eq!(phones_node.name, "Phones");
+        assert_eq!(phones_node.level, 1);
+        assert_eq!(phones_node.children.len(), 1);
+        
+        // Verify Smartphones is a child of Phones
+        let smartphones_node = phones_node.children.values().next().unwrap();
+        assert_eq!(smartphones_node.name, "Smartphones");
+        assert_eq!(smartphones_node.level, 2);
+        assert_eq!(smartphones_node.children.len(), 0);
+        
+        println!("✅ Tree cache integration test passed!");
+        println!("   🌳 Root categories: {}", tree_cache.tree.len());
+        println!("   📦 Electronics children: {}", electronics_node.children.len());
+        println!("   📱 Phones children: {}", phones_node.children.len());
+    }
+
+    #[tokio::test]
+    #[ignore] // Requires MongoDB connection
+    async fn test_get_full_tree_cache() {
+        // Connect to MongoDB test database
+        let client = mongodb::Client::with_uri_str("mongodb://localhost:27017")
+            .await
+            .expect("Failed to connect to MongoDB");
+        
+        let db = client.database("test_catalog_get_tree");
+        let categories_collection: Collection<Category> = db.collection("categories");
+        let cache_collection: Collection<CategoryTreeCache> = db.collection("category_tree_cache");
+        
+        // Clean up any existing data
+        categories_collection.drop().await.ok();
+        cache_collection.drop().await.ok();
+        
+        let dao = CategoryDaoImpl::new(categories_collection, cache_collection);
+        
+        // Create and populate test data
+        let electronics = Category::new(
+            "electronics".to_string(),
+            "Electronics".to_string(),
+            "Electronics description".to_string(),
+            None,
+            0
+        );
+        let clothing = Category::new(
+            "clothing".to_string(),
+            "Clothing".to_string(),
+            "Clothing description".to_string(),
+            None,
+            0
+        );
+        
+        dao.create_category(electronics).await.unwrap();
+        dao.create_category(clothing).await.unwrap();
+        
+        // Build initial cache
+        dao.rebuild_tree_cache().await.unwrap();
+        
+        // Test retrieving the full tree
+        let retrieved_cache = dao.get_full_tree().await.unwrap();
+        
+        assert!(retrieved_cache.is_some());
+        let cache = retrieved_cache.unwrap();
+        
+        assert_eq!(cache.tree.len(), 2); // Two root categories
+        assert_eq!(cache.version, 1);
+        
+        // Verify both root categories exist
+        let has_electronics = cache.tree.values().any(|node| node.name == "Electronics");
+        let has_clothing = cache.tree.values().any(|node| node.name == "Clothing");
+        
+        assert!(has_electronics);
+        assert!(has_clothing);
+        
+        println!("✅ Get full tree cache test passed!");
+        println!("   🌳 Retrieved {} root categories", cache.tree.len());
+    }
+
+    #[tokio::test]
+    #[ignore] // Requires MongoDB connection
+    async fn test_tree_cache_invalidation() {
+        // Connect to MongoDB test database
+        let client = mongodb::Client::with_uri_str("mongodb://localhost:27017")
+            .await
+            .expect("Failed to connect to MongoDB");
+        
+        let db = client.database("test_catalog_invalidation");
+        let categories_collection: Collection<Category> = db.collection("categories");
+        let cache_collection: Collection<CategoryTreeCache> = db.collection("category_tree_cache");
+        
+        // Clean up any existing data
+        categories_collection.drop().await.ok();
+        cache_collection.drop().await.ok();
+        
+        let dao = CategoryDaoImpl::new(categories_collection, cache_collection);
+        
+        // Create test data and cache
+        let electronics = Category::new(
+            "electronics".to_string(),
+            "Electronics".to_string(),
+            "Electronics description".to_string(),
+            None,
+            0
+        );
+        dao.create_category(electronics).await.unwrap();
+        dao.rebuild_tree_cache().await.unwrap();
+        
+        // Verify cache exists
+        let cache_before = dao.get_full_tree().await.unwrap();
+        assert!(cache_before.is_some());
+        
+        // Invalidate cache
+        let invalidated = dao.invalidate_tree_cache().await.unwrap();
+        assert!(invalidated);
+        
+        // Verify cache is gone
+        let cache_after = dao.get_full_tree().await.unwrap();
+        assert!(cache_after.is_none());
+        
+        println!("✅ Tree cache invalidation test passed!");
     }
 }
