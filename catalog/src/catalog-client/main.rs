@@ -120,9 +120,9 @@ enum Commands {
     CategoryCreate {
         #[arg(short, long)]
         name: String,
-        #[arg(short, long)]
+        #[arg(long)]
         slug: Option<String>,
-        #[arg(short, long)]
+        #[arg(long)]
         short_description: Option<String>,
         #[arg(short, long)]
         parent_id: Option<String>,
@@ -138,11 +138,11 @@ enum Commands {
     CategoryUpdate {
         #[arg(short, long)]
         id: String,
-        #[arg(short, long)]
+        #[arg(long)]
         name: Option<String>,
-        #[arg(short, long)]
+        #[arg(long)]
         slug: Option<String>,
-        #[arg(short, long)]
+        #[arg(long)]
         short_description: Option<String>,
         #[arg(long)]
         is_active: Option<bool>,
