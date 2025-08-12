@@ -1,0 +1,192 @@
+[
+  {
+    "name": "Men",
+    "slug": "/men",
+    "short_description": "Men - short description",
+    "full_description": "Men - full description",
+    "parent_slug": null,
+    "is_active": true,
+    "display_order": 1,
+    "seo": {
+      "meta_title": "Men",
+      "meta_description": "Men - meta description",
+      "keywords": [
+        "Men"
+      ]
+    }
+  },
+  {
+    "name": "Women",
+    "slug": "/women",
+    "short_description": "Women - short description",
+    "full_description": "Women - full description",
+    "parent_slug": null,
+    "is_active": true,
+    "display_order": 2,
+    "seo": {
+      "meta_title": "Women",
+      "meta_description": "Women - meta description",
+      "keywords": [
+        "Women"
+      ]
+    }
+  },
+  {
+    "name": "Accessories",
+    "slug": "/men/accessories",
+    "short_description": "Accessories - short description",
+    "full_description": "Accessories - full description",
+    "parent_slug": "/men",
+    "is_active": true,
+    "display_order": 1,
+    "seo": {
+      "meta_title": "Men Accessories",
+      "meta_description": "Accessories - meta description",
+      "keywords": [
+        "Men",
+        "Accessories"
+      ]
+    }
+  },
+  {
+    "name": "Juniors Apparel",
+    "slug": "/women/juniors-apparel",
+    "short_description": "Juniors Apparel - short description",
+    "full_description": "Juniors Apparel - full description",
+    "parent_slug": "/women",
+    "is_active": true,
+    "display_order": 2,
+    "seo": {
+      "meta_title": "Women Juniors Apparel",
+      "meta_description": "Juniors Apparel - meta description",
+      "keywords": [
+        "Women",
+        "Juniors Apparel"
+      ]
+    }
+  },
+  {
+    "name": "Misses Apparel",
+    "slug": "/women/misses-apparel",
+    "short_description": "Misses Apparel - short description",
+    "full_description": "Misses Apparel - full description",
+    "parent_slug": "/women",
+    "is_active": true,
+    "display_order": 3,
+    "seo": {
+      "meta_title": "Women Misses Apparel",
+      "meta_description": "Misses Apparel - meta description",
+      "keywords": [
+        "Women",
+        "Misses Apparel"
+      ]
+    }
+  },
+  {
+    "name": "Mens Apparel",
+    "slug": "/men/mens-apparel",
+    "short_description": "Mens Apparel - short description",
+    "full_description": "Mens Apparel - full description",
+    "parent_slug": "/men",
+    "is_active": true,
+    "display_order": 4,
+    "seo": {
+      "meta_title": "Men Mens Apparel",
+      "meta_description": "Mens Apparel - meta description",
+      "keywords": [
+        "Men",
+        "Mens Apparel"
+      ]
+    }
+  },
+  {
+    "name": "Mens Sunglasses",
+    "slug": "/men/accessories/mens-sunglasses",
+    "short_description": "Mens Sunglasses - short description",
+    "full_description": "Mens Sunglasses - full description",
+    "parent_slug": "/men/accessories",
+    "is_active": true,
+    "display_order": 1,
+    "seo": {
+      "meta_title": "Men Accessories Mens Sunglasses",
+      "meta_description": "Mens Sunglasses - meta description",
+      "keywords": [
+        "Men",
+        "Accessories",
+        "Mens Sunglasses"
+      ]
+    }
+  },
+  {
+    "name": "Tank Tops",
+    "slug": "/women/juniors-apparel/tank-tops",
+    "short_description": "Tank Tops - short description",
+    "full_description": "Tank Tops - full description",
+    "parent_slug": "/women/juniors-apparel",
+    "is_active": true,
+    "display_order": 2,
+    "seo": {
+      "meta_title": "Women Juniors Apparel Tank Tops",
+      "meta_description": "Tank Tops - meta description",
+      "keywords": [
+        "Women",
+        "Juniors Apparel",
+        "Tank Tops"
+      ]
+    }
+  },
+  {
+    "name": "Shorts",
+    "slug": "/women/misses-apparel/shorts",
+    "short_description": "Shorts - short description",
+    "full_description": "Shorts - full description",
+    "parent_slug": "/women/misses-apparel",
+    "is_active": true,
+    "display_order": 3,
+    "seo": {
+      "meta_title": "Women Misses Apparel Shorts",
+      "meta_description": "Shorts - meta description",
+      "keywords": [
+        "Women",
+        "Misses Apparel",
+        "Shorts"
+      ]
+    }
+  },
+  {
+    "name": "Casual Short Sleeve Shirts",
+    "slug": "/men/mens-apparel/casual-short-sleeve-shirts",
+    "short_description": "Casual Short Sleeve Shirts - short description",
+    "full_description": "Casual Short Sleeve Shirts - full description",
+    "parent_slug": "/men/mens-apparel",
+    "is_active": true,
+    "display_order": 4,
+    "seo": {
+      "meta_title": "Men Mens Apparel Casual Short Sleeve Shirts",
+      "meta_description": "Casual Short Sleeve Shirts - meta description",
+      "keywords": [
+        "Men",
+        "Mens Apparel",
+        "Casual Short Sleeve Shirts"
+      ]
+    }
+  },
+  {
+    "name": "Classic Jeans",
+    "slug": "/men/mens-apparel/classic-jeans",
+    "short_description": "Classic Jeans - short description",
+    "full_description": "Classic Jeans - full description",
+    "parent_slug": "/men/mens-apparel",
+    "is_active": true,
+    "display_order": 5,
+    "seo": {
+      "meta_title": "Men Mens Apparel Classic Jeans",
+      "meta_description": "Classic Jeans - meta description",
+      "keywords": [
+        "Men",
+        "Mens Apparel",
+        "Classic Jeans"
+      ]
+    }
+  }
+]

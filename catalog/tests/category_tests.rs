@@ -38,14 +38,14 @@ mod category_tests {
 
     #[test]
     fn test_category_path_generation() {
-        // Test root category path
+        // Test root category path - should just be the category name
         let root_category = Category {
             id: Some(Uuid::new_v4().to_string()),
             slug: "electronics".to_string(),
             name: "Electronics".to_string(),
             short_description: "Electronics category".to_string(),
             full_description: None,
-            path: "electronics".to_string(),
+            path: "Electronics".to_string(), // Updated to use name instead of slug
             ancestors: vec![],
             parent_id: None,
             level: 0,
@@ -58,11 +58,11 @@ mod category_tests {
             updated_at: Utc::now(),
         };
 
-        assert_eq!(root_category.path, "electronics");
+        assert_eq!(root_category.path, "Electronics"); // Updated to expect name format
         assert_eq!(root_category.level, 0);
         assert!(root_category.ancestors.is_empty());
 
-        // Test child category path
+        // Test child category path - should be "Parent > Child" format
         let parent_id = Uuid::new_v4().to_string();
         let child_category = Category {
             id: Some(Uuid::new_v4().to_string()),
@@ -70,7 +70,7 @@ mod category_tests {
             name: "Smartphones".to_string(),
             short_description: "Smartphone category".to_string(),
             full_description: None,
-            path: "electronics.smartphones".to_string(),
+            path: "Electronics > Smartphones".to_string(), // Updated to use name-based format
             ancestors: vec![parent_id.clone()],
             parent_id: Some(parent_id),
             level: 1,
@@ -83,7 +83,7 @@ mod category_tests {
             updated_at: Utc::now(),
         };
 
-        assert_eq!(child_category.path, "electronics.smartphones");
+        assert_eq!(child_category.path, "Electronics > Smartphones"); // Updated to expect name format
         assert_eq!(child_category.level, 1);
         assert_eq!(child_category.ancestors.len(), 1);
     }

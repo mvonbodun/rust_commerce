@@ -73,7 +73,7 @@ impl CategoryDaoImpl {
             // Root category
             category.ancestors = Vec::new();
             category.level = 0;
-            category.path = category.slug.clone();
+            category.path = category.name.clone(); // Use category name instead of slug
         }
         
         Ok(category)

@@ -999,19 +999,19 @@ impl Category {
         }
     }
 
-    /// Generates the path string based on ancestor hierarchy
+    /// Generates the path string based on ancestor hierarchy using category names
     pub fn generate_path(&self, ancestors: &[Category]) -> String {
         let mut path_parts = Vec::new();
         
-        // Add ancestor slugs in order
+        // Add ancestor names in order
         for ancestor in ancestors {
-            path_parts.push(ancestor.slug.clone());
+            path_parts.push(ancestor.name.clone());
         }
         
-        // Add current category slug
-        path_parts.push(self.slug.clone());
+        // Add current category name
+        path_parts.push(self.name.clone());
         
-        path_parts.join(".")
+        path_parts.join(" > ")
     }
 
     /// Calculates the level based on the number of ancestors
@@ -1074,7 +1074,7 @@ mod category_tests {
         );
 
         let path = child.generate_path(&[root]);
-        assert_eq!(path, "electronics.smartphones");
+        assert_eq!(path, "Electronics > Smartphones");
     }
 
     #[test]
