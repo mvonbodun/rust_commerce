@@ -1,26 +1,58 @@
 [
   {
     "name": "Electronics",
-    "slug": "electronics",
+    "slug": "/electronics",
     "short_description": "Electronic devices and gadgets",
     "full_description": "Complete range of electronic devices including smartphones, computers, and accessories",
-    "parent_id": null,
-    "display_order": 1
+    "parent_slug": null,
+    "is_active": true,
+    "display_order": 1,
+    "seo": {
+      "meta_title": "Electronics - Latest Tech & Gadgets",
+      "meta_description": "Shop the latest electronics including smartphones, computers, and tech accessories",
+      "keywords": ["electronics", "technology", "gadgets"]
+    }
   },
   {
-    "name": "Smartphones",
-    "slug": "smartphones",
+    "name": "Smartphones", 
+    "slug": "/electronics/smartphones",
     "short_description": "Mobile phones and accessories",
-    "full_description": "Latest smartphones from top brands with accessories",
-    "parent_id": null,
-    "display_order": 1
+    "full_description": "Latest smartphones from top brands including iPhone, Samsung, Google Pixel with accessories",
+    "parent_slug": "/electronics",
+    "is_active": true,
+    "display_order": 1,
+    "seo": {
+      "meta_title": "Smartphones - Latest Mobile Phones",
+      "meta_description": "Shop latest smartphones from top brands with accessories and cases",
+      "keywords": ["smartphones", "mobile phones", "iPhone", "Samsung", "Android"]
+    }
   },
   {
     "name": "Computers",
-    "slug": "computers",
+    "slug": "/electronics/computers", 
     "short_description": "Desktop and laptop computers",
-    "full_description": "High-performance computers for work and gaming",
-    "parent_id": null,
-    "display_order": 2
+    "full_description": "High-performance computers for work, gaming, and creative projects including desktops and laptops",
+    "parent_slug": "/electronics",
+    "is_active": true,
+    "display_order": 2,
+    "seo": {
+      "meta_title": "Computers - Desktops & Laptops",
+      "meta_description": "High-performance computers for work and gaming including desktop PCs and laptops",
+      "keywords": ["computers", "desktop", "laptop", "gaming PC", "workstation"]
+    }
+  },
+  {
+    "name": "Gaming Laptops",
+    "slug": "/electronics/computers/gaming-laptops",
+    "short_description": "High-performance gaming laptops",
+    "full_description": "Premium gaming laptops with powerful graphics cards and processors for ultimate gaming experience",
+    "parent_slug": "/electronics/computers",
+    "is_active": true,
+    "display_order": 1,
+    "seo": {
+      "meta_title": "Gaming Laptops - High Performance Gaming",
+      "meta_description": "Premium gaming laptops with RTX graphics and high-performance processors",
+      "keywords": ["gaming laptops", "gaming computers", "RTX", "high performance"]
+    }
   }
 ]

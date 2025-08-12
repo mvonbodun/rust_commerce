@@ -165,6 +165,10 @@ enum Commands {
         #[arg(short, long, default_value = "false")]
         dry_run: bool,
     },
+    CategoryGetTree {
+        #[arg(long, help = "Rebuild the tree cache from scratch")]
+        rebuild: bool,
+    },
 }
 
 #[tokio::main]
@@ -477,6 +481,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 parent_id: parent_id.clone(),
                 display_order: 0,
                 seo: None,
+                is_active: Some(true),
+                parent_slug: None,
             };
 
             let request_bytes = request.encode_to_vec();
@@ -613,6 +619,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     parent_id: cat["parent_id"].as_str().map(|s| s.to_string()),
                     display_order: cat["display_order"].as_i64().unwrap_or(0) as i32,
                     seo: None,
+                    is_active: Some(cat["is_active"].as_bool().unwrap_or(true)),
+                    parent_slug: cat["parent_slug"].as_str().map(|s| s.to_string()),
                 }
             }).collect();
 
@@ -646,6 +654,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     println!("    - {}", error);
                 }
             }
+        }
+        Some(Commands::CategoryGetTree { rebuild }) => {
+            println!("🌳 Retrieving category tree...");
+            
+            if *rebuild {
+                println!("🔄 Rebuilding tree cache from scratch...");
+                // TODO: Add rebuild tree cache message type and handler
+                println!("⚠️  Tree cache rebuild functionality needs to be implemented in the service");
+            }
+            
+            // For now, we can call the get tree functionality
+            // TODO: Implement CategoryGetTreeRequest and CategoryGetTreeResponse messages
+            println!("📋 Category tree retrieval not yet implemented in CLI");
+            println!("   Use the service API directly or implement the message handlers");
         }
         None => {
             println!("No command specified. Use --help for available commands.");

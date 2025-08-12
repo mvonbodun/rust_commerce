@@ -13,7 +13,9 @@ message CreateCategoryRequest {
     optional string full_description = 4;
     optional string parent_id = 5;
     int32 display_order = 6;
-    CategorySeo seo = 7;
+    optional CategorySeo seo = 7;
+    optional bool is_active = 8;
+    optional string parent_slug = 9; // Alternative to parent_id for easier imports
 }
 
 message GetCategoryRequest {
