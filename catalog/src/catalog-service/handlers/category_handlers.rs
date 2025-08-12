@@ -6,7 +6,7 @@ use crate::{
     catalog_messages::{
         CreateCategoryRequest, CategoryResponse, GetCategoryRequest, GetCategoryBySlugRequest,
         CategoryExportRequest, CategoryExportResponse, UpdateCategoryRequest, DeleteCategoryRequest,
-        CategoryImportRequest, CategoryImportResponse,
+        CategoryImportRequest, CategoryImportResponse, CategoryTreeRequest, CategoryTreeResponse,
         Status, Code,
     },
     handlers::category_service::CategoryService,
@@ -337,6 +337,53 @@ pub async fn handle_import_categories(
                 status: Some(Status {
                     code: Code::Internal as i32,
                     message: format!("Failed to import categories: {}", e),
+                    details: vec![],
+                }),
+            };
+            
+            Ok(error_response.encode_to_vec())
+        }
+    }
+}
+
+/// Handle category tree retrieval requests
+pub async fn handle_get_category_tree(
+    msg: &Message,
+    category_service: Arc<CategoryService>,
+) -> Result<Vec<u8>, Box<dyn std::error::Error + Send + Sync>> {
+    debug!("Handling get category tree request");
+
+    let request = CategoryTreeRequest::decode(&*msg.payload)?;
+    debug!("Decoded request: max_depth={:?}, include_inactive={:?}, rebuild_cache={:?}", 
+           request.max_depth, request.include_inactive, request.rebuild_cache);
+
+    match category_service.get_category_tree(
+        request.max_depth, 
+        request.include_inactive, 
+        request.rebuild_cache
+    ).await {
+        Ok(tree_nodes) => {
+            debug!("Category tree retrieved successfully with {} root nodes", tree_nodes.len());
+            
+            let response = CategoryTreeResponse {
+                tree: tree_nodes,
+                status: Some(Status {
+                    code: Code::Ok as i32,
+                    message: "Category tree retrieved successfully".to_string(),
+                    details: vec![],
+                }),
+            };
+            
+            Ok(response.encode_to_vec())
+        }
+        Err(e) => {
+            error!("Failed to get category tree: {}", e);
+            
+            let error_response = CategoryTreeResponse {
+                tree: vec![],
+                status: Some(Status {
+                    code: Code::Internal as i32,
+                    message: format!("Failed to get category tree: {}", e),
                     details: vec![],
                 }),
             };

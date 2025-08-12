@@ -5,7 +5,8 @@ use catalog_messages::{
     ProductExportRequest, ProductExportResponse,
     CreateCategoryRequest, CategoryResponse, GetCategoryRequest, GetCategoryBySlugRequest,
     UpdateCategoryRequest, DeleteCategoryRequest, CategoryExportRequest, CategoryExportResponse,
-    CategoryImportRequest, CategoryImportResponse,
+    CategoryImportRequest, CategoryImportResponse, CategoryTreeRequest, CategoryTreeResponse,
+    Status,
 };
 use log::debug;
 use prost::Message;
@@ -575,8 +576,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .request("catalog.delete_category", request_bytes.into())
                 .await?;
             
-            // For delete, we just expect a status response
-            println!("✅ Category deletion request sent!");
+            // Decode the status response
+            let status = Status::decode(&*response.payload)?;
+            
+            if status.code == catalog_messages::Code::Ok as i32 {
+                println!("✅ Category deleted successfully!");
+            } else {
+                println!("❌ Failed to delete category: {} ({})", status.message, status.code);
+            }
         }
         Some(Commands::CategoryExport { file, batch_size }) => {
             let request = CategoryExportRequest {
@@ -658,16 +665,54 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Some(Commands::CategoryGetTree { rebuild }) => {
             println!("🌳 Retrieving category tree...");
             
+            let request = CategoryTreeRequest {
+                max_depth: None,
+                include_inactive: Some(false),
+                rebuild_cache: Some(*rebuild),
+            };
+
+            let request_bytes = request.encode_to_vec();
+            
             if *rebuild {
                 println!("🔄 Rebuilding tree cache from scratch...");
-                // TODO: Add rebuild tree cache message type and handler
-                println!("⚠️  Tree cache rebuild functionality needs to be implemented in the service");
             }
             
-            // For now, we can call the get tree functionality
-            // TODO: Implement CategoryGetTreeRequest and CategoryGetTreeResponse messages
-            println!("📋 Category tree retrieval not yet implemented in CLI");
-            println!("   Use the service API directly or implement the message handlers");
+            let response = client
+                .request("catalog.get_category_tree", request_bytes.into())
+                .await?;
+            
+            let tree_response = CategoryTreeResponse::decode(&*response.payload)?;
+            
+            if let Some(status) = &tree_response.status {
+                if status.code == catalog_messages::Code::Ok as i32 {
+                    println!("✅ Category tree retrieved successfully!");
+                    println!("  🌳 Total root categories: {}", tree_response.tree.len());
+                    
+                    // Display the tree structure
+                    fn display_tree_node(node: &catalog_messages::CategoryTreeNode, depth: usize) {
+                        let indent = "  ".repeat(depth);
+                        println!("{}├─ {} ({})", indent, node.name, node.slug);
+                        println!("{}   📊 Level: {} | Products: {}", indent, node.level, node.product_count);
+                        
+                        for child in &node.children {
+                            display_tree_node(child, depth + 1);
+                        }
+                    }
+                    
+                    println!("📋 Category Tree Structure:");
+                    for root_node in &tree_response.tree {
+                        display_tree_node(root_node, 0);
+                    }
+                    
+                    if *rebuild {
+                        println!("🎯 Tree cache rebuilt successfully!");
+                    }
+                } else {
+                    println!("❌ Failed to retrieve category tree: {} ({})", status.message, status.code);
+                }
+            } else {
+                println!("❌ Invalid response from server");
+            }
         }
         None => {
             println!("No command specified. Use --help for available commands.");

@@ -107,6 +107,100 @@ impl CategoryService {
         Ok(categories.into_iter().map(|cat| self.category_to_response(cat)).collect())
     }
 
+    /// Get the category tree structure
+    pub async fn get_category_tree(&self, max_depth: Option<i32>, include_inactive: Option<bool>, rebuild_cache: Option<bool>) -> Result<Vec<crate::catalog_messages::CategoryTreeNode>, Box<dyn std::error::Error + Send + Sync>> {
+        debug!("Getting category tree - max_depth: {:?}, include_inactive: {:?}, rebuild_cache: {:?}", 
+               max_depth, include_inactive, rebuild_cache);
+
+        // If rebuild_cache is requested, rebuild the cache first
+        if rebuild_cache.unwrap_or(false) {
+            debug!("Rebuilding tree cache as requested");
+            self.category_dao.rebuild_tree_cache().await?;
+        }
+
+        // Get the tree cache
+        let tree_cache = match self.category_dao.get_full_tree().await? {
+            Some(cache) => cache,
+            None => {
+                debug!("No tree cache found, rebuilding...");
+                self.category_dao.rebuild_tree_cache().await?
+            }
+        };
+
+        // Convert tree cache to CategoryTreeNode format
+        let mut tree_nodes = Vec::new();
+        let include_inactive = include_inactive.unwrap_or(false);
+        let max_depth = max_depth.unwrap_or(-1); // -1 means no depth limit
+
+        // The tree cache contains all categories as a flat HashMap
+        // We need to identify root categories and build the tree structure
+        for (category_id, cache_node) in &tree_cache.tree {
+            // Check if this is a root category by checking if any category has this as a child
+            let is_root = !tree_cache.tree.values().any(|node| node.children.contains_key(category_id));
+            
+            if is_root {
+                if let Some(node) = self.build_tree_node_from_cache(&tree_cache, category_id, cache_node, 0, max_depth, include_inactive).await? {
+                    tree_nodes.push(node);
+                }
+            }
+        }
+
+        // Sort root nodes by name
+        tree_nodes.sort_by(|a, b| a.name.cmp(&b.name));
+
+        Ok(tree_nodes)
+    }
+
+    /// Helper method to build a CategoryTreeNode recursively from cache
+    fn build_tree_node_from_cache<'a>(
+        &'a self, 
+        tree_cache: &'a crate::model::CategoryTreeCache, 
+        category_id: &'a str,
+        cache_node: &'a crate::model::CategoryTreeNode,
+        current_depth: i32,
+        max_depth: i32,
+        include_inactive: bool
+    ) -> std::pin::Pin<Box<dyn std::future::Future<Output = Result<Option<crate::catalog_messages::CategoryTreeNode>, Box<dyn std::error::Error + Send + Sync>>> + Send + 'a>> {
+        Box::pin(async move {
+            if max_depth >= 0 && current_depth >= max_depth {
+                return Ok(None);
+            }
+
+            // Get the full category details for active/inactive check
+            if let Some(category) = self.category_dao.get_category(category_id).await? {
+                // Skip inactive categories if not requested
+                if !include_inactive && !category.is_active {
+                    return Ok(None);
+                }
+
+                let mut children = Vec::new();
+                
+                // Recursively build child nodes
+                for (child_id, child_cache_node) in &cache_node.children {
+                    if let Some(child_node) = self.build_tree_node_from_cache(tree_cache, child_id, child_cache_node, current_depth + 1, max_depth, include_inactive).await? {
+                        children.push(child_node);
+                    }
+                }
+
+                // Sort children by name
+                children.sort_by(|a, b| a.name.cmp(&b.name));
+
+                let tree_node = crate::catalog_messages::CategoryTreeNode {
+                    id: category.id.unwrap_or_default(),
+                    name: category.name,
+                    slug: category.slug,
+                    level: category.level,
+                    product_count: category.product_count,
+                    children,
+                };
+
+                return Ok(Some(tree_node));
+            }
+            
+            Ok(None)
+        })
+    }
+
     /// Update an existing category
     pub async fn update_category(&self, request: UpdateCategoryRequest) -> Result<CategoryResponse, Box<dyn std::error::Error + Send + Sync>> {
         debug!("Updating category with ID: {}", request.id);

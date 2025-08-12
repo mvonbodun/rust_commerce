@@ -70,6 +70,7 @@ message CategorySeo {
 message CategoryTreeRequest {
     optional int32 max_depth = 1;
     optional bool include_inactive = 2;
+    optional bool rebuild_cache = 3; // Force rebuild the tree cache
 }
 
 message CategoryTreeResponse {
