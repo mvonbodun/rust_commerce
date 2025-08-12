@@ -189,6 +189,7 @@ impl CategoryService {
                     id: category.id.unwrap_or_default(),
                     name: category.name,
                     slug: category.slug,
+                    path: category.path,
                     level: category.level,
                     product_count: category.product_count,
                     children,

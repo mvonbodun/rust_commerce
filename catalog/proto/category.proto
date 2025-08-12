@@ -85,6 +85,7 @@ message CategoryTreeNode {
     int32 level = 4;
     int32 product_count = 5;
     repeated CategoryTreeNode children = 6;
+    string path = 7;
 }
 
 // Hierarchy Operations

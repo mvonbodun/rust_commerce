@@ -948,6 +948,7 @@ pub struct CategoryTreeNode {
     pub id: String,
     pub name: String,
     pub slug: String,
+    pub path: String,
     pub level: i32,
     pub product_count: i32,
     pub children: HashMap<String, CategoryTreeNode>,

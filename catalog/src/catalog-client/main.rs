@@ -692,7 +692,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     fn display_tree_node(node: &catalog_messages::CategoryTreeNode, depth: usize) {
                         let indent = "  ".repeat(depth);
                         println!("{}├─ {} ({})", indent, node.name, node.slug);
-                        println!("{}   📊 Level: {} | Products: {}", indent, node.level, node.product_count);
+                        println!("{}   📊 Level: {} | Products: {} | Path: {}", indent, node.level, node.product_count, node.path);
                         
                         for child in &node.children {
                             display_tree_node(child, depth + 1);
