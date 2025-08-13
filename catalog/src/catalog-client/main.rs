@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 use catalog_messages::{
     ProductCreateRequest, ProductCreateResponse, ProductGetRequest, ProductGetResponse,
+    ProductGetBySlugRequest, ProductGetBySlugResponse,
     ProductDeleteRequest, ProductDeleteResponse, ProductSearchRequest, ProductSearchResponse,
     ProductExportRequest, ProductExportResponse,
     CreateCategoryRequest, CategoryResponse, GetCategoryRequest, GetCategoryBySlugRequest,
@@ -93,6 +94,10 @@ enum Commands {
     ProductGet {
         #[arg(short, long)]
         id: String,
+    },
+    ProductGetBySlug {
+        #[arg(short, long)]
+        slug: String,
     },
     ProductDelete {
         #[arg(short, long)]
@@ -230,6 +235,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let get_response = ProductGetResponse::decode(&*response.payload)?;
             println!("Get response: {:?}", get_response);
+        }
+        Some(Commands::ProductGetBySlug { slug }) => {
+            let get_request = ProductGetBySlugRequest {
+                slug: slug.clone(),
+            };
+
+            let request_bytes = get_request.encode_to_vec();
+            
+            println!("Sending get_product_by_slug request for slug: {}", slug);
+            let response = client
+                .request("catalog.get_product_by_slug", request_bytes.into())
+                .await?;
+
+            let get_response = ProductGetBySlugResponse::decode(&*response.payload)?;
+            println!("Get by slug response: {:?}", get_response);
         }
         Some(Commands::ProductDelete { id }) => {
             let delete_request = ProductDeleteRequest {

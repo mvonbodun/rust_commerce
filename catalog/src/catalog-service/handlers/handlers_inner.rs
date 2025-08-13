@@ -158,6 +158,27 @@ pub async fn get_product(
     }
 }
 
+pub async fn get_product_by_slug(
+    product_slug: String,
+    product_dao: &(dyn ProductDao + Sync + Send),
+) -> Result<Option<Product>, HandlerError> {
+    debug!("Before call to get_product_by_slug handler_inner");
+    let result = product_dao.get_product_by_slug(&product_slug).await;
+    debug!("After call to get_product_by_slug handler_inner: {:?}", result);
+
+    match result {
+        Ok(Some(product)) => Ok(Some(product)),
+        Ok(None) => Ok(None),
+        Err(e) => {
+            error!("Error getting product by slug: {}", e);
+            Err(HandlerError::InternalError(format!(
+                "Failed to get product by slug: {}",
+                e
+            )))
+        }
+    }
+}
+
 pub async fn update_product(
     product_id: String,
     request: ProductUpdateRequest,

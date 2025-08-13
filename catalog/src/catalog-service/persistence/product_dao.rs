@@ -8,6 +8,7 @@ use futures::TryStreamExt;
 pub trait ProductDao {
     async fn create_product(&self, product: Product) -> Result<Product, Box<dyn Error + Send + Sync>>;
     async fn get_product(&self, id: &str) -> Result<Option<Product>, Box<dyn Error + Send + Sync>>;
+    async fn get_product_by_slug(&self, slug: &str) -> Result<Option<Product>, Box<dyn Error + Send + Sync>>;
     async fn update_product(&self, id: &str, product: Product) -> Result<Option<Product>, Box<dyn Error + Send + Sync>>;
     async fn delete_product(&self, id: &str) -> Result<bool, Box<dyn Error + Send + Sync>>;
     async fn search_products(&self, query: Option<&str>, categories: &[String], brand: Option<&str>, limit: Option<i64>, offset: Option<u64>) -> Result<Vec<Product>, Box<dyn Error + Send + Sync>>;
@@ -38,6 +39,11 @@ impl ProductDao for ProductDaoImpl {
 
     async fn get_product(&self, id: &str) -> Result<Option<Product>, Box<dyn Error + Send + Sync>> {
         let product = self.collection.find_one(doc! { "_id": &id }).await?;
+        Ok(product)
+    }
+
+    async fn get_product_by_slug(&self, slug: &str) -> Result<Option<Product>, Box<dyn Error + Send + Sync>> {
+        let product = self.collection.find_one(doc! { "slug": &slug }).await?;
         Ok(product)
     }
 

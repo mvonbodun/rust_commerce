@@ -3,7 +3,7 @@ use async_nats::{Client, Message};
 use log::{debug, error, warn};
 use prost::Message as ProstMessage;
 use crate::{
-    catalog_messages::{self, ProductCreateRequest, ProductCreateResponse, ProductGetRequest, ProductGetResponse, ProductUpdateRequest, ProductUpdateResponse, ProductDeleteRequest, ProductDeleteResponse, ProductSearchRequest, ProductSearchResponse, ProductExportRequest, ProductExportResponse},
+    catalog_messages::{self, ProductCreateRequest, ProductCreateResponse, ProductGetRequest, ProductGetResponse, ProductGetBySlugRequest, ProductGetBySlugResponse, ProductUpdateRequest, ProductUpdateResponse, ProductDeleteRequest, ProductDeleteResponse, ProductSearchRequest, ProductSearchResponse, ProductExportRequest, ProductExportResponse},
     persistence::product_dao::ProductDao,
     model::Product,
     AppState,
@@ -193,6 +193,100 @@ pub async fn get_product(
         Err(err) => {
             warn!("Invalid product get request format: {:?}", err);
             let response = ProductGetResponse {
+                product: None,
+                status: Some(catalog_messages::Status {
+                    code: catalog_messages::Code::InvalidArgument.into(),
+                    message: "Invalid request format".to_string(),
+                    details: vec![],
+                }),
+            };
+            
+            let response_bytes = response.encode_to_vec();
+            
+            if let Some(reply) = msg.reply {
+                if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                    error!("Failed to send error response: {}", e);
+                }
+            }
+        }
+    }
+    
+    Ok(())
+}
+
+pub async fn get_product_by_slug(
+    product_dao: Arc<dyn ProductDao + Send + Sync>,
+    client: Client,
+    msg: Message,
+) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    debug!("Processing get_product_by_slug request");
+    
+    let request = ProductGetBySlugRequest::decode(&*msg.payload);
+    match request {
+        Ok(request) => {
+            let result = handlers_inner::get_product_by_slug(request.slug, product_dao.as_ref()).await;
+            
+            match result {
+                Ok(Some(product)) => {
+                    let response = ProductGetBySlugResponse {
+                        product: Some(map_model_product_to_proto_product(product)),
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::Ok.into(),
+                            message: "Product retrieved successfully".to_string(),
+                            details: vec![],
+                        }),
+                    };
+                    
+                    let response_bytes = response.encode_to_vec();
+                    
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send response: {}", e);
+                        }
+                    }
+                }
+                Ok(None) => {
+                    let response = ProductGetBySlugResponse {
+                        product: None,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::NotFound.into(),
+                            message: "Product not found".to_string(),
+                            details: vec![],
+                        }),
+                    };
+                    
+                    let response_bytes = response.encode_to_vec();
+                    
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send response: {}", e);
+                        }
+                    }
+                }
+                Err(handlers_inner::HandlerError::InternalError(error_msg)) => {
+                    error!("Error getting product by slug: {}", error_msg);
+                    let response = ProductGetBySlugResponse {
+                        product: None,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::Internal.into(),
+                            message: "Internal server error".to_string(),
+                            details: vec![],
+                        }),
+                    };
+                    
+                    let response_bytes = response.encode_to_vec();
+                    
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {}", e);
+                        }
+                    }
+                }
+            }
+        }
+        Err(err) => {
+            warn!("Invalid product get by slug request format: {:?}", err);
+            let response = ProductGetBySlugResponse {
                 product: None,
                 status: Some(catalog_messages::Status {
                     code: catalog_messages::Code::InvalidArgument.into(),

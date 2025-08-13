@@ -42,6 +42,15 @@ message ProductGetResponse {
     Status status = 2;
 }
 
+message ProductGetBySlugRequest {
+    string slug = 1;
+}
+
+message ProductGetBySlugResponse {
+    optional Product product = 1;
+    Status status = 2;
+}
+
 message ProductUpdateRequest {
     string id = 1;
     Product product = 2;

@@ -4,7 +4,7 @@ mod persistence;
 
 use bson::doc;
 use handlers::{
-    create_product, delete_product, get_product, search_products, export_products, update_product, Router,
+    create_product, delete_product, get_product, get_product_by_slug, search_products, export_products, update_product, Router,
     category_service::CategoryService,
     category_handlers::{handle_create_category, handle_get_category, handle_get_category_by_slug, handle_export_categories, handle_update_category, handle_delete_category, handle_import_categories, handle_get_category_tree},
 };
@@ -117,6 +117,10 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         .add_route(
             "get_product".to_owned(),
             Box::new(|d, c, m| Box::pin(get_product(d, c, m))),
+        )
+        .add_route(
+            "get_product_by_slug".to_owned(),
+            Box::new(|d, c, m| Box::pin(get_product_by_slug(d, c, m))),
         )
         .add_route(
             "update_product".to_owned(),
