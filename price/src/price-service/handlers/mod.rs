@@ -319,6 +319,86 @@ pub async fn get_best_offer_price(offer_dao: Arc<OfferDaoImpl>, request: Request
     }
 }
 
+pub async fn get_best_offer_prices(offer_dao: Arc<OfferDaoImpl>, request: Request) -> Response {
+    let decoded_request = offer_messages::GetBestOfferPricesRequest::decode(request.payload.clone());
+    let mut response = offer_messages::GetBestOfferPricesResponse {
+        sku_results: vec![],
+        status: None,
+    };
+
+    match decoded_request {
+        Ok(req) => {
+            debug!("GetBestOfferPrices request: {:?}", req);
+            
+            let result = handlers_inner::get_best_offer_prices(
+                req.skus,
+                req.quantity,
+                req.date,
+                req.currency,
+                offer_dao.as_ref(),
+            ).await;
+
+            match result {
+                Ok(offers_map) => {
+                    // Convert the HashMap results into SkuOfferResult messages
+                    let mut sku_results = vec![];
+                    for (sku, offer_option) in offers_map {
+                        let found = offer_option.is_some();
+                        let sku_result = offer_messages::SkuOfferResult {
+                            sku: sku.clone(),
+                            offer: offer_option.map(map_model_offer_to_proto_offer),
+                            found,
+                        };
+                        sku_results.push(sku_result);
+                    }
+                    response.sku_results = sku_results;
+                    response.status = Some(offer_messages::Status {
+                        code: offer_messages::Code::Ok.into(),
+                        message: "Success".to_string(),
+                        details: vec![],
+                    });
+                    debug!("Successfully processed {} SKUs", response.sku_results.len());
+                }
+                Err(err) => {
+                    match err {
+                        handlers_inner::HandlerError::ValidationError(msg) => {
+                            error!("Validation error in get_best_offer_prices: {}", msg);
+                            response.status = Some(offer_messages::Status {
+                                code: offer_messages::Code::InvalidArgument.into(),
+                                message: msg,
+                                details: vec![],
+                            });
+                        }
+                        handlers_inner::HandlerError::InternalError(msg) => {
+                            error!("Internal error in get_best_offer_prices: {}", msg);
+                            response.status = Some(offer_messages::Status {
+                                code: offer_messages::Code::Internal.into(),
+                                message: "Internal server error".to_string(),
+                                details: vec![],
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        Err(err) => {
+            error!("Error decoding GetBestOfferPricesRequest: {}", err);
+            response.status = Some(offer_messages::Status {
+                code: offer_messages::Code::InvalidArgument.into(),
+                message: "Invalid request format".to_string(),
+                details: vec![],
+            });
+        }
+    }
+
+    let mut buf = vec![];
+    response.encode(&mut buf).unwrap();
+    Response {
+        subject: request.reply.unwrap(),
+        payload: buf.into(),
+    }
+}
+
 fn map_proto_offer_to_model_offer(offer: offer_messages::OfferCreateRequest) -> model::Offer {
     model::Offer {
         id: Some(Uuid::new_v4().to_string()),

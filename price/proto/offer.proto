@@ -63,9 +63,28 @@ message GetBestOfferPriceResponse {
     bool found = 2;
 }
 
+message GetBestOfferPricesRequest {
+    repeated string skus = 1;
+    int32 quantity = 2;
+    optional string date = 3; // ISO 8601 format, defaults to current date
+    string currency = 4;
+}
+
+message SkuOfferResult {
+    string sku = 1;
+    optional Offer offer = 2;
+    bool found = 3;
+}
+
+message GetBestOfferPricesResponse {
+    repeated SkuOfferResult sku_results = 1;
+    Status status = 2;
+}
+
 service OfferService {
     rpc CreateOffer(OfferCreateRequest) returns (OfferCreateResponse);
     rpc GetOffer(OfferGetRequest) returns (OfferGetResponse);
     rpc DeleteOffer(OfferDeleteRequest) returns (OfferDeleteResponse);
     rpc GetBestOfferPrice(GetBestOfferPriceRequest) returns (GetBestOfferPriceResponse);
+    rpc GetBestOfferPrices(GetBestOfferPricesRequest) returns (GetBestOfferPricesResponse);
 }

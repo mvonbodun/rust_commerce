@@ -4,6 +4,7 @@ use async_trait::async_trait;
 use bson::doc;
 use chrono::NaiveDate;
 use mongodb::Collection;
+use std::collections::HashMap;
 
 use crate::model::{DBError, Offer};
 
@@ -19,6 +20,13 @@ pub trait OfferDao {
         date: NaiveDate,
         currency: &str,
     ) -> Result<Option<Offer>, DBError>;
+    async fn find_best_offer_prices(
+        &self,
+        skus: &[String],
+        quantity: i32,
+        date: NaiveDate,
+        currency: &str,
+    ) -> Result<HashMap<String, Option<Offer>>, DBError>;
 }
 
 pub struct OfferDaoImpl {
@@ -161,5 +169,29 @@ impl OfferDao for OfferDaoImpl {
                 Ok(None)
             }
         }
+    }
+
+    async fn find_best_offer_prices(
+        &self,
+        skus: &[String],
+        quantity: i32,
+        date: NaiveDate,
+        currency: &str,
+    ) -> Result<HashMap<String, Option<Offer>>, DBError> {
+        debug!(
+            "Finding best offer prices for {} SKUs, quantity: {}, date: {}, currency: {}",
+            skus.len(), quantity, date, currency
+        );
+
+        let mut results = HashMap::new();
+
+        // Process each SKU individually to reuse existing logic
+        for sku in skus {
+            let offer_result = self.find_best_offer_price(sku, quantity, date, currency).await?;
+            results.insert(sku.clone(), offer_result);
+        }
+
+        debug!("Found best offers for {} SKUs", results.len());
+        Ok(results)
     }
 }

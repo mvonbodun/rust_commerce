@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 use offer_messages::{
     OfferCreateRequest, OfferCreateResponse, OfferGetRequest, OfferGetResponse,
     OfferDeleteRequest, OfferDeleteResponse, GetBestOfferPriceRequest, GetBestOfferPriceResponse,
+    GetBestOfferPricesRequest, GetBestOfferPricesResponse,
 };
 use log::debug;
 use prost::Message;
@@ -115,6 +116,16 @@ enum Commands {
     GetBestOfferPrice {
         #[arg(short, long)]
         sku: String,
+        #[arg(short, long)]
+        quantity: i32,
+        #[arg(short, long, default_value = "USD")]
+        currency: String,
+        #[arg(short, long)]
+        date: Option<String>,
+    },
+    GetBestOfferPrices {
+        #[arg(short, long)]
+        skus: String, // comma-separated list of SKUs
         #[arg(short, long)]
         quantity: i32,
         #[arg(short, long, default_value = "USD")]
@@ -252,6 +263,83 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("❌ No offer found for SKU: {} with quantity: {} in currency: {}", 
                     sku, quantity, currency);
             }
+        }
+        Some(Commands::GetBestOfferPrices { skus, quantity, currency, date }) => {
+            // Validate currency
+            Currency::from_code(currency)
+                .ok_or_else(|| format!("Invalid currency: {}", currency))?;
+
+            // Parse comma-separated SKUs
+            let sku_list: Vec<String> = skus
+                .split(',')
+                .map(|s| s.trim().to_string())
+                .filter(|s| !s.is_empty())
+                .collect();
+
+            if sku_list.is_empty() {
+                return Err("No valid SKUs provided".into());
+            }
+
+            let get_best_offers_request = GetBestOfferPricesRequest {
+                skus: sku_list.clone(),
+                quantity: *quantity,
+                date: date.clone(),
+                currency: currency.clone(),
+            };
+
+            let request_bytes = get_best_offers_request.encode_to_vec();
+            
+            println!("Sending get_best_offer_prices request for {} SKUs (quantity: {}, currency: {})", 
+                sku_list.len(), quantity, currency);
+            if let Some(date) = date {
+                println!("  Date: {}", date);
+            }
+            println!("  SKUs: {}", sku_list.join(", "));
+            
+            let response = client
+                .request("offers.get_best_offer_prices", request_bytes.into())
+                .await?;
+
+            let best_offers_response = GetBestOfferPricesResponse::decode(&*response.payload)?;
+            
+            if let Some(status) = &best_offers_response.status {
+                if status.code != 0 {
+                    println!("❌ Error: {} (code: {})", status.message, status.code);
+                    return Ok(());
+                }
+            }
+
+            println!("📊 Results for {} SKUs:", best_offers_response.sku_results.len());
+            
+            let mut found_count = 0;
+            let mut not_found_count = 0;
+            
+            for sku_result in &best_offers_response.sku_results {
+                if sku_result.found {
+                    found_count += 1;
+                    if let Some(offer) = &sku_result.offer {
+                        println!("✅ SKU: {}", sku_result.sku);
+                        println!("   Offer ID: {}", offer.id.as_ref().unwrap_or(&"N/A".to_string()));
+                        println!("   Min Quantity: {}", offer.min_quantity);
+                        println!("   Max Quantity: {}", offer.max_quantity.map_or("N/A".to_string(), |q| q.to_string()));
+                        println!("   Prices:");
+                        for price in &offer.offer_prices {
+                            println!("     - {} {}", price.price, price.currency);
+                        }
+                    } else {
+                        println!("⚠️ SKU: {} - Found but no details", sku_result.sku);
+                    }
+                } else {
+                    not_found_count += 1;
+                    println!("❌ SKU: {} - No offer found", sku_result.sku);
+                }
+                println!(); // Empty line for readability
+            }
+            
+            println!("Summary:");
+            println!("  ✅ Found offers: {}", found_count);
+            println!("  ❌ No offers: {}", not_found_count);
+            println!("  📊 Total SKUs: {}", best_offers_response.sku_results.len());
         }
         Some(Commands::Import { file, dry_run }) => {
             println!("Importing offers from file: {:?}", file);
