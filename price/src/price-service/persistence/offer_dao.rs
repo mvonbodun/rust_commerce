@@ -183,15 +183,70 @@ impl OfferDao for OfferDaoImpl {
             skus.len(), quantity, date, currency
         );
 
-        let mut results = HashMap::new();
+        // Convert NaiveDate to BSON DateTime for MongoDB query
+        let bson_date = bson::DateTime::from_chrono(
+            date.and_hms_opt(0, 0, 0)
+                .unwrap()
+                .and_local_timezone(chrono::Utc)
+                .unwrap(),
+        );
 
-        // Process each SKU individually to reuse existing logic
+        // Build the MongoDB query using $in for multiple SKUs
+        let query = doc! {
+            "sku": { "$in": skus },
+            "min_quantity": { "$lte": quantity },
+            "max_quantity": { "$gte": quantity },
+            "start_date": { "$lte": bson_date },
+            "end_date": { "$gte": bson_date },
+            "offer_prices": { "$elemMatch": { "currency": currency } }
+        };
+
+        debug!("MongoDB multi-SKU query: {:?}", query);
+
+        // Execute the query with sort to get best prices (lowest first)
+        let find_options = mongodb::options::FindOptions::builder()
+            .sort(doc! { "sku": 1, "offer_prices.price": 1 })
+            .build();
+
+        let mut cursor = self
+            .collection
+            .find(query)
+            .with_options(find_options)
+            .await
+            .map_err(|error| {
+                error!("DB error in find_best_offer_prices: {:?}", error);
+                DBError::Other(Box::new(error))
+            })?;
+
+        // Initialize results map with all SKUs set to None
+        let mut results: HashMap<String, Option<Offer>> = HashMap::new();
         for sku in skus {
-            let offer_result = self.find_best_offer_price(sku, quantity, date, currency).await?;
-            results.insert(sku.clone(), offer_result);
+            results.insert(sku.clone(), None);
         }
 
-        debug!("Found best offers for {} SKUs", results.len());
+        // Process cursor results and keep only the best (first) offer for each SKU
+        use futures::stream::StreamExt;
+        while let Some(result) = cursor.next().await {
+            match result {
+                Ok(offer) => {
+                    let sku = &offer.sku;
+                    // Only update if we haven't found an offer for this SKU yet
+                    // (since results are sorted by price, first one is the best)
+                    if results.get(sku).unwrap().is_none() {
+                        debug!("Found best offer for SKU {}: {:?}", sku, offer.id);
+                        results.insert(sku.clone(), Some(offer));
+                    }
+                }
+                Err(error) => {
+                    error!("DB cursor error in find_best_offer_prices: {:?}", error);
+                    return Err(DBError::Other(Box::new(error)));
+                }
+            }
+        }
+
+        debug!("Found best offers for {} out of {} SKUs", 
+               results.values().filter(|v| v.is_some()).count(), 
+               skus.len());
         Ok(results)
     }
 }
