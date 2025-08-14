@@ -4,6 +4,7 @@ use catalog_messages::{
     ProductGetBySlugRequest, ProductGetBySlugResponse,
     ProductDeleteRequest, ProductDeleteResponse, ProductSearchRequest, ProductSearchResponse,
     ProductExportRequest, ProductExportResponse,
+    GetProductSlugsRequest, GetProductSlugsResponse,
     CreateCategoryRequest, CategoryResponse, GetCategoryRequest, GetCategoryBySlugRequest,
     UpdateCategoryRequest, DeleteCategoryRequest, CategoryExportRequest, CategoryExportResponse,
     CategoryImportRequest, CategoryImportResponse, CategoryTreeRequest, CategoryTreeResponse,
@@ -174,6 +175,14 @@ enum Commands {
     CategoryGetTree {
         #[arg(long, help = "Rebuild the tree cache from scratch")]
         rebuild: bool,
+    },
+    GetProductSlugs {
+        #[arg(long, help = "Number of slugs to retrieve per page", default_value = "100")]
+        batch_size: Option<i32>,
+        #[arg(long, help = "Cursor for pagination")]
+        cursor: Option<String>,
+        #[arg(long, help = "Include inactive products", default_value = "false")]
+        include_inactive: bool,
     },
 }
 
@@ -729,6 +738,58 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 } else {
                     println!("❌ Failed to retrieve category tree: {} ({})", status.message, status.code);
+                }
+            } else {
+                println!("❌ Invalid response from server");
+            }
+        }
+        Some(Commands::GetProductSlugs { batch_size, cursor, include_inactive }) => {
+            println!("🔍 Retrieving product slugs...");
+            
+            let request = GetProductSlugsRequest {
+                batch_size: *batch_size,
+                cursor: cursor.clone(),
+                include_inactive: Some(*include_inactive),
+            };
+
+            let request_bytes = request.encode_to_vec();
+            
+            println!("  📦 Batch size: {}", batch_size.unwrap_or(100));
+            if let Some(c) = cursor {
+                println!("  🔍 Cursor: {}", c);
+            }
+            println!("  🎛️ Include inactive: {}", include_inactive);
+            
+            let response = client
+                .request("catalog.get_product_slugs", request_bytes.into())
+                .await?;
+            
+            let slugs_response = GetProductSlugsResponse::decode(&*response.payload)?;
+            
+            if let Some(status) = &slugs_response.status {
+                if status.code == catalog_messages::Code::Ok as i32 {
+                    println!("✅ Product slugs retrieved successfully!");
+                    println!("  📊 Retrieved {} slugs", slugs_response.slugs.len());
+                    println!("  📈 Total in batch: {}", slugs_response.total_count);
+                    println!("  🔄 Has more pages: {}", slugs_response.has_more);
+                    
+                    if let Some(next_cursor) = &slugs_response.next_cursor {
+                        println!("  ➡️ Next cursor: {}", next_cursor);
+                    }
+                    
+                    println!("📋 Product Slugs:");
+                    for (index, slug) in slugs_response.slugs.iter().enumerate() {
+                        println!("  {}. {}", index + 1, slug);
+                    }
+                    
+                    if slugs_response.has_more {
+                        println!("\n💡 To get the next page, use:");
+                        if let Some(next_cursor) = &slugs_response.next_cursor {
+                            println!("   cargo run --bin catalog-client get-product-slugs --cursor '{}'", next_cursor);
+                        }
+                    }
+                } else {
+                    println!("❌ Failed to retrieve product slugs: {} ({})", status.message, status.code);
                 }
             } else {
                 println!("❌ Invalid response from server");

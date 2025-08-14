@@ -37,6 +37,7 @@ prost = { version = "0.14.1", features = ["derive"] }
 prost-types = "0.14.1"
 clap = { version = "4.5.17", features = ["derive"] }
 chrono = { version = "0.4.38", features = ["serde"] }
+base64 = "0.21.0"
 
 [build-dependencies]
 prost-build = "0.14.1"

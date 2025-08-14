@@ -94,6 +94,20 @@ message ProductExportResponse {
     Status status = 3;
 }
 
+message GetProductSlugsRequest {
+    optional int32 batch_size = 1;     // Default: 100, Max: 1000
+    optional string cursor = 2;        // Opaque cursor for pagination
+    optional bool include_inactive = 3; // Include inactive products (default: false)
+}
+
+message GetProductSlugsResponse {
+    repeated string slugs = 1;         // Array of product slugs
+    optional string next_cursor = 2;   // Cursor for next page (null if last page)
+    int32 total_count = 3;             // Total number of products (optional, expensive)
+    bool has_more = 4;                 // Whether more results exist
+    Status status = 5;                 // Operation status
+}
+
 message Product {
     optional string id = 1;
     string name = 2;
@@ -164,6 +178,7 @@ service CatalogService {
     rpc DeleteProduct(ProductDeleteRequest) returns (ProductDeleteResponse);
     rpc SearchProducts(ProductSearchRequest) returns (ProductSearchResponse);
     rpc ExportProducts(ProductExportRequest) returns (ProductExportResponse);
+    rpc GetProductSlugs(GetProductSlugsRequest) returns (GetProductSlugsResponse);
     
     // Category methods  
     rpc CreateCategory(CreateCategoryRequest) returns (CategoryResponse);

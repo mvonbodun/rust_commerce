@@ -4,7 +4,7 @@ mod persistence;
 
 use bson::doc;
 use handlers::{
-    create_product, delete_product, get_product, get_product_by_slug, search_products, export_products, update_product, Router,
+    create_product, delete_product, get_product, get_product_by_slug, search_products, export_products, update_product, get_product_slugs, Router,
     category_service::CategoryService,
     category_handlers::{handle_create_category, handle_get_category, handle_get_category_by_slug, handle_export_categories, handle_update_category, handle_delete_category, handle_import_categories, handle_get_category_tree},
 };
@@ -99,7 +99,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     ];
     categories_coll.create_indexes(category_indexes).await?;
 
-    let product_dao = Arc::new(ProductDaoImpl::new(products_coll));
+    let product_dao = Arc::new(ProductDaoImpl::new(products_coll, database.clone()));
     let category_dao = Arc::new(CategoryDaoImpl::new(categories_coll, category_cache_coll));
     let category_service = Arc::new(CategoryService::new(category_dao));
 
@@ -137,6 +137,10 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         .add_route(
             "export_products".to_owned(),
             Box::new(|d, c, m| Box::pin(export_products(d, c, m))),
+        )
+        .add_route(
+            "get_product_slugs".to_owned(),
+            Box::new(|d, c, m| Box::pin(get_product_slugs(d, c, m))),
         );
 
     // Connect to the nats server

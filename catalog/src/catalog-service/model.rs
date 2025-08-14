@@ -5,6 +5,12 @@ use uuid::Uuid;
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
 
+/// A lightweight struct specifically for retrieving product slugs efficiently
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProductSlug {
+    pub slug: String,
+}
+
 /// A type-safe wrapper for Bayesian average ratings that ensures values are always rounded to one decimal place.
 /// This prevents precision issues and enforces business rules for rating calculations.
 #[derive(Debug, Clone, Copy, PartialEq)]

@@ -3,6 +3,7 @@ use crate::model::{Product, ProductBuilder, Reviews, HierarchicalCategories, Pro
 use crate::persistence::product_dao::ProductDao;
 use crate::catalog_messages::{ProductCreateRequest, ProductUpdateRequest};
 
+#[derive(Debug)]
 pub enum HandlerError {
     InternalError(String),
 }
@@ -334,6 +335,32 @@ pub async fn export_products(
             error!("Error exporting products: {}", e);
             Err(HandlerError::InternalError(format!(
                 "Failed to export products: {}",
+                e
+            )))
+        }
+    }
+}
+
+pub async fn get_product_slugs(
+    batch_size: Option<i32>,
+    cursor: Option<String>,
+    include_inactive: Option<bool>,
+    product_dao: &(dyn ProductDao + Send + Sync),
+) -> Result<(Vec<String>, Option<String>, bool), HandlerError> {
+    debug!("Before call to get_product_slugs handler_inner");
+    
+    // Set defaults for optional parameters
+    let batch_size = batch_size.unwrap_or(100);
+    let include_inactive = include_inactive.unwrap_or(false);
+    
+    let result = product_dao.get_product_slugs_paginated(batch_size, cursor, include_inactive).await;
+
+    match result {
+        Ok((slugs, next_cursor, has_more)) => Ok((slugs, next_cursor, has_more)),
+        Err(e) => {
+            error!("Error getting product slugs: {}", e);
+            Err(HandlerError::InternalError(format!(
+                "Failed to get product slugs: {}",
                 e
             )))
         }
