@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 use inventory_messages::{
     InventoryCreateRequest, InventoryCreateResponse, InventoryGetRequest, InventoryGetResponse,
     InventoryDeleteRequest, InventoryDeleteResponse, InventoryUpdateStockRequest, InventoryUpdateStockResponse,
+    InventoryGetAllLocationsBySkuRequest, InventoryGetAllLocationsBySkuResponse,
 };
 use log::debug;
 use prost::Message;
@@ -96,6 +97,12 @@ enum Commands {
         #[arg(short, long)]
         reason: String,
     },
+    /// Get inventory across all locations for multiple SKUs
+    GetMultiSku {
+        /// Comma-separated list of SKUs (max 100)
+        #[arg(short, long, value_delimiter = ',')]
+        skus: Vec<String>,
+    },
     /// Import inventory items from JSON file
     Import {
         /// Path to JSON file containing inventory items
@@ -125,6 +132,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         Commands::UpdateStock { sku, quantity_change, reason } => {
             update_stock(&client, sku, quantity_change, reason).await?;
+        }
+        Commands::GetMultiSku { skus } => {
+            get_multi_sku_inventory(&client, skus).await?;
         }
         Commands::Import { file } => {
             import_inventory_items(&client, file).await?;
@@ -324,6 +334,91 @@ async fn import_inventory_items(
             None => {
                 println!("✗ Invalid response for item: {}", item.sku);
             }
+        }
+    }
+
+    Ok(())
+}
+
+async fn get_multi_sku_inventory(
+    client: &async_nats::Client,
+    skus: Vec<String>,
+) -> Result<(), Box<dyn std::error::Error>> {
+    if skus.is_empty() {
+        println!("❌ No SKUs provided");
+        return Ok(());
+    }
+
+    if skus.len() > 100 {
+        println!("❌ Too many SKUs provided. Maximum is 100, got {}", skus.len());
+        return Ok(());
+    }
+
+    println!("📦 Getting inventory for {} SKU(s)...", skus.len());
+
+    let request = InventoryGetAllLocationsBySkuRequest {
+        skus: skus.clone(),
+    };
+
+    let response = client
+        .request("inventory.get_all_locations_by_sku", request.encode_to_vec().into())
+        .await?;
+
+    let response = InventoryGetAllLocationsBySkuResponse::decode(response.payload)?;
+
+    match response.status {
+        Some(status) if status.code == inventory_messages::Code::Ok as i32 => {
+            println!("✅ Successfully retrieved inventory data\n");
+
+            // Display found SKUs
+            for sku_summary in &response.sku_summaries {
+                println!("📋 SKU: {}", sku_summary.sku);
+                
+                if let Some(total) = &sku_summary.total_inventory {
+                    println!("  📊 Total Inventory: {} units ({} available, {} reserved)",
+                        total.total_quantity,
+                        total.total_available_quantity,
+                        total.total_reserved_quantity
+                    );
+                    println!("  📍 Locations: {}", total.location_count);
+                    println!("  ⚠️  Min Stock Level: {}", total.min_stock_level_across_locations);
+                }
+
+                if !sku_summary.location_details.is_empty() {
+                    println!("  🏪 Location Details:");
+                    for detail in &sku_summary.location_details {
+                        println!("    ├─ {}: {} units ({} available, {} reserved, min: {})",
+                            detail.location,
+                            detail.quantity,
+                            detail.available_quantity,
+                            detail.reserved_quantity,
+                            detail.min_stock_level
+                        );
+                    }
+                }
+                println!();
+            }
+
+            // Display not found SKUs
+            if !response.not_found_skus.is_empty() {
+                println!("❌ SKUs not found:");
+                for not_found_sku in &response.not_found_skus {
+                    println!("  ✗ {}", not_found_sku);
+                }
+                println!();
+            }
+
+            // Summary
+            println!("📈 Summary:");
+            println!("  ✅ Found: {} SKUs", response.sku_summaries.len());
+            println!("  ❌ Not found: {} SKUs", response.not_found_skus.len());
+            println!("  📦 Total requested: {} SKUs", skus.len());
+        }
+        Some(status) => {
+            println!("❌ Error: {} (Code: {})", status.message, status.code);
+        }
+        None => {
+            println!("❌ Invalid response from server");
         }
     }
 

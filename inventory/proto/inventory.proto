@@ -46,6 +46,40 @@ message InventoryDeleteResponse {
   Status status = 1;
 }
 
+message InventoryGetAllLocationsBySkuRequest {
+    repeated string skus = 1;
+}
+
+message InventoryGetAllLocationsBySkuResponse {
+    repeated SkuInventorySummary sku_summaries = 1;
+    repeated string not_found_skus = 2;
+    Status status = 3;
+}
+
+message SkuInventorySummary {
+    string sku = 1;
+    InventoryAggregation total_inventory = 2;
+    repeated InventoryLocationDetail location_details = 3;
+}
+
+message InventoryAggregation {
+    int32 total_quantity = 1;
+    int32 total_reserved_quantity = 2;
+    int32 total_available_quantity = 3;
+    int32 min_stock_level_across_locations = 4;
+    int32 location_count = 5;
+}
+
+message InventoryLocationDetail {
+    string location = 1;
+    int32 quantity = 2;
+    int32 reserved_quantity = 3;
+    int32 available_quantity = 4;
+    int32 min_stock_level = 5;
+    google.protobuf.Timestamp last_updated = 6;
+    google.protobuf.Timestamp created_at = 7;
+}
+
 message InventoryItem {
     optional string id = 1;
     string sku = 2;

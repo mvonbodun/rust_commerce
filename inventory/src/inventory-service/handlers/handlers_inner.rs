@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use log::{debug, error};
 
 use crate::model::InventoryItem;
@@ -84,6 +85,39 @@ pub async fn update_stock(
             error!("Error updating stock: {}", e);
             Err(HandlerError::InternalError(format!(
                 "Failed to update stock: {}",
+                e
+            )))
+        }
+    }
+}
+
+pub async fn get_all_locations_by_sku(
+    skus: Vec<String>,
+    inventory_dao: &(dyn InventoryDao + Sync + Send),
+) -> Result<(HashMap<String, Vec<InventoryItem>>, Vec<String>), HandlerError> {
+    debug!("Before call to get_items_by_skus for {} SKUs", skus.len());
+    
+    if skus.is_empty() {
+        return Ok((HashMap::new(), Vec::new()));
+    }
+    
+    let result = inventory_dao.get_items_by_skus(skus.clone()).await;
+    debug!("After call to get_items_by_skus: {:?}", result.is_ok());
+    
+    match result {
+        Ok(inventory_by_sku) => {
+            // Determine which SKUs were not found
+            let found_skus: std::collections::HashSet<String> = inventory_by_sku.keys().cloned().collect();
+            let requested_skus: std::collections::HashSet<String> = skus.into_iter().collect();
+            let not_found_skus: Vec<String> = requested_skus.difference(&found_skus).cloned().collect();
+            
+            debug!("Found {} SKUs, {} not found", found_skus.len(), not_found_skus.len());
+            Ok((inventory_by_sku, not_found_skus))
+        }
+        Err(e) => {
+            error!("Error getting inventory items by SKUs: {}", e);
+            Err(HandlerError::InternalError(format!(
+                "Failed to get inventory items by SKUs: {}",
                 e
             )))
         }

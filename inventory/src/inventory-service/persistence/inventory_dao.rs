@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use log::{debug, error, info};
 
 use async_trait::async_trait;
@@ -11,6 +12,7 @@ pub trait InventoryDao {
     async fn create_item(&self, item: InventoryItem) -> Result<InventoryItem, DBError>;
     async fn delete_item(&self, sku: String) -> Result<(), DBError>;
     async fn get_item(&self, sku: String) -> Result<Option<InventoryItem>, DBError>;
+    async fn get_items_by_skus(&self, skus: Vec<String>) -> Result<HashMap<String, Vec<InventoryItem>>, DBError>;
     async fn update_stock(&self, sku: String, quantity_change: i32, reason: String) -> Result<Option<InventoryItem>, DBError>;
     async fn find_low_stock_items(&self, location: Option<String>) -> Result<Vec<InventoryItem>, DBError>;
 }
@@ -61,6 +63,49 @@ impl InventoryDao for InventoryDaoImpl {
                 Ok(None)
             }
         }
+    }
+
+    // Get inventory items for multiple SKUs across all locations
+    async fn get_items_by_skus(&self, skus: Vec<String>) -> Result<HashMap<String, Vec<InventoryItem>>, DBError> {
+        debug!("Getting inventory items for {} SKUs: {:?}", skus.len(), skus);
+        
+        if skus.is_empty() {
+            return Ok(HashMap::new());
+        }
+
+        // Query for all items with SKUs in the provided list
+        let query = doc! {"sku": {"$in": &skus}};
+        
+        let mut cursor = self
+            .collection
+            .find(query)
+            .await
+            .map_err(|error| {
+                error!("DB error in get_items_by_skus: {:?}", error);
+                DBError::Other(Box::new(error))
+            })?;
+
+        let mut result: HashMap<String, Vec<InventoryItem>> = HashMap::new();
+        use futures::stream::StreamExt;
+        
+        while let Some(item_result) = cursor.next().await {
+            match item_result {
+                Ok(item) => {
+                    debug!("Found inventory item: {} at {}", item.sku, item.location);
+                    result
+                        .entry(item.sku.clone())
+                        .or_insert_with(Vec::new)
+                        .push(item);
+                }
+                Err(error) => {
+                    error!("DB cursor error in get_items_by_skus: {:?}", error);
+                    return Err(DBError::Other(Box::new(error)));
+                }
+            }
+        }
+
+        debug!("Found inventory for {} SKUs out of {} requested", result.len(), skus.len());
+        Ok(result)
     }
 
     // Delete an inventory item

@@ -2,7 +2,7 @@ mod handlers;
 mod model;
 mod persistence;
 
-use handlers::{create_item, delete_item, get_item, update_stock, Router};
+use handlers::{create_item, delete_item, get_item, get_all_locations_by_sku, update_stock, Router};
 use persistence::inventory_dao::InventoryDaoImpl;
 use std::{borrow::Borrow, env, error::Error, sync::Arc};
 use tokio::signal;
@@ -43,6 +43,10 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         .add_route(
             "get_item".to_owned(),
             Box::new(|d, m| Box::pin(get_item(d, m))),
+        )
+        .add_route(
+            "get_all_locations_by_sku".to_owned(),
+            Box::new(|d, m| Box::pin(get_all_locations_by_sku(d, m))),
         )
         .add_route(
             "delete_item".to_owned(),
