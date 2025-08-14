@@ -11,7 +11,7 @@ use serde_json;
 use std::fs;
 use std::path::PathBuf;
 use rust_inventory::InventoryItem;
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 
 pub mod inventory_messages {
     include!(concat!(env!("OUT_DIR"), "/inventory_messages.rs"));
