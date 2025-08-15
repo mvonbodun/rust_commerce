@@ -17,6 +17,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 use rust_catalog::Product;
+use dotenvy::dotenv;
 
 pub mod catalog_messages {
     include!(concat!(env!("OUT_DIR"), "/catalog_messages.rs"));
@@ -190,10 +191,16 @@ enum Commands {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     pretty_env_logger::init();
     
+    // Load environment variables
+    dotenv().ok();
+    
     let cli = Cli::parse();
 
+    // Get NATS URL from environment
+    let nats_url = std::env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
+
     // Connect to the nats server
-    let client = async_nats::connect("0.0.0.0:4222").await?;
+    let client = async_nats::connect(&nats_url).await?;
 
     match &cli.command {
         Some(Commands::ProductCreate { name, product_ref, brand }) => {

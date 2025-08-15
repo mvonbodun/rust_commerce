@@ -41,6 +41,10 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     // Get MongoDB URL
     let uri = env::var("MONGODB_URL").expect("MONGODB_URL must be set");
+    
+    // Get NATS URL
+    let nats_url = env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
+    
     // connect to MongoDB
     let client = Client::with_uri_str(uri).await?;
     let database = client.database("db_catalog");
@@ -144,7 +148,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         );
 
     // Connect to the nats server
-    let nats_client = async_nats::connect("0.0.0.0:4222").await?;
+    let nats_client = async_nats::connect(&nats_url).await?;
 
     let requests = nats_client
         .queue_subscribe("catalog.*", "queue".to_owned())
