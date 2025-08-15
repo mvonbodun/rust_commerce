@@ -1,6 +1,6 @@
 # Rust build output
 /target
-.env
+.env.*
 
 # Cargo package files
 **/*.rs.bk
@@ -21,4 +21,4 @@ Thumbs.db
 
 # Other
 Cargo.lock
-.env
+

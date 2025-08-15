@@ -1,0 +1,135 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: rust-commerce-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: rust_commerce
+    volumes:
+      - mongodb_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - rust-commerce
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # NATS Message Broker
+  nats:
+    image: nats:latest
+    container_name: rust-commerce-nats
+    restart: unless-stopped
+    ports:
+      - "4222:4222"  # Client connections
+      - "6222:6222"  # Cluster connections
+      - "8222:8222"  # HTTP monitoring
+    command: ["--http_port", "8222"]
+    networks:
+      - rust-commerce
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8222/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Catalog Service
+  catalog-service:
+    build:
+      context: ./catalog
+      dockerfile: Dockerfile
+    container_name: rust-commerce-catalog-service
+    restart: unless-stopped
+    environment:
+      - RUST_ENV=production
+      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017/catalog?authSource=admin
+      - NATS_URL=nats://rust-commerce-nats:4222
+      - RUST_LOG=info
+      - LOG_LEVEL=info
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+    networks:
+      - rust-commerce
+
+  # Inventory Service
+  inventory-service:
+    build:
+      context: ./inventory
+      dockerfile: Dockerfile
+    container_name: rust-commerce-inventory-service
+    restart: unless-stopped
+    environment:
+      - RUST_ENV=production
+      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017/inventory?authSource=admin
+      - NATS_URL=nats://rust-commerce-nats:4222
+      - RUST_LOG=info
+      - LOG_LEVEL=info
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+    networks:
+      - rust-commerce
+
+  # Orders Service
+  orders-service:
+    build:
+      context: ./orders
+      dockerfile: Dockerfile
+    container_name: rust-commerce-order-service
+    restart: unless-stopped
+    environment:
+      - RUST_ENV=production
+      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017/orders?authSource=admin
+      - NATS_URL=nats://rust-commerce-nats:4222
+      - RUST_LOG=info
+      - LOG_LEVEL=info
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+    networks:
+      - rust-commerce
+
+  # Price Service
+  price-service:
+    build:
+      context: ./price
+      dockerfile: Dockerfile
+    container_name: rust-commerce-price-service
+    restart: unless-stopped
+    environment:
+      - RUST_ENV=production
+      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017/price?authSource=admin
+      - NATS_URL=nats://rust-commerce-nats:4222
+      - RUST_LOG=info
+      - LOG_LEVEL=info
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+    networks:
+      - rust-commerce
+
+networks:
+  rust-commerce:
+    driver: bridge
+    name: rust-commerce
+
+volumes:
+  mongodb_data:
+    driver: local

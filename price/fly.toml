@@ -1,0 +1,21 @@
+# fly.toml app configuration file generated for rust-commerce-price on 2025-08-15T00:00:00Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+
+app = "rust-commerce-price"
+primary_region = "sjc"
+
+[build]
+
+[env]
+  RUST_ENV = "production"
+  RUST_LOG = "info"
+  LOG_LEVEL = "info"
+
+# No HTTP services - this is a NATS-based microservice
+# Services communicate internally via NATS messaging
+
+[[vm]]
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1
