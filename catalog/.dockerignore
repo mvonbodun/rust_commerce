@@ -1,4 +1,4 @@
-.env
+.env*
 .dockerignore
 spec.yaml
 target/
@@ -10,3 +10,5 @@ migrations/
 data/
 sample_records_backup/
 mongodb/
+docs/
+sample_records_backup

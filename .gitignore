@@ -1,6 +1,7 @@
 # Rust build output
 /target
-.env.*
+.env*
+
 
 # Cargo package files
 **/*.rs.bk

@@ -1,8 +1,8 @@
-.env
+.env*
 .dockerignore
 target/
 tests/
 Dockerfile
 scripts/
-sample_records_backup/
+sample_records/
 mongodb/
