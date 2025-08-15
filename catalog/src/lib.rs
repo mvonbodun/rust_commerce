@@ -4,3 +4,5 @@ pub mod model;
 
 // Re-export the models at the crate level for easier importing
 pub use model::*;
+
+pub mod env_config;

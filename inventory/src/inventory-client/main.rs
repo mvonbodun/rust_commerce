@@ -11,6 +11,7 @@ use serde_json;
 use std::fs;
 use std::path::PathBuf;
 use rust_inventory::InventoryItem;
+use rust_inventory::env_config::load_environment;
 use chrono::Utc;
 
 pub mod inventory_messages {
@@ -115,10 +116,16 @@ enum Commands {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     pretty_env_logger::init();
     
+    // Load environment variables
+    load_environment();
+    
     let cli = Cli::parse();
 
+    // Get NATS URL from environment
+    let nats_url = std::env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
+
     // Connect to NATS
-    let client = async_nats::connect("0.0.0.0:4222").await?;
+    let client = async_nats::connect(&nats_url).await?;
 
     match cli.command {
         Commands::Create { sku, quantity, reserved_quantity, min_stock_level, location } => {

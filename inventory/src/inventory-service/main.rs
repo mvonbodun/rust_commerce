@@ -2,17 +2,17 @@ mod handlers;
 mod model;
 mod persistence;
 
-use handlers::{create_item, delete_item, get_item, get_all_locations_by_sku, update_stock, Router};
+use handlers::{create_item, get_item, delete_item, update_stock, get_all_locations_by_sku, Router};
 use persistence::inventory_dao::InventoryDaoImpl;
-use std::{borrow::Borrow, env, error::Error, sync::Arc};
-use tokio::signal;
+use std::{env, error::Error, sync::Arc};
 
-use dotenvy::dotenv;
 use log::{debug, error, info};
 
 use futures::StreamExt;
 use model::InventoryItem;
 use mongodb::{Client, Collection};
+use rust_inventory::env_config::load_environment;
+use tokio::signal;
 
 pub mod inventory_messages {
     include!(concat!(env!("OUT_DIR"), "/inventory_messages.rs"));
@@ -22,11 +22,18 @@ pub mod inventory_messages {
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     pretty_env_logger::init();
 
-    // initialize dotenv
-    dotenv().ok();
+    // Load layered environment configuration
+    load_environment();
 
     // Get MongoDB URL
     let uri = env::var("MONGODB_URL").expect("MONGODB_URL must be set");
+    
+    // Get NATS URL
+    let nats_url = env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
+    
+    println!("🔗 Connecting to MongoDB: {}", uri);
+    println!("🔗 Connecting to NATS: {}", nats_url);
+    
     // connect to MongoDB
     let client = Client::with_uri_str(uri).await?;
     let database = client.database("db_inventory");
@@ -58,13 +65,13 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         );
 
     // Connect to the nats server
-    let client = async_nats::connect("0.0.0.0:4222").await?;
+    let client = async_nats::connect(&nats_url).await?;
 
     let requests = client
         .queue_subscribe("inventory.*", "queue".to_owned())
         .await?;
 
-    let routes = router.route_map.borrow();
+    let routes = &router.route_map;
 
     requests
         .for_each_concurrent(25, |request| {

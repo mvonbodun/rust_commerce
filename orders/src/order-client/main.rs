@@ -5,6 +5,9 @@ use order_messages::{
 };
 use prost::Message;
 
+#[path = "../env_config.rs"]
+pub mod env_config;
+
 pub mod order_messages {
     include!(concat!(env!("OUT_DIR"), "/order_messages.rs"));
 }
@@ -26,8 +29,14 @@ enum Commands {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Load environment variables
+    env_config::load_environment();
+    
+    // Get NATS URL from environment
+    let nats_url = std::env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
+    
     // Connect to the nats server
-    let client = async_nats::connect("0.0.0.0:4222").await?;
+    let client = async_nats::connect(&nats_url).await?;
 
     // Create an order
     let order = OrderCreateRequest {

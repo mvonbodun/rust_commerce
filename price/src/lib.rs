@@ -9,6 +9,8 @@ pub mod offer_messages {
 #[path = "price-service/model.rs"]
 pub mod model;
 
+pub mod env_config;
+
 // Persistence layer
 #[path = "price-service/persistence"]
 pub mod persistence {

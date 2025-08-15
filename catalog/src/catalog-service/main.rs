@@ -14,7 +14,7 @@ use persistence::{
 };
 use std::{env, error::Error, sync::Arc};
 
-use dotenvy::dotenv;
+use rust_catalog::env_config::load_environment;
 use log::{debug, error, info};
 
 use futures::StreamExt;
@@ -36,8 +36,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     pretty_env_logger::init();
     info!("Starting catalog service");
 
-    // initialize dotenv
-    dotenv().ok();
+    // Load environment configuration
+    load_environment();
 
     // Get MongoDB URL
     let uri = env::var("MONGODB_URL").expect("MONGODB_URL must be set");

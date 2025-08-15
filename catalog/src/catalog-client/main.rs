@@ -17,7 +17,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 use rust_catalog::Product;
-use dotenvy::dotenv;
+use rust_catalog::env_config::load_environment;
 
 pub mod catalog_messages {
     include!(concat!(env!("OUT_DIR"), "/catalog_messages.rs"));
@@ -192,7 +192,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     pretty_env_logger::init();
     
     // Load environment variables
-    dotenv().ok();
+    load_environment();
     
     let cli = Cli::parse();
 

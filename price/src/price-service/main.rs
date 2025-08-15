@@ -7,7 +7,7 @@ use persistence::offer_dao::OfferDaoImpl;
 use std::{borrow::Borrow, env, error::Error, sync::Arc};
 use tokio::signal;
 
-use dotenvy::dotenv;
+use rust_price::env_config::load_environment;
 use log::{debug, error, info};
 
 use futures::StreamExt;
@@ -22,11 +22,15 @@ pub mod offer_messages {
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     pretty_env_logger::init();
 
-    // initialize dotenv
-    dotenv().ok();
+    // Load environment configuration
+    load_environment();
 
     // Get MongoDB URL
     let uri = env::var("MONGODB_URL").expect("MONGODB_URL must be set");
+    
+    // Get NATS URL
+    let nats_url = env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
+    
     // connect to MongoDB
     let client = Client::with_uri_str(uri).await?;
     let database = client.database("db_prices");
@@ -58,7 +62,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         );
 
     // Connect to the nats server
-    let client = async_nats::connect("0.0.0.0:4222").await?;
+    let client = async_nats::connect(&nats_url).await?;
 
     let requests = client
         .queue_subscribe("offers.*", "queue".to_owned())

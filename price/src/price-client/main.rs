@@ -12,6 +12,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::str::FromStr;
 use rust_price::Offer;
+use rust_price::env_config::load_environment;
 use bson::Decimal128;
 use iso_currency::Currency;
 use prost_types::Timestamp;
@@ -145,10 +146,16 @@ enum Commands {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     pretty_env_logger::init();
     
+    // Load environment variables
+    load_environment();
+    
     let cli = Cli::parse();
 
+    // Get NATS URL from environment
+    let nats_url = std::env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
+
     // Connect to the nats server
-    let client = async_nats::connect("0.0.0.0:4222").await?;
+    let client = async_nats::connect(&nats_url).await?;
 
     match &cli.command {
         Some(Commands::OfferCreate { sku, price, currency, min_quantity, max_quantity }) => {
