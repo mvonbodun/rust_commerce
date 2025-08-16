@@ -86,6 +86,31 @@ pub fn mask_sensitive_url(url: &str) -> String {
     url.to_string()
 }
 
+/// Network debugging utilities for Fly.io environments
+pub async fn debug_dns_resolution(hostname: &str) {
+    info!("🔍 Debugging DNS resolution for: {}", hostname);
+    
+    // Extract hostname from URL if needed
+    let host_to_resolve = if hostname.starts_with("nats://") {
+        hostname.replace("nats://", "").split(':').next().unwrap_or(hostname).to_string()
+    } else {
+        hostname.to_string()
+    };
+    
+    // Try to resolve DNS
+    match tokio::net::lookup_host(&format!("{}:4222", host_to_resolve)).await {
+        Ok(addrs) => {
+            info!("✅ DNS resolution successful for {}", host_to_resolve);
+            for addr in addrs {
+                debug!("   📍 Resolved to: {}", addr);
+            }
+        }
+        Err(e) => {
+            error!("❌ DNS resolution failed for {}: {}", host_to_resolve, e);
+        }
+    }
+}
+
 /// Health monitoring utilities
 pub struct HealthMonitor {
     pub mongodb_client: mongodb::Client,
