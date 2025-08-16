@@ -25,6 +25,30 @@ pub mod catalog_messages {
     include!(concat!(env!("OUT_DIR"), "/catalog_messages.rs"));
 }
 
+// Phase 5.1: Utility function for masking sensitive URLs
+fn mask_sensitive_url(url: &str) -> String {
+    // Simple pattern matching to mask passwords in MongoDB URLs
+    if url.contains("://") && url.contains("@") {
+        let parts: Vec<&str> = url.split("://").collect();
+        if parts.len() == 2 {
+            let scheme = parts[0];
+            let rest = parts[1];
+            
+            if let Some(at_pos) = rest.find('@') {
+                let auth_part = &rest[..at_pos];
+                let host_part = &rest[at_pos..];
+                
+                // Mask password if present
+                if let Some(colon_pos) = auth_part.find(':') {
+                    let username = &auth_part[..colon_pos];
+                    return format!("{}://{}:***{}", scheme, username, host_part);
+                }
+            }
+        }
+    }
+    url.to_string()
+}
+
 #[derive(Clone)]
 pub struct AppState {
     pub product_dao: Arc<dyn persistence::product_dao::ProductDao + Send + Sync>,
@@ -33,23 +57,53 @@ pub struct AppState {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
-    pretty_env_logger::init();
-    info!("Starting catalog service");
-
-    // Load environment configuration
+    // Load environment configuration FIRST, before initializing logger
     load_environment();
+    
+    // Initialize logger after loading environment (so RUST_LOG from .env is used)
+    pretty_env_logger::init();
+    
+    // Phase 1.1: Environment & Configuration Logging
+    info!("🚀 Starting Rust Commerce Catalog Service v{}", env!("CARGO_PKG_VERSION"));
+    info!("📋 Environment configuration:");
+    info!("  RUST_ENV: {}", env::var("RUST_ENV").unwrap_or_else(|_| "development".to_string()));
+    info!("  RUST_LOG: {}", env::var("RUST_LOG").unwrap_or_else(|_| "info".to_string()));
 
     // Get MongoDB URL
     let uri = env::var("MONGODB_URL").expect("MONGODB_URL must be set");
+    info!("  MONGODB_URL: {}", mask_sensitive_url(&uri));
     
     // Get NATS URL
     let nats_url = env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
+    info!("  NATS_URL: {}", &nats_url);
     
-    // connect to MongoDB
-    let client = Client::with_uri_str(uri).await?;
+    // Phase 1.2: MongoDB Connection Logging
+    info!("🔗 Connecting to MongoDB...");
+    let client = match Client::with_uri_str(&uri).await {
+        Ok(client) => {
+            info!("✅ Successfully connected to MongoDB");
+            // Test the connection
+            match client.list_database_names().await {
+                Ok(databases) => {
+                    debug!("📋 Available databases: {:?}", databases);
+                    client
+                }
+                Err(e) => {
+                    error!("❌ Failed to list databases: {}", e);
+                    return Err(e.into());
+                }
+            }
+        }
+        Err(e) => {
+            error!("❌ Failed to connect to MongoDB: {}", e);
+            return Err(e.into());
+        }
+    };
     let database = client.database("db_catalog");
+    info!("📊 Using database: db_catalog");
     
-    // Product collection setup
+    // Phase 1.3: Product Collection & Index Setup Logging
+    info!("📦 Setting up products collection...");
     let products_coll: Collection<Product> = database.collection("products");
     let indexes = vec![
         IndexModel::builder()
@@ -69,9 +123,20 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             )
             .build(),
     ];
-    products_coll.create_indexes(indexes).await?;
+    info!("🔍 Creating {} product indexes...", indexes.len());
+    match products_coll.create_indexes(indexes).await {
+        Ok(result) => {
+            info!("✅ Created {} product indexes successfully", result.index_names.len());
+            debug!("Product indexes: product_ref (unique), slug (unique)");
+        }
+        Err(e) => {
+            error!("❌ Failed to create product indexes: {}", e);
+            return Err(e.into());
+        }
+    }
 
     // Category collection setup
+    info!("📁 Setting up categories collection...");
     let categories_coll: Collection<Category> = database.collection("categories");
     let category_cache_coll: Collection<CategoryTreeCache> = database.collection("category_tree_cache");
     
@@ -101,17 +166,37 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             .keys(doc! { "is_active": 1, "display_order": 1 })
             .build(),
     ];
-    categories_coll.create_indexes(category_indexes).await?;
+    info!("🔍 Creating {} category indexes...", category_indexes.len());
+    match categories_coll.create_indexes(category_indexes).await {
+        Ok(result) => {
+            info!("✅ Created {} category indexes successfully", result.index_names.len());
+            debug!("Category indexes: slug (unique), path, parent_id, ancestors, level, is_active+display_order");
+        }
+        Err(e) => {
+            error!("❌ Failed to create category indexes: {}", e);
+            return Err(e.into());
+        }
+    }
 
+    // Phase 2.1: DAO & Service Setup Logging
+    info!("🏗️  Initializing data access objects...");
     let product_dao = Arc::new(ProductDaoImpl::new(products_coll, database.clone()));
+    debug!("✅ Product DAO initialized");
+
     let category_dao = Arc::new(CategoryDaoImpl::new(categories_coll, category_cache_coll));
+    debug!("✅ Category DAO initialized");
+
     let category_service = Arc::new(CategoryService::new(category_dao));
+    debug!("✅ Category Service initialized");
 
     let app_state = AppState { 
         product_dao,
         category_service,
     };
+    debug!("✅ Application state initialized");
 
+    // Phase 2.2: Router Setup Logging
+    info!("🛣️  Setting up message router...");
     let mut router = Router::new();
     router
         .add_route(
@@ -146,17 +231,44 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             "get_product_slugs".to_owned(),
             Box::new(|d, c, m| Box::pin(get_product_slugs(d, c, m))),
         );
+    
+    let route_count = 8; // Product routes (categories handled separately)
+    info!("✅ Configured {} product routes", route_count);
+    debug!("Product routes: create_product, get_product, get_product_by_slug, update_product, delete_product, search_products, export_products, get_product_slugs");
+    debug!("Category routes handled separately: create_category, get_category, get_category_by_slug, export_categories, update_category, delete_category, import_categories, get_category_tree");
 
-    // Connect to the nats server
-    let nats_client = async_nats::connect(&nats_url).await?;
+    // Phase 1.4: NATS Connection Logging
+    info!("🔗 Connecting to NATS server: {}", nats_url);
+    let nats_client = match async_nats::connect(&nats_url).await {
+        Ok(client) => {
+            info!("✅ Successfully connected to NATS");
+            client
+        }
+        Err(e) => {
+            error!("❌ Failed to connect to NATS: {}", e);
+            return Err(e.into());
+        }
+    };
 
-    let requests = nats_client
-        .queue_subscribe("catalog.*", "queue".to_owned())
-        .await?;
+    // Phase 3.1: Queue Subscription Logging
+    info!("📡 Subscribing to NATS queue: catalog.*");
+    let requests = match nats_client.queue_subscribe("catalog.*", "queue".to_owned()).await {
+        Ok(subscription) => {
+            info!("✅ Successfully subscribed to catalog.* queue");
+            subscription
+        }
+        Err(e) => {
+            error!("❌ Failed to subscribe to NATS queue: {}", e);
+            return Err(e.into());
+        }
+    };
 
     let routes = Arc::new(router.route_map);
 
-    info!("Catalog service listening on catalog.* queue");
+    info!("🚀 Catalog service is ready and listening for requests");
+    info!("📊 Service startup completed successfully");
+    
+    // Phase 3.2: Request Processing Logging
     requests
         .for_each_concurrent(25, |request| {
             let pd = app_state.product_dao.clone();
@@ -172,7 +284,9 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                 }
 
                 let operation = subject_parts[1].to_string();
-                debug!("Processing catalog operation: {}", operation);
+                debug!("📨 Processing catalog operation: {} from subject: {}", operation, request.subject);
+                
+                let start_time = std::time::Instant::now();
 
                 // Handle category operations separately
                 let result = match operation.as_str() {
@@ -284,8 +398,14 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                 };
 
                 match result {
-                    Ok(_) => debug!("Successfully processed {}", operation),
-                    Err(e) => error!("Error processing {}: {:?}", operation, e),
+                    Ok(_) => {
+                        let elapsed = start_time.elapsed();
+                        debug!("✅ Successfully processed {} in {:?}", operation, elapsed);
+                    }
+                    Err(e) => {
+                        let elapsed = start_time.elapsed();
+                        error!("❌ Error processing {} after {:?}: {:?}", operation, elapsed, e);
+                    }
                 }
             }
         })
