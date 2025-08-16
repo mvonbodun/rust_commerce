@@ -103,7 +103,7 @@ show_help() {
     echo "  destroy   Destroy NATS server"
     echo ""
     echo "After deployment, use this connection URL in your microservices:"
-    echo "  NATS_URL=nats://rust-commerce-nats.flycast:4222"
+    echo "  NATS_URL=nats://rust-commerce-nats.internal:4222"
 }
 
 # Main script

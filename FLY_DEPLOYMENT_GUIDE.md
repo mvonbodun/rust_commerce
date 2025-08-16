@@ -39,7 +39,7 @@ Set the NATS connection URLs with verified working fallback:
 
 ```bash
 # Primary internal connection (flycast) - what we want to work
-fly secrets set NATS_URL="nats://rust-commerce-nats.flycast:4222" -a rust-commerce-catalog
+fly secrets set NATS_URL="nats://rust-commerce-nats.internal:4222" -a rust-commerce-catalog
 
 # External fallback (VERIFIED WORKING: 188.93.151.224:4222)
 fly secrets set NATS_EXTERNAL_URL="nats://188.93.151.224:4222" -a rust-commerce-catalog
@@ -146,7 +146,7 @@ Ensure your catalog service `fly.toml` has:
   private_network = true
 
 [env]
-  NATS_URL = "nats://rust-commerce-nats.flycast:4222"
+  NATS_URL = "nats://rust-commerce-nats.internal:4222"
 ```
 
 ## 🎉 Success Indicators

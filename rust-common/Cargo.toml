@@ -1,0 +1,22 @@
+[package]
+name = "rust-common"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Environment configuration
+dotenvy = "0.15"
+
+# Logging
+log = "0.4"
+pretty_env_logger = "0.5"
+
+# Async runtime
+tokio = { version = "1.0", features = ["full"] }
+
+# Database dependencies
+mongodb = "3.0"
+async-nats = { version = "0.42.0", features = ["service"] }
+
+# Error handling
+anyhow = "1.0"

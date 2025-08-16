@@ -86,7 +86,7 @@ deploy_service() {
     # Updated URLs for Fly.io deployment
     flyctl secrets set \
         MONGODB_URL="mongodb+srv://your_user:your_password@your_cluster.mongodb.net/${service}?retryWrites=true&w=majority" \
-        NATS_URL="nats://rust-commerce-nats.flycast:4222" \
+        NATS_URL="nats://rust-commerce-nats.internal:4222" \
         --app "$app_name"
     
     # Deploy the service

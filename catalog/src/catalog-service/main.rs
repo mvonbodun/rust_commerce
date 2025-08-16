@@ -14,10 +14,9 @@ use persistence::{
 };
 use std::{env, error::Error, sync::Arc};
 
-use rust_catalog::env_config::load_environment;
-use rust_catalog::logging_utils::{
-    mask_sensitive_url, OperationTimer, HealthMonitor, 
-    setup_signal_handlers, validate_dependencies
+use rust_common::{
+    load_environment, mask_sensitive_url, OperationTimer, HealthMonitor,
+    setup_signal_handlers, validate_catalog_dependencies
 };
 use log::{debug, error, info};
 
@@ -235,7 +234,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     debug!("✅ Signal handlers configured");
 
     // Phase 4: Validate dependencies
-    validate_dependencies(&client, &nats_client).await?;
+    validate_catalog_dependencies(&client, &nats_client).await?;
 
     // Phase 3.1: Queue Subscription Logging
     info!("📡 Subscribing to NATS queue: catalog.*");

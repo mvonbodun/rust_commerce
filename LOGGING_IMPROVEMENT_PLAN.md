@@ -150,7 +150,7 @@ async move {
 }
 ```
 
-### Phase 4: Error Context & Health Monitoring ⭐ **IMPLEMENTING**
+### Phase 4: Error Context & Health Monitoring ✅ **COMPLETED**
 
 #### 4.1 Connection Health Checks
 ```rust
@@ -325,7 +325,7 @@ where
 }
 ```
 
-### Phase 6: Log Level Recommendations ⭐ **IMPLEMENTING**
+### Phase 6: Log Level Recommendations ✅ **COMPLETED**
 
 #### 6.1 Environment-Specific Logging Configuration
 ```bash
@@ -407,7 +407,86 @@ RUST_LOG_FORMAT=json
 }
 ```
 
-### Phase 7: Structured Logging Migration (Future)
+### Phase 7: Common Library Refactoring ✅ **COMPLETED**
+
+To support applying the logging improvements to all services (inventory, orders, price), we've extracted the reusable code into a shared `rust-common` library within the workspace.
+
+#### 7.1 Rust Common Library Structure
+```
+rust-common/
+├── Cargo.toml
+└── src/
+    ├── lib.rs          # Public API exports
+    ├── env_config.rs   # Environment configuration loading
+    └── logging_utils.rs # Logging utilities, health monitoring, etc.
+```
+
+#### 7.2 Shared Modules
+- **`env_config::load_environment()`**: Layered environment configuration (.env → .env.local/.env.production → system env)
+- **`logging_utils::OperationTimer`**: Performance timing utilities
+- **`logging_utils::HealthMonitor`**: Periodic health checks for MongoDB and NATS
+- **`logging_utils::ErrorContext`**: Enhanced error context trait
+- **`logging_utils::mask_sensitive_url()`**: URL masking for security
+- **`logging_utils::setup_signal_handlers()`**: Graceful shutdown handling
+- **Service-specific validation functions**: `validate_catalog_dependencies()`, `validate_inventory_dependencies()`, etc.
+
+#### 7.3 Usage in Services
+```rust
+use rust_common::{
+    load_environment, mask_sensitive_url, OperationTimer, HealthMonitor,
+    setup_signal_handlers, validate_catalog_dependencies
+};
+```
+
+#### 7.4 Workspace Integration
+```toml
+# Cargo.toml (workspace root)
+[workspace]
+members = ["orders", "price", "catalog", "inventory", "rust-common"]
+
+# Service Cargo.toml files
+[dependencies]
+rust-common = { path = "../rust-common" }
+```
+
+#### 7.5 Benefits
+- **Code Reuse**: Single implementation of logging utilities across all services
+- **Consistency**: Standardized logging patterns and utilities
+- **Maintainability**: Updates to logging logic only need to be made in one place
+- **Service-Specific Customization**: Each service can have its own dependency validation while sharing core utilities
+
+### Phase 8: Apply to Remaining Services ✅ **COMPLETED**
+
+Successfully applied the logging improvements to all remaining services using the `rust-common` library:
+
+#### 8.1 Inventory Service ✅
+- ✅ Added `rust-common` dependency 
+- ✅ Enhanced main.rs with comprehensive startup logging
+- ✅ Added service-specific validation: `validate_inventory_dependencies()`
+- ✅ Created environment files (.env.local, .env.staging, .env.production)
+- ✅ Verified build and compilation success
+
+#### 8.2 Orders Service ✅  
+- ✅ Added `rust-common` dependency
+- ✅ Enhanced main.rs with comprehensive startup logging
+- ✅ Added service-specific validation: `validate_orders_dependencies()`
+- ✅ Created environment files (.env.local, .env.staging, .env.production)
+- ✅ Verified build and compilation success
+
+#### 8.3 Price Service ✅
+- ✅ Added `rust-common` dependency
+- ✅ Enhanced main.rs with comprehensive startup logging  
+- ✅ Added service-specific validation: `validate_price_dependencies()`
+- ✅ Created environment files (.env.local, .env.staging, .env.production)
+- ✅ Verified build and compilation success
+
+#### 8.4 Final Integration ✅
+- ✅ All services build successfully with `cargo build --workspace`
+- ✅ Fixed catalog-client to use `rust-common::load_environment`
+- ✅ Consistent logging patterns across all services
+- ✅ Service-specific database collections and indexes properly configured
+
+### Phase 9: Structured Logging Migration (Future)
 
 Consider migrating from `env_logger` to `tracing` for better structured logging with spans and events.
 
@@ -434,15 +513,19 @@ Consider migrating from `env_logger` to `tracing` for better structured logging 
 
 ## Implementation Order
 
-1. ✅ **Phase 1**: Catalog Service (Test Implementation)
-2. **Phase 2**: Apply to remaining services (inventory, orders, price)
-3. **Phase 3**: Add runtime logging improvements
-4. **Phase 4+**: Advanced features based on Phase 1-3 results
+1. ✅ **Phase 1-6**: Catalog Service (Test Implementation) - All phases completed with common library extraction
+2. ✅ **Phase 7**: Common Library Creation - `rust-common` workspace library created with shared utilities  
+3. ✅ **Phase 8**: Applied to all remaining services (inventory, orders, price) using common library
+4. **Phase 9+**: Advanced features available for future enhancement
 
-## Success Metrics
+## Success Metrics - ✅ **ACHIEVED**
 
-- **Startup Issues**: Reduced time to identify connection problems
-- **Operational Visibility**: Clear understanding of service state
-- **Error Context**: Better error messages with relevant context
-- **Performance**: Request processing timing visibility
-- **Security**: No sensitive data exposure in logs
+- ✅ **Startup Issues**: Clear visibility into service initialization flow with comprehensive logging
+- ✅ **Operational Visibility**: Environment configuration, connection status, and service state clearly logged  
+- ✅ **Error Context**: Enhanced error messages with relevant context using ErrorContext trait
+- ✅ **Performance**: Request processing timing visibility with OperationTimer
+- ✅ **Security**: No sensitive data exposure in logs (URL masking implemented)
+- ✅ **Health Monitoring**: Periodic health checks for MongoDB and NATS connections
+- ✅ **Graceful Shutdown**: Signal handlers for clean service termination
+- ✅ **Consistency**: Standardized logging patterns across all 4 services
+- ✅ **Maintainability**: Single source of truth for logging utilities in `rust-common`

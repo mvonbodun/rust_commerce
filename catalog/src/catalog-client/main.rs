@@ -17,7 +17,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 use rust_catalog::Product;
-use rust_catalog::env_config::load_environment;
+use rust_common::load_environment;
 
 pub mod catalog_messages {
     include!(concat!(env!("OUT_DIR"), "/catalog_messages.rs"));

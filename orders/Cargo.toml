@@ -27,7 +27,8 @@ pretty_env_logger = "0.5.0"
 iso_currency = { version = "0.5.0", features = ["with-serde"] }
 rust_decimal = "1.36.0"
 rust_decimal_macros = "1.36.0"
-async-nats = { version = "0.36.0", features = ["service"] } 
+async-nats = { version = "0.42.0", features = ["service"] } 
+rust-common = { path = "../rust-common" } 
 futures = "0.3.30"
 bytes = "1.7.1"
 prost = { version = "0.13.2", features = ["derive"] }

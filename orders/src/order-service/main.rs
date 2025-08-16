@@ -1,28 +1,27 @@
 pub mod model;
 
-#[path = "../env_config.rs"]
-pub mod env_config;
+mod handlers;
+mod persistence;
 
-use env_config::load_environment;
 use handlers::{create_order, delete_order, get_order, Router};
-// use handlers::create_order;
-// use handlers::{create_order, delete_order, get_order};
 use log::{debug, error, info};
 use persistence::orders_dao::{OrdersDao, OrdersDaoImpl};
-use std::{borrow::Borrow, env, error::Error, sync::Arc};
-use tokio::signal;
+use std::{env, error::Error, sync::Arc};
+
+use rust_common::{
+    load_environment, mask_sensitive_url, OperationTimer, HealthMonitor,
+    setup_signal_handlers, validate_orders_dependencies
+};
 
 use model::Order;
-use mongodb::{Client, Collection};
+use mongodb::{Client, Collection, IndexModel};
+use bson::doc;
 
 use futures::StreamExt;
 
 pub mod order_messages {
     include!(concat!(env!("OUT_DIR"), "/order_messages.rs"));
 }
-
-mod handlers;
-mod persistence;
 
 #[derive(Clone)]
 pub struct AppState {
@@ -31,31 +30,89 @@ pub struct AppState {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
-    // let dir = env!("OUT_DIR");
-    // initialize pretty_env_logger
-    pretty_env_logger::init();
-    // info!("Test info logging");
-    // warn!("Test warn logging");
-    // error!("Test error loggin: {}", dir);
-    // trace!("test trace logging");
-    // debug!("test debug logging");
-
-    // Load environment configuration
+    // Load environment configuration FIRST, before initializing logger
     load_environment();
+    
+    // Initialize logger after loading environment (so RUST_LOG from .env is used)
+    pretty_env_logger::init();
+    
+    // Phase 1.1: Environment & Configuration Logging
+    info!("🚀 Starting Rust Commerce Orders Service v{}", env!("CARGO_PKG_VERSION"));
+    info!("📋 Environment configuration:");
+    info!("  RUST_ENV: {}", env::var("RUST_ENV").unwrap_or_else(|_| "development".to_string()));
+    info!("  RUST_LOG: {}", env::var("RUST_LOG").unwrap_or_else(|_| "info".to_string()));
 
     // Get MongoDB URL
     let uri = env::var("MONGODB_URL").expect("MONGODB_URL must be set");
+    info!("  MONGODB_URL: {}", mask_sensitive_url(&uri));
     
     // Get NATS URL
     let nats_url = env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
+    info!("  NATS_URL: {}", &nats_url);
     
-    // connect to MongoDB
-    let client = Client::with_uri_str(uri).await?;
+    // Phase 1.2: MongoDB Connection Logging
+    info!("🔗 Connecting to MongoDB...");
+    let client = match Client::with_uri_str(&uri).await {
+        Ok(client) => {
+            info!("✅ Successfully connected to MongoDB");
+            // Test the connection
+            match client.list_database_names().await {
+                Ok(databases) => {
+                    debug!("📋 Available databases: {:?}", databases);
+                    client
+                }
+                Err(e) => {
+                    error!("❌ Failed to list databases: {}", e);
+                    return Err(e.into());
+                }
+            }
+        }
+        Err(e) => {
+            error!("❌ Failed to connect to MongoDB: {}", e);
+            return Err(e.into());
+        }
+    };
     let database = client.database("db_orders");
+    info!("📊 Using database: db_orders");
+    
+    // Phase 1.3: Orders Collection & Index Setup Logging
+    info!("📦 Setting up orders collection...");
     let orders_coll: Collection<Order> = database.collection("orders");
+    let indexes = vec![
+        IndexModel::builder()
+            .keys(doc! { "order_id": 1})
+            .options(
+                mongodb::options::IndexOptions::builder()
+                    .unique(true)
+                    .build(),
+            )
+            .build(),
+        IndexModel::builder()
+            .keys(doc! { "customer_id": 1 })
+            .build(),
+        IndexModel::builder()
+            .keys(doc! { "status": 1 })
+            .build(),
+    ];
+    info!("🔍 Creating {} order indexes...", indexes.len());
+    match orders_coll.create_indexes(indexes).await {
+        Ok(result) => {
+            info!("✅ Created {} order indexes successfully", result.index_names.len());
+            debug!("Order indexes: order_id (unique), customer_id, status");
+        }
+        Err(e) => {
+            error!("❌ Failed to create order indexes: {}", e);
+            return Err(e.into());
+        }
+    }
 
-    let orders_dao = Arc::new(OrdersDaoImpl::new(orders_coll)).clone();
+    // Phase 2.1: DAO Setup Logging
+    info!("🏗️  Initializing data access objects...");
+    let orders_dao = Arc::new(OrdersDaoImpl::new(orders_coll));
+    debug!("✅ Orders DAO initialized");
 
+    // Phase 2.2: Router Setup Logging
+    info!("🛣️  Setting up message router...");
     let mut router = Router::new();
     router
         .add_route(
@@ -70,96 +127,94 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             "delete_order".to_owned(),
             Box::new(|a, b, c| Box::pin(delete_order(a, b, c))),
         );
+    
+    let route_count = 3;
+    info!("✅ Configured {} order routes", route_count);
+    debug!("Order routes: create_order, get_order, delete_order");
 
-    // Connect to the nats server
-    let client = async_nats::connect(&nats_url).await?;
+    // Phase 1.4: NATS Connection Logging
+    info!("🔗 Connecting to NATS server: {}", nats_url);
+    let nats_client = match async_nats::connect(&nats_url).await {
+        Ok(client) => {
+            info!("✅ Successfully connected to NATS");
+            client
+        }
+        Err(e) => {
+            error!("❌ Failed to connect to NATS: {}", e);
+            return Err(e.into());
+        }
+    };
 
-    let requests = client
-        .queue_subscribe("orders.*", "queue".to_owned())
-        .await?;
+    // Phase 4: Setup signal handlers for graceful shutdown
+    setup_signal_handlers().await?;
+    debug!("✅ Signal handlers configured");
 
-    let routes = router.route_map.borrow();
+    // Phase 4: Validate dependencies
+    validate_orders_dependencies(&client, &nats_client).await?;
 
-    debug!("Inside spawn order create service");
+    // Phase 3.1: Queue Subscription Logging
+    info!("📡 Subscribing to NATS queue: orders.*");
+    let requests = match nats_client.queue_subscribe("orders.*", "queue".to_owned()).await {
+        Ok(subscription) => {
+            info!("✅ Successfully subscribed to orders.* queue");
+            subscription
+        }
+        Err(e) => {
+            error!("❌ Failed to subscribe to NATS queue: {}", e);
+            return Err(e.into());
+        }
+    };
+
+    let routes = Arc::new(router.route_map);
+
+    // Phase 4: Start health monitoring
+    let health_monitor = HealthMonitor::new(client.clone(), nats_client.clone());
+    health_monitor.start_health_checks();
+    debug!("✅ Health monitoring started");
+
+    info!("🚀 Orders service is ready and listening for requests");
+    info!("📊 Service startup completed successfully");
+    
+    // Phase 3.2: Request Processing Logging
     requests
         .for_each_concurrent(25, |request| {
-            // while let Some(request) = create_order.next().await {
             let od = orders_dao.clone();
-            let client = client.clone();
+            let routes = routes.clone();
+            let client_clone = nats_client.clone();
+
             async move {
-                // Take everything after "orders.*"
-                // let route = &request.subject[7..];
-                let route = request.subject.split('.').nth(1);
-                match route {
-                    Some(r) => {
-                        debug!("subject: {}   route {}", &request.subject, r);
-                        Router::route(client, routes, r.to_owned(), od, request).await;
+                let subject_parts: Vec<&str> = request.subject.split('.').collect();
+                if subject_parts.len() < 2 {
+                    error!("Invalid subject format: {}", request.subject);
+                    return;
+                }
+
+                let operation = subject_parts[1].to_string();
+                debug!("📨 Processing orders operation: {} from subject: {}", operation, request.subject);
+                
+                // Phase 5: Use OperationTimer for performance monitoring
+                let _timer = OperationTimer::new(&format!("orders.{}", operation));
+
+                let result: Result<(), Box<dyn std::error::Error + Send + Sync>> = if let Some(handler) = routes.get(&operation) {
+                    handler(client_clone, od, request).await;
+                    Ok(())
+                } else {
+                    error!("No handler found for operation: {}", operation);
+                    Ok(())
+                };
+
+                match result {
+                    Ok(_) => {
+                        _timer.log_elapsed("debug");
                     }
-                    None => {
-                        debug!("Missing route: {}", &request.subject);
-                        client
-                            .publish(
-                                request.reply.unwrap(),
-                                "Missing route after orders. example: orders.create_order".into(),
-                            )
-                            .await
-                            .unwrap();
+                    Err(e) => {
+                        _timer.log_elapsed("error");
+                        error!("❌ Error details: {:?}", e);
                     }
                 }
             }
         })
         .await;
 
-    match signal::ctrl_c().await {
-        Ok(()) => {
-            info!("Received SIGINT");
-        }
-        Err(err) => {
-            error!("Error listening for SIGINT: {}", err);
-        }
-    }
-
     Ok(())
 }
-
-// async fn main() -> Result<(), Box<dyn Error>> {
-//     // initialize pretty_env_logger
-//     pretty_env_logger::init();
-//     info!("Test info logging");
-//     warn!("Test warn logging");
-//     error!("Test error logging");
-//     trace!("test trace logging");
-//     debug!("test debug logging");
-
-//     // initialize dotenv
-//     dotenv().ok();
-
-//     // Get MongoDB URL
-//     let uri = env::var("MONGODB_URL").expect("MONGODB_URL must be set");
-//     // connect to MongoDB
-//     let client = Client::with_uri_str(uri).await?;
-//     let database = client.database("db_orders");
-//     let orders_coll: Collection<Order> = database.collection("orders");
-
-//     let orders_dao = Arc::new(OrdersDaoImpl::new(orders_coll)).clone();
-
-//     let app_state = AppState { orders_dao };
-
-//     let app = Router::new()
-//         .route(
-//             "/hello",
-//             get(|| async { Html("hello <strong>World!!</strong>") }),
-//         )
-//         .route("/order", post(create_order))
-//         .route("/order/:id", get(get_order))
-//         .route("/order", delete(delete_order))
-//         .with_state(app_state);
-
-//     // Start Server
-//     let listener = tokio::net::TcpListener::bind("127.0.0.1:8080")
-//         .await
-//         .unwrap();
-//     println!("->> LISTENING on {:?}\n", listener);
-//     axum::serve(listener, app).await.unwrap();
-//     Ok(())
-// }
