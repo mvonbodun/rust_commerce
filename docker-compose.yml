@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # MongoDB Database
   mongodb:
@@ -14,7 +12,6 @@ services:
       MONGO_INITDB_DATABASE: rust_commerce
     volumes:
       - mongodb_data:/data/db
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     networks:
       - rust-commerce
     healthcheck:
@@ -35,11 +32,6 @@ services:
     command: ["--http_port", "8222"]
     networks:
       - rust-commerce
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8222/healthz"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   # Catalog Service
   catalog-service:
@@ -50,15 +42,15 @@ services:
     restart: unless-stopped
     environment:
       - RUST_ENV=production
-      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017/catalog?authSource=admin
+      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017
       - NATS_URL=nats://rust-commerce-nats:4222
-      - RUST_LOG=info
-      - LOG_LEVEL=info
+      - RUST_LOG=debug
+      - LOG_LEVEL=debug
     depends_on:
       mongodb:
         condition: service_healthy
       nats:
-        condition: service_healthy
+        condition: service_started
     networks:
       - rust-commerce
 
@@ -71,7 +63,7 @@ services:
     restart: unless-stopped
     environment:
       - RUST_ENV=production
-      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017/inventory?authSource=admin
+      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017
       - NATS_URL=nats://rust-commerce-nats:4222
       - RUST_LOG=info
       - LOG_LEVEL=info
@@ -79,7 +71,7 @@ services:
       mongodb:
         condition: service_healthy
       nats:
-        condition: service_healthy
+        condition: service_started
     networks:
       - rust-commerce
 
@@ -92,7 +84,7 @@ services:
     restart: unless-stopped
     environment:
       - RUST_ENV=production
-      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017/orders?authSource=admin
+      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017
       - NATS_URL=nats://rust-commerce-nats:4222
       - RUST_LOG=info
       - LOG_LEVEL=info
@@ -100,7 +92,7 @@ services:
       mongodb:
         condition: service_healthy
       nats:
-        condition: service_healthy
+        condition: service_started
     networks:
       - rust-commerce
 
@@ -113,7 +105,7 @@ services:
     restart: unless-stopped
     environment:
       - RUST_ENV=production
-      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017/price?authSource=admin
+      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017
       - NATS_URL=nats://rust-commerce-nats:4222
       - RUST_LOG=info
       - LOG_LEVEL=info
@@ -121,14 +113,14 @@ services:
       mongodb:
         condition: service_healthy
       nats:
-        condition: service_healthy
+        condition: service_started
     networks:
       - rust-commerce
 
 networks:
   rust-commerce:
-    driver: bridge
     name: rust-commerce
+    driver: bridge
 
 volumes:
   mongodb_data:

@@ -1,21 +1,25 @@
-# fly.toml app configuration file generated for rust-commerce-catalog on 2025-08-15T00:00:00Z
+# fly.toml app configuration file generated for rust-commerce-catalog on 2025-08-15T22:05:05-05:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "rust-commerce-catalog"
-primary_region = "sjc"
+app = 'rust-commerce-catalog'
+primary_region = 'iad'
 
 [build]
 
 [env]
-  RUST_ENV = "production"
-  RUST_LOG = "info"
-  LOG_LEVEL = "info"
+  LOG_LEVEL = 'info'
+  RUST_ENV = 'production'
+  RUST_LOG = 'info'
 
-# No HTTP services - this is a NATS-based microservice
-# Services communicate internally via NATS messaging
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
 
 [[vm]]
-  memory = "256mb"
-  cpu_kind = "shared"
-  cpus = 1
+  size = 'shared-cpu-1x'

@@ -1,0 +1,35 @@
+# fly.toml app configuration file generated for rust-commerce-nats on 2025-08-15T17:30:54-05:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'rust-commerce-nats'
+primary_region = 'iad'
+
+[build]
+
+# NATS client port (TCP) - Raw TCP pass-through
+[[services]]
+  internal_port = 4222
+  protocol = "tcp"
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[services.ports]]
+    port = 4222
+    # No handlers = raw TCP pass-through
+
+# HTTP monitoring port
+[http_service]
+  internal_port = 8222
+  force_https = false
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

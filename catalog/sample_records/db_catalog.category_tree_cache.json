@@ -1,0 +1,112 @@
+[{
+  "_id": "category_tree_v1",
+  "version": 1,
+  "last_updated": "2025-08-12T19:47:01.386381Z",
+  "tree": {
+    "941d883a-ebd5-453d-8a39-61b76cae0e96": {
+      "id": "941d883a-ebd5-453d-8a39-61b76cae0e96",
+      "name": "Women",
+      "slug": "/women",
+      "path": "Women",
+      "level": 0,
+      "product_count": 0,
+      "children": {
+        "c8931dbb-3742-401c-87e1-532cad2c8644": {
+          "id": "c8931dbb-3742-401c-87e1-532cad2c8644",
+          "name": "Juniors Apparel",
+          "slug": "/women/juniors-apparel",
+          "path": "Women > Juniors Apparel",
+          "level": 1,
+          "product_count": 0,
+          "children": {
+            "2e742d5e-34d2-4c6e-b8bb-c75ed95072aa": {
+              "id": "2e742d5e-34d2-4c6e-b8bb-c75ed95072aa",
+              "name": "Tank Tops",
+              "slug": "/women/juniors-apparel/tank-tops",
+              "path": "Women > Juniors Apparel > Tank Tops",
+              "level": 2,
+              "product_count": 0,
+              "children": {}
+            }
+          }
+        },
+        "060e5142-0d07-4585-a1f2-ff7906cf8283": {
+          "id": "060e5142-0d07-4585-a1f2-ff7906cf8283",
+          "name": "Misses Apparel",
+          "slug": "/women/misses-apparel",
+          "path": "Women > Misses Apparel",
+          "level": 1,
+          "product_count": 0,
+          "children": {
+            "0ac6cdc4-71c9-4bf8-9e99-8e490c1394f1": {
+              "id": "0ac6cdc4-71c9-4bf8-9e99-8e490c1394f1",
+              "name": "Shorts",
+              "slug": "/women/misses-apparel/shorts",
+              "path": "Women > Misses Apparel > Shorts",
+              "level": 2,
+              "product_count": 0,
+              "children": {}
+            }
+          }
+        }
+      }
+    },
+    "d8d83c92-d24e-422a-be8b-728de398566f": {
+      "id": "d8d83c92-d24e-422a-be8b-728de398566f",
+      "name": "Men",
+      "slug": "/men",
+      "path": "Men",
+      "level": 0,
+      "product_count": 0,
+      "children": {
+        "dc878bd6-2937-4276-a6a0-6f2f6a2e783a": {
+          "id": "dc878bd6-2937-4276-a6a0-6f2f6a2e783a",
+          "name": "Accessories",
+          "slug": "/men/accessories",
+          "path": "Men > Accessories",
+          "level": 1,
+          "product_count": 0,
+          "children": {
+            "7870ffbd-defc-416a-a7a3-122b2107f049": {
+              "id": "7870ffbd-defc-416a-a7a3-122b2107f049",
+              "name": "Mens Sunglasses",
+              "slug": "/men/accessories/mens-sunglasses",
+              "path": "Men > Accessories > Mens Sunglasses",
+              "level": 2,
+              "product_count": 0,
+              "children": {}
+            }
+          }
+        },
+        "c0e97471-b12a-4967-a9c0-7a8c21152638": {
+          "id": "c0e97471-b12a-4967-a9c0-7a8c21152638",
+          "name": "Mens Apparel",
+          "slug": "/men/mens-apparel",
+          "path": "Men > Mens Apparel",
+          "level": 1,
+          "product_count": 0,
+          "children": {
+            "b9885ffa-157e-4556-b906-344194122dc6": {
+              "id": "b9885ffa-157e-4556-b906-344194122dc6",
+              "name": "Casual Short Sleeve Shirts",
+              "slug": "/men/mens-apparel/casual-short-sleeve-shirts",
+              "path": "Men > Mens Apparel > Casual Short Sleeve Shirts",
+              "level": 2,
+              "product_count": 0,
+              "children": {}
+            },
+            "6c745644-6309-40ff-ab13-6bf9cf8977bf": {
+              "id": "6c745644-6309-40ff-ab13-6bf9cf8977bf",
+              "name": "Classic Jeans",
+              "slug": "/men/mens-apparel/classic-jeans",
+              "path": "Men > Mens Apparel > Classic Jeans",
+              "level": 2,
+              "product_count": 0,
+              "children": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}]

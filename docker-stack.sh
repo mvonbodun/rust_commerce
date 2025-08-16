@@ -76,10 +76,10 @@ start_services() {
     
     if [ -n "$service" ]; then
         print_status "Starting service: $service"
-        docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" up -d "$service"
+        docker-compose -f "$COMPOSE_FILE" up -d "$service"
     else
         print_status "Starting all Rust Commerce services..."
-        docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" up -d
+        docker-compose -f "$COMPOSE_FILE" up -d
     fi
     
     if [ $? -eq 0 ]; then
@@ -97,10 +97,10 @@ stop_services() {
     
     if [ -n "$service" ]; then
         print_status "Stopping service: $service"
-        docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" stop "$service"
+        docker-compose -f "$COMPOSE_FILE" stop "$service"
     else
         print_status "Stopping all Rust Commerce services..."
-        docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" down
+        docker-compose -f "$COMPOSE_FILE" down
     fi
     
     print_success "Services stopped successfully!"
@@ -112,10 +112,10 @@ restart_services() {
     
     if [ -n "$service" ]; then
         print_status "Restarting service: $service"
-        docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" restart "$service"
+        docker-compose -f "$COMPOSE_FILE" restart "$service"
     else
         print_status "Restarting all Rust Commerce services..."
-        docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" restart
+        docker-compose -f "$COMPOSE_FILE" restart
     fi
     
     print_success "Services restarted successfully!"
@@ -127,10 +127,10 @@ show_logs() {
     
     if [ -n "$service" ]; then
         print_status "Showing logs for service: $service"
-        docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" logs -f "$service"
+        docker-compose -f "$COMPOSE_FILE" logs -f "$service"
     else
         print_status "Showing logs for all services (press Ctrl+C to exit)..."
-        docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" logs -f
+        docker-compose -f "$COMPOSE_FILE" logs -f
     fi
 }
 
@@ -138,7 +138,7 @@ show_logs() {
 show_status() {
     print_status "Current status of Rust Commerce services:"
     echo ""
-    docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" ps
+    docker-compose -f "$COMPOSE_FILE" ps
     echo ""
     
     # Show network information
@@ -152,10 +152,10 @@ build_images() {
     
     if [ -n "$service" ]; then
         print_status "Building image for service: $service"
-        docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" build "$service"
+        docker-compose -f "$COMPOSE_FILE" build "$service"
     else
         print_status "Building all Rust Commerce service images..."
-        docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" build
+        docker-compose -f "$COMPOSE_FILE" build
     fi
     
     print_success "Build completed successfully!"
@@ -169,7 +169,7 @@ clean_all() {
     
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         print_status "Cleaning up all Rust Commerce resources..."
-        docker-compose -f "$COMPOSE_FILE" -p "$PROJECT_NAME" down -v --remove-orphans
+        docker-compose -f "$COMPOSE_FILE" down -v --remove-orphans
         docker system prune -f
         print_success "Cleanup completed successfully!"
     else

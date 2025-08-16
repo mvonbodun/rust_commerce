@@ -1,0 +1,287 @@
+[{
+  "_id": "d8d83c92-d24e-422a-be8b-728de398566f",
+  "slug": "/men",
+  "name": "Men",
+  "short_description": "Men - short description",
+  "full_description": "Men - full description",
+  "path": "Men",
+  "ancestors": [],
+  "parent_id": null,
+  "level": 0,
+  "children_count": 2,
+  "product_count": 0,
+  "is_active": true,
+  "display_order": 1,
+  "seo": {
+    "meta_title": "Men - Shop Now",
+    "meta_description": "Men - short description",
+    "keywords": [
+      "men"
+    ]
+  },
+  "created_at": "2025-08-12T16:35:35.269044Z",
+  "updated_at": "2025-08-12T16:35:35.269044Z"
+},
+{
+  "_id": "941d883a-ebd5-453d-8a39-61b76cae0e96",
+  "slug": "/women",
+  "name": "Women",
+  "short_description": "Women - short description",
+  "full_description": "Women - full description",
+  "path": "Women",
+  "ancestors": [],
+  "parent_id": null,
+  "level": 0,
+  "children_count": 2,
+  "product_count": 0,
+  "is_active": true,
+  "display_order": 2,
+  "seo": {
+    "meta_title": "Women - Shop Now",
+    "meta_description": "Women - short description",
+    "keywords": [
+      "women"
+    ]
+  },
+  "created_at": "2025-08-12T16:35:35.273467Z",
+  "updated_at": "2025-08-12T16:35:35.273467Z"
+},
+{
+  "_id": "dc878bd6-2937-4276-a6a0-6f2f6a2e783a",
+  "slug": "/men/accessories",
+  "name": "Accessories",
+  "short_description": "Accessories - short description",
+  "full_description": "Accessories - full description",
+  "path": "Men > Accessories",
+  "ancestors": [
+    "d8d83c92-d24e-422a-be8b-728de398566f"
+  ],
+  "parent_id": "d8d83c92-d24e-422a-be8b-728de398566f",
+  "level": 1,
+  "children_count": 1,
+  "product_count": 0,
+  "is_active": true,
+  "display_order": 1,
+  "seo": {
+    "meta_title": "Accessories - Shop Now",
+    "meta_description": "Accessories - short description",
+    "keywords": [
+      "accessories"
+    ]
+  },
+  "created_at": "2025-08-12T16:35:35.280621Z",
+  "updated_at": "2025-08-12T16:35:35.280621Z"
+},
+{
+  "_id": "c8931dbb-3742-401c-87e1-532cad2c8644",
+  "slug": "/women/juniors-apparel",
+  "name": "Juniors Apparel",
+  "short_description": "Juniors Apparel - short description",
+  "full_description": "Juniors Apparel - full description",
+  "path": "Women > Juniors Apparel",
+  "ancestors": [
+    "941d883a-ebd5-453d-8a39-61b76cae0e96"
+  ],
+  "parent_id": "941d883a-ebd5-453d-8a39-61b76cae0e96",
+  "level": 1,
+  "children_count": 1,
+  "product_count": 0,
+  "is_active": true,
+  "display_order": 2,
+  "seo": {
+    "meta_title": "Juniors Apparel - Shop Now",
+    "meta_description": "Juniors Apparel - short description",
+    "keywords": [
+      "juniors apparel"
+    ]
+  },
+  "created_at": "2025-08-12T16:35:35.295738Z",
+  "updated_at": "2025-08-12T16:35:35.295738Z"
+},
+{
+  "_id": "060e5142-0d07-4585-a1f2-ff7906cf8283",
+  "slug": "/women/misses-apparel",
+  "name": "Misses Apparel",
+  "short_description": "Misses Apparel - short description",
+  "full_description": "Misses Apparel - full description",
+  "path": "Women > Misses Apparel",
+  "ancestors": [
+    "941d883a-ebd5-453d-8a39-61b76cae0e96"
+  ],
+  "parent_id": "941d883a-ebd5-453d-8a39-61b76cae0e96",
+  "level": 1,
+  "children_count": 1,
+  "product_count": 0,
+  "is_active": true,
+  "display_order": 3,
+  "seo": {
+    "meta_title": "Misses Apparel - Shop Now",
+    "meta_description": "Misses Apparel - short description",
+    "keywords": [
+      "misses apparel"
+    ]
+  },
+  "created_at": "2025-08-12T16:35:35.305022Z",
+  "updated_at": "2025-08-12T16:35:35.305022Z"
+},
+{
+  "_id": "c0e97471-b12a-4967-a9c0-7a8c21152638",
+  "slug": "/men/mens-apparel",
+  "name": "Mens Apparel",
+  "short_description": "Mens Apparel - short description",
+  "full_description": "Mens Apparel - full description",
+  "path": "Men > Mens Apparel",
+  "ancestors": [
+    "d8d83c92-d24e-422a-be8b-728de398566f"
+  ],
+  "parent_id": "d8d83c92-d24e-422a-be8b-728de398566f",
+  "level": 1,
+  "children_count": 2,
+  "product_count": 0,
+  "is_active": true,
+  "display_order": 4,
+  "seo": {
+    "meta_title": "Mens Apparel - Shop Now",
+    "meta_description": "Mens Apparel - short description",
+    "keywords": [
+      "mens apparel"
+    ]
+  },
+  "created_at": "2025-08-12T16:35:35.315190Z",
+  "updated_at": "2025-08-12T16:35:35.315190Z"
+},
+{
+  "_id": "7870ffbd-defc-416a-a7a3-122b2107f049",
+  "slug": "/men/accessories/mens-sunglasses",
+  "name": "Mens Sunglasses",
+  "short_description": "Mens Sunglasses - short description",
+  "full_description": "Mens Sunglasses - full description",
+  "path": "Men > Accessories > Mens Sunglasses",
+  "ancestors": [
+    "d8d83c92-d24e-422a-be8b-728de398566f",
+    "dc878bd6-2937-4276-a6a0-6f2f6a2e783a"
+  ],
+  "parent_id": "dc878bd6-2937-4276-a6a0-6f2f6a2e783a",
+  "level": 2,
+  "children_count": 0,
+  "product_count": 0,
+  "is_active": true,
+  "display_order": 1,
+  "seo": {
+    "meta_title": "Mens Sunglasses - Shop Now",
+    "meta_description": "Mens Sunglasses - short description",
+    "keywords": [
+      "mens sunglasses"
+    ]
+  },
+  "created_at": "2025-08-12T16:35:35.327718Z",
+  "updated_at": "2025-08-12T16:35:35.327718Z"
+},
+{
+  "_id": "2e742d5e-34d2-4c6e-b8bb-c75ed95072aa",
+  "slug": "/women/juniors-apparel/tank-tops",
+  "name": "Tank Tops",
+  "short_description": "Tank Tops - short description",
+  "full_description": "Tank Tops - full description",
+  "path": "Women > Juniors Apparel > Tank Tops",
+  "ancestors": [
+    "941d883a-ebd5-453d-8a39-61b76cae0e96",
+    "c8931dbb-3742-401c-87e1-532cad2c8644"
+  ],
+  "parent_id": "c8931dbb-3742-401c-87e1-532cad2c8644",
+  "level": 2,
+  "children_count": 0,
+  "product_count": 0,
+  "is_active": true,
+  "display_order": 2,
+  "seo": {
+    "meta_title": "Tank Tops - Shop Now",
+    "meta_description": "Tank Tops - short description",
+    "keywords": [
+      "tank tops"
+    ]
+  },
+  "created_at": "2025-08-12T16:35:35.336254Z",
+  "updated_at": "2025-08-12T16:35:35.336254Z"
+},
+{
+  "_id": "0ac6cdc4-71c9-4bf8-9e99-8e490c1394f1",
+  "slug": "/women/misses-apparel/shorts",
+  "name": "Shorts",
+  "short_description": "Shorts - short description",
+  "full_description": "Shorts - full description",
+  "path": "Women > Misses Apparel > Shorts",
+  "ancestors": [
+    "941d883a-ebd5-453d-8a39-61b76cae0e96",
+    "060e5142-0d07-4585-a1f2-ff7906cf8283"
+  ],
+  "parent_id": "060e5142-0d07-4585-a1f2-ff7906cf8283",
+  "level": 2,
+  "children_count": 0,
+  "product_count": 0,
+  "is_active": true,
+  "display_order": 3,
+  "seo": {
+    "meta_title": "Shorts - Shop Now",
+    "meta_description": "Shorts - short description",
+    "keywords": [
+      "shorts"
+    ]
+  },
+  "created_at": "2025-08-12T16:35:35.348563Z",
+  "updated_at": "2025-08-12T16:35:35.348563Z"
+},
+{
+  "_id": "b9885ffa-157e-4556-b906-344194122dc6",
+  "slug": "/men/mens-apparel/casual-short-sleeve-shirts",
+  "name": "Casual Short Sleeve Shirts",
+  "short_description": "Casual Short Sleeve Shirts - short description",
+  "full_description": "Casual Short Sleeve Shirts - full description",
+  "path": "Men > Mens Apparel > Casual Short Sleeve Shirts",
+  "ancestors": [
+    "d8d83c92-d24e-422a-be8b-728de398566f",
+    "c0e97471-b12a-4967-a9c0-7a8c21152638"
+  ],
+  "parent_id": "c0e97471-b12a-4967-a9c0-7a8c21152638",
+  "level": 2,
+  "children_count": 0,
+  "product_count": 0,
+  "is_active": true,
+  "display_order": 4,
+  "seo": {
+    "meta_title": "Casual Short Sleeve Shirts - Shop Now",
+    "meta_description": "Casual Short Sleeve Shirts - short description",
+    "keywords": [
+      "casual short sleeve shirts"
+    ]
+  },
+  "created_at": "2025-08-12T16:35:35.355891Z",
+  "updated_at": "2025-08-12T16:35:35.355891Z"
+},
+{
+  "_id": "6c745644-6309-40ff-ab13-6bf9cf8977bf",
+  "slug": "/men/mens-apparel/classic-jeans",
+  "name": "Classic Jeans",
+  "short_description": "Classic Jeans - short description",
+  "full_description": "Classic Jeans - full description",
+  "path": "Men > Mens Apparel > Classic Jeans",
+  "ancestors": [
+    "d8d83c92-d24e-422a-be8b-728de398566f",
+    "c0e97471-b12a-4967-a9c0-7a8c21152638"
+  ],
+  "parent_id": "c0e97471-b12a-4967-a9c0-7a8c21152638",
+  "level": 2,
+  "children_count": 0,
+  "product_count": 0,
+  "is_active": true,
+  "display_order": 5,
+  "seo": {
+    "meta_title": "Classic Jeans - Shop Now",
+    "meta_description": "Classic Jeans - short description",
+    "keywords": [
+      "classic jeans"
+    ]
+  },
+  "created_at": "2025-08-12T16:35:35.362339Z",
+  "updated_at": "2025-08-12T16:35:35.362339Z"
+}]
