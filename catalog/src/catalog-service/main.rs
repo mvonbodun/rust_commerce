@@ -17,9 +17,9 @@ use std::{env, error::Error, sync::Arc};
 use rust_catalog::env_config::load_environment;
 use rust_catalog::logging_utils::{
     mask_sensitive_url, OperationTimer, HealthMonitor, 
-    setup_signal_handlers, validate_dependencies, debug_dns_resolution
+    setup_signal_handlers, validate_dependencies
 };
-use log::{debug, error, info, warn};
+use log::{debug, error, info};
 
 use futures::StreamExt;
 use model::{Product, Category, CategoryTreeCache};
@@ -217,100 +217,16 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     debug!("Product routes: create_product, get_product, get_product_by_slug, update_product, delete_product, search_products, export_products, get_product_slugs");
     debug!("Category routes handled separately: create_category, get_category, get_category_by_slug, export_categories, update_category, delete_category, import_categories, get_category_tree");
 
-    // Phase 1.4: NATS Connection Logging with Fly.io Support
+    // Phase 1.4: NATS Connection Logging
     info!("🔗 Connecting to NATS server: {}", nats_url);
-    
-    // Check if we're running on Fly.io and handle accordingly
-    let is_fly_io = env::var("FLY_APP_NAME").is_ok();
-    let nats_client = if is_fly_io {
-        info!("🐙 Detected Fly.io environment, attempting multiple connection strategies...");
-        
-        // Debug DNS resolution first
-        debug_dns_resolution(&nats_url).await;
-        
-        // Strategy 1: Try the configured URL first
-        info!("📡 Strategy 1: Trying configured URL: {}", nats_url);
-        match async_nats::connect(&nats_url).await {
-            Ok(client) => {
-                info!("✅ Successfully connected to NATS via configured URL");
-                client
-            }
-            Err(e1) => {
-                warn!("⚠️  Strategy 1 failed: {}", e1);
-                
-                // Strategy 2: Try without .flycast suffix (direct app name)
-                let direct_url = nats_url.replace(".flycast", "");
-                info!("📡 Strategy 2: Trying direct app name: {}", direct_url);
-                match async_nats::connect(&direct_url).await {
-                    Ok(client) => {
-                        info!("✅ Successfully connected to NATS via direct app name");
-                        client
-                    }
-                    Err(e2) => {
-                        warn!("⚠️  Strategy 2 failed: {}", e2);
-                        
-                        // Strategy 3: Try with .internal suffix
-                        let internal_url = nats_url.replace(".flycast", ".internal");
-                        info!("📡 Strategy 3: Trying .internal suffix: {}", internal_url);
-                        match async_nats::connect(&internal_url).await {
-                            Ok(client) => {
-                                info!("✅ Successfully connected to NATS via .internal suffix");
-                                client
-                            }
-                            Err(e3) => {
-                                error!("❌ All NATS connection strategies failed:");
-                                error!("   Strategy 1 ({}): {}", nats_url, e1);
-                                error!("   Strategy 2 ({}): {}", direct_url, e2);
-                                error!("   Strategy 3 ({}): {}", internal_url, e3);
-                                
-                                // Strategy 4: Try external dedicated IP if available
-                                if let Ok(external_nats_url) = env::var("NATS_EXTERNAL_URL") {
-                                    info!("📡 Strategy 4: Trying external dedicated IP: {}", external_nats_url);
-                                    match async_nats::connect(&external_nats_url).await {
-                                        Ok(client) => {
-                                            warn!("⚠️  Connected via external IP - consider fixing internal networking");
-                                            info!("✅ Successfully connected to NATS via external IP");
-                                            client
-                                        }
-                                        Err(e4) => {
-                                            error!("❌ Strategy 4 also failed: {}", e4);
-                                            
-                                            // Final debugging
-                                            info!("🔍 Debugging Fly.io network environment:");
-                                            info!("   FLY_APP_NAME: {}", env::var("FLY_APP_NAME").unwrap_or_else(|_| "not set".to_string()));
-                                            info!("   FLY_REGION: {}", env::var("FLY_REGION").unwrap_or_else(|_| "not set".to_string()));
-                                            info!("   FLY_ALLOC_ID: {}", env::var("FLY_ALLOC_ID").unwrap_or_else(|_| "not set".to_string()));
-                                            
-                                            return Err(format!("Failed to connect to NATS after trying all strategies including external IP. Last error: {}", e4).into());
-                                        }
-                                    }
-                                } else {
-                                    // Check if NATS app is running
-                                    info!("🔍 Debugging Fly.io network environment:");
-                                    info!("   FLY_APP_NAME: {}", env::var("FLY_APP_NAME").unwrap_or_else(|_| "not set".to_string()));
-                                    info!("   FLY_REGION: {}", env::var("FLY_REGION").unwrap_or_else(|_| "not set".to_string()));
-                                    info!("   FLY_ALLOC_ID: {}", env::var("FLY_ALLOC_ID").unwrap_or_else(|_| "not set".to_string()));
-                                    info!("   NATS_EXTERNAL_URL: not set (no fallback available)");
-                                    
-                                    return Err(format!("Failed to connect to NATS after trying all strategies. Last error: {}", e3).into());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+    let nats_client = match async_nats::connect(&nats_url).await {
+        Ok(client) => {
+            info!("✅ Successfully connected to NATS");
+            client
         }
-    } else {
-        // Local development - use configured URL directly
-        match async_nats::connect(&nats_url).await {
-            Ok(client) => {
-                info!("✅ Successfully connected to NATS");
-                client
-            }
-            Err(e) => {
-                error!("❌ Failed to connect to NATS: {}", e);
-                return Err(e.into());
-            }
+        Err(e) => {
+            error!("❌ Failed to connect to NATS: {}", e);
+            return Err(e.into());
         }
     };
 
