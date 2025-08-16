@@ -70,7 +70,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     
     // Phase 1.3: Inventory Collection & Index Setup Logging
     info!("📦 Setting up inventory collection...");
-    let inventory_coll: Collection<InventoryItem> = database.collection("inventory_items");
+    let inventory_coll: Collection<InventoryItem> = database.collection("inventory");
     let indexes = vec![
         IndexModel::builder()
             .keys(doc! { "sku": 1, "location": 1})
