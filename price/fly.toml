@@ -6,6 +6,8 @@ app = "rust-commerce-price"
 primary_region = "iad"
 
 [build]
+  dockerfile = "price/Dockerfile"
+  context = ".."
 
 [env]
   RUST_ENV = "production"
@@ -19,3 +21,8 @@ primary_region = "iad"
   memory = "256mb"
   cpu_kind = "shared"
   cpus = 1
+
+# Machine scaling configuration to keep at least 1 machine running
+[machine]
+  auto_stop_machines = false
+  min_machines_running = 1

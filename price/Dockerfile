@@ -3,15 +3,25 @@ WORKDIR /app
 RUN apt update && apt install lld clang protobuf-compiler -y
 
 FROM chef AS planner
-COPY . .
+# Copy the rust-common library
+COPY rust-common/ ./rust-common/
+# Copy the price service
+COPY price/ ./price/
+# Set working directory to the service
+WORKDIR /app/price
 # Compute a lock-like file for our project
-RUN cargo chef prepare  --recipe-path recipe.json
+RUN cargo chef prepare --recipe-path recipe.json --bin price-service
 
 FROM chef AS builder
-COPY --from=planner /app/recipe.json recipe.json
+# Copy the rust-common library first
+COPY rust-common/ ./rust-common/
+# Copy the price service
+COPY price/ ./price/
+# Set working directory to the service (needed for cargo chef cook)
+WORKDIR /app/price
+COPY --from=planner /app/price/recipe.json recipe.json
 # Build our project dependencies, not our application!
 RUN cargo chef cook --release --recipe-path recipe.json
-COPY . .
 # Build our project
 RUN cargo build --release --bin price-service
 
@@ -23,6 +33,6 @@ RUN apt-get update -y \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /app/target/release/price-service price-service
+COPY --from=builder /app/price/target/release/price-service price-service
 ENV RUST_ENV=production
 ENTRYPOINT ["./price-service"]

@@ -7,6 +7,8 @@ app = 'rust-commerce-catalog'
 primary_region = 'iad'
 
 [build]
+  dockerfile = "catalog/Dockerfile"
+  context = ".."
 
 [env]
   LOG_LEVEL = 'info'

@@ -247,7 +247,7 @@ pub async fn validate_inventory_dependencies(
     let collections = database.list_collection_names().await
         .with_context("Failed to list inventory collections")?;
     
-    for required_collection in &["inventory_items"] {
+    for required_collection in &["inventory"] {
         if collections.contains(&required_collection.to_string()) {
             debug!("✅ Collection '{}' exists", required_collection);
         } else {
