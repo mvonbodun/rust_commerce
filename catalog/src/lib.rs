@@ -6,3 +6,4 @@ pub mod model;
 pub use model::*;
 
 pub mod env_config;
+pub mod logging_utils;

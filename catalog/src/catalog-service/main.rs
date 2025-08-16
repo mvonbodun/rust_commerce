@@ -15,6 +15,10 @@ use persistence::{
 use std::{env, error::Error, sync::Arc};
 
 use rust_catalog::env_config::load_environment;
+use rust_catalog::logging_utils::{
+    mask_sensitive_url, OperationTimer, HealthMonitor, 
+    setup_signal_handlers, validate_dependencies
+};
 use log::{debug, error, info};
 
 use futures::StreamExt;
@@ -23,30 +27,6 @@ use mongodb::{Client, Collection, IndexModel};
 
 pub mod catalog_messages {
     include!(concat!(env!("OUT_DIR"), "/catalog_messages.rs"));
-}
-
-// Phase 5.1: Utility function for masking sensitive URLs
-fn mask_sensitive_url(url: &str) -> String {
-    // Simple pattern matching to mask passwords in MongoDB URLs
-    if url.contains("://") && url.contains("@") {
-        let parts: Vec<&str> = url.split("://").collect();
-        if parts.len() == 2 {
-            let scheme = parts[0];
-            let rest = parts[1];
-            
-            if let Some(at_pos) = rest.find('@') {
-                let auth_part = &rest[..at_pos];
-                let host_part = &rest[at_pos..];
-                
-                // Mask password if present
-                if let Some(colon_pos) = auth_part.find(':') {
-                    let username = &auth_part[..colon_pos];
-                    return format!("{}://{}:***{}", scheme, username, host_part);
-                }
-            }
-        }
-    }
-    url.to_string()
 }
 
 #[derive(Clone)]
@@ -250,6 +230,13 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         }
     };
 
+    // Phase 4: Setup signal handlers for graceful shutdown
+    setup_signal_handlers().await?;
+    debug!("✅ Signal handlers configured");
+
+    // Phase 4: Validate dependencies
+    validate_dependencies(&client, &nats_client).await?;
+
     // Phase 3.1: Queue Subscription Logging
     info!("📡 Subscribing to NATS queue: catalog.*");
     let requests = match nats_client.queue_subscribe("catalog.*", "queue".to_owned()).await {
@@ -264,6 +251,11 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     };
 
     let routes = Arc::new(router.route_map);
+
+    // Phase 4: Start health monitoring
+    let health_monitor = HealthMonitor::new(client.clone(), nats_client.clone());
+    health_monitor.start_health_checks();
+    debug!("✅ Health monitoring started");
 
     info!("🚀 Catalog service is ready and listening for requests");
     info!("📊 Service startup completed successfully");
@@ -286,7 +278,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                 let operation = subject_parts[1].to_string();
                 debug!("📨 Processing catalog operation: {} from subject: {}", operation, request.subject);
                 
-                let start_time = std::time::Instant::now();
+                // Phase 5: Use OperationTimer for performance monitoring
+                let _timer = OperationTimer::new(&format!("catalog.{}", operation));
 
                 // Handle category operations separately
                 let result = match operation.as_str() {
@@ -399,12 +392,11 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
                 match result {
                     Ok(_) => {
-                        let elapsed = start_time.elapsed();
-                        debug!("✅ Successfully processed {} in {:?}", operation, elapsed);
+                        _timer.log_elapsed("debug");
                     }
                     Err(e) => {
-                        let elapsed = start_time.elapsed();
-                        error!("❌ Error processing {} after {:?}: {:?}", operation, elapsed, e);
+                        _timer.log_elapsed("error");
+                        error!("❌ Error details: {:?}", e);
                     }
                 }
             }
