@@ -12,7 +12,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::str::FromStr;
 use rust_price::Offer;
-use rust_price::env_config::load_environment;
+use rust_common::env_config::load_environment;
 use bson::Decimal128;
 use iso_currency::Currency;
 use prost_types::Timestamp;

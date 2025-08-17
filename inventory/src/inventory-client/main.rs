@@ -11,7 +11,7 @@ use serde_json;
 use std::fs;
 use std::path::PathBuf;
 use rust_inventory::InventoryItem;
-use rust_inventory::env_config::load_environment;
+use rust_common::load_environment;
 use chrono::Utc;
 
 pub mod inventory_messages {

@@ -66,10 +66,13 @@ services:
     container_name: rust-commerce-inventory-service
     restart: unless-stopped
     environment:
-      - RUST_ENV=production
+      - RUST_ENV=local
       - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017
       - NATS_URL=nats://rust-commerce-nats:4222
-      - RUST_LOG=info
+      - RUST_LOG=debug
+      - RUST_LOG_STYLE=always
+      - RUST_BACKTRACE=1
+      - LOG_LEVEL=debug
       - LOG_LEVEL=info
     depends_on:
       mongodb:
@@ -87,11 +90,13 @@ services:
     container_name: rust-commerce-order-service
     restart: unless-stopped
     environment:
-      - RUST_ENV=production
+      - RUST_ENV=local
       - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017
       - NATS_URL=nats://rust-commerce-nats:4222
-      - RUST_LOG=info
-      - LOG_LEVEL=info
+      - RUST_LOG=debug
+      - RUST_LOG_STYLE=always
+      - RUST_BACKTRACE=1
+      - LOG_LEVEL=debug
     depends_on:
       mongodb:
         condition: service_healthy
@@ -108,11 +113,11 @@ services:
     container_name: rust-commerce-price-service
     restart: unless-stopped
     environment:
-      - RUST_ENV=production
+      - RUST_ENV=local
       - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017
       - NATS_URL=nats://rust-commerce-nats:4222
-      - RUST_LOG=info
-      - LOG_LEVEL=info
+      - RUST_LOG=debug
+      - LOG_LEVEL=debug
     depends_on:
       mongodb:
         condition: service_healthy

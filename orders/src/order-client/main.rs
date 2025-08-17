@@ -5,8 +5,7 @@ use order_messages::{
 };
 use prost::Message;
 
-#[path = "../env_config.rs"]
-pub mod env_config;
+use rust_common::env_config;
 
 pub mod order_messages {
     include!(concat!(env!("OUT_DIR"), "/order_messages.rs"));

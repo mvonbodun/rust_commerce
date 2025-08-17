@@ -5,9 +5,6 @@ pub mod inventory_messages {
     include!(concat!(env!("OUT_DIR"), "/inventory_messages.rs"));
 }
 
-// Environment configuration utilities
-pub mod env_config;
-
 // Model types
 #[path = "inventory-service/model.rs"]
 pub mod model;
