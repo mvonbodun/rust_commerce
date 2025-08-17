@@ -1,42 +1,39 @@
 FROM lukemathwalker/cargo-chef:latest-rust-1.89 AS chef
 WORKDIR /app
-RUN apt update && apt install lld clang protobuf-compiler -y
+RUN apt-get update && apt-get install -y lld clang protobuf-compiler && rm -rf /var/lib/apt/lists/*
 
+# Plan dependencies using only manifests to maximize cache hits
 FROM chef AS planner
-# Copy the workspace Cargo.toml (essential for workspace resolution)
-COPY Cargo.toml ./Cargo.toml
-# Copy the rust-common library
-COPY rust-common/ ./rust-common/
-# Copy the orders service
-COPY orders/ ./orders/
-# Set working directory to the service
+# Copy manifests for path dependency and the service
+COPY rust-common/Cargo.toml /app/rust-common/Cargo.toml
+COPY orders/Cargo.toml /app/orders/Cargo.toml
 WORKDIR /app/orders
-# Compute a lock-like file for our project
-RUN cargo chef prepare --recipe-path recipe.json --bin order-service
+RUN cargo chef prepare --recipe-path recipe.json
 
+# Build dependencies and then the binary
 FROM chef AS builder
-# Copy the workspace Cargo.toml (essential for workspace resolution)
-COPY Cargo.toml ./Cargo.toml
-# Copy the rust-common library first
-COPY rust-common/ ./rust-common/
-# Copy the orders service
-COPY orders/ ./orders/
-# Set working directory to the service (needed for cargo chef cook)
+# Work inside the service dir so relative paths in recipe.json (e.g., ../rust-common) resolve to /app/rust-common
 WORKDIR /app/orders
-COPY --from=planner /app/orders/recipe.json recipe.json
-# Build our project dependencies, not our application!
+# Bring in the recipe computed in the previous stage
+COPY --from=planner /app/orders/recipe.json /app/orders/recipe.json
+# Provide path dependency sources before cooking deps
+COPY rust-common/ /app/rust-common/
+# Cook dependency layers only (no app sources yet)
 RUN cargo chef cook --release --recipe-path recipe.json
-# Build our project
+# Now copy full service sources
+COPY orders/ /app/orders/
+# Build the service binary
 RUN cargo build --release --bin order-service
 
+# Runtime image
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends openssl ca-certificates \
-    # Clean up
-    && apt-get autoremove -y \
-    && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /app/orders/target/release/order-service order-service
+# Copy the compiled binary
+COPY --from=builder /app/orders/target/release/order-service /app/order-service
+# Sensible defaults (overridable via Compose)
 ENV RUST_ENV=production
-ENTRYPOINT ["./order-service"]
+ENV RUST_LOG=info
+ENTRYPOINT ["/app/order-service"]
