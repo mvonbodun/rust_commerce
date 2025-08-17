@@ -480,34 +480,6 @@ impl CategoryService {
         Ok(())
     }
 
-    /// Validate a category request before import
-    async fn validate_category_request(&self, request: &CreateCategoryRequest) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-        // Basic validation
-        if request.name.is_empty() {
-            return Err("Category name cannot be empty".into());
-        }
-
-        if request.slug.is_empty() {
-            return Err("Category slug cannot be empty".into());
-        }
-
-        // Check if slug already exists
-        if let Some(_) = self.category_dao.get_category_by_slug(&request.slug).await? {
-            return Err(format!("Category with slug '{}' already exists", request.slug).into());
-        }
-
-        // Validate parent if specified
-        if let Some(parent_id) = &request.parent_id {
-            if !parent_id.is_empty() {
-                if self.category_dao.get_category(parent_id).await?.is_none() {
-                    return Err(format!("Parent category with ID '{}' not found", parent_id).into());
-                }
-            }
-        }
-
-        Ok(())
-    }
-
     /// Helper method to convert Category model to CategoryResponse
     fn category_to_response(&self, category: Category) -> CategoryResponse {
         CategoryResponse {

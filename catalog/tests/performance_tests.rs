@@ -165,7 +165,7 @@ mod performance_tests {
         
         for depth in 0..1000 {
             let mut ancestors = Vec::new();
-            for i in 0..depth {
+            for _i in 0..depth {
                 ancestors.push(Uuid::new_v4().to_string());
             }
             ancestors_arrays.push(ancestors);

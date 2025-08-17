@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use mongodb::{Collection, bson::{doc, Document}, Database};
+use mongodb::{Collection, bson::doc, Database};
 use crate::model::{Product, ProductSlug};
 use std::error::Error;
 use futures::TryStreamExt;

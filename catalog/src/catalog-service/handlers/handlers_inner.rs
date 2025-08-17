@@ -9,9 +9,7 @@ pub enum HandlerError {
 }
 
 impl HandlerError {
-    pub fn default_internal_error() -> Self {
-        HandlerError::InternalError("An unexpected error occurred. Please try again".to_owned())
-    }
+    // Removed default_internal_error - was unused
 }
 
 pub async fn create_product(

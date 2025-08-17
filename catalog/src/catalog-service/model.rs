@@ -629,9 +629,22 @@ mod tests {
 
     #[test]
     fn test_deserialize_sample_product() {
-        // Read the sample product data
-        let sample_data = fs::read_to_string("sample_records_backup/sample_product_mongo_record.json")
-            .expect("Failed to read sample product file");
+        // Try multiple possible paths for the sample product file
+        let possible_paths = [
+            "catalog/sample_records/sample_product_mongo_record.json",
+            "sample_records/sample_product_mongo_record.json",
+            "../sample_records/sample_product_mongo_record.json"
+        ];
+        
+        let mut sample_data = None;
+        for path in &possible_paths {
+            if let Ok(data) = fs::read_to_string(path) {
+                sample_data = Some(data);
+                break;
+            }
+        }
+        
+        let sample_data = sample_data.expect("Failed to find sample product file in any expected location");
         
         // Try to deserialize it into our Product model
         let product: Result<Product, _> = serde_json::from_str(&sample_data);
