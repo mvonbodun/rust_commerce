@@ -6,7 +6,7 @@ app = "rust-commerce-price"
 primary_region = "iad"
 
 [build]
-  dockerfile = "price/Dockerfile"
+  dockerfile = "Dockerfile"
   context = ".."
 
 [env]

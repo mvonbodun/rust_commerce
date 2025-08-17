@@ -1,0 +1,940 @@
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476179 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 3 SKUs out of 3 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 3 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 4.208709ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 4.210875ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092829733 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092829733 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092829733 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092829746 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092829746 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092829746 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092829758 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092829758 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092829758 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 3 SKUs out of 3 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 3 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 4.540125ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 4.541208ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095694850 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095694850 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095694850 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095694862 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095694862 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095694862 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 2 SKUs out of 2 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 2 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 4.766458ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 4.767125ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082041 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082041 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082041 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082053 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082053 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082053 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082065 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082065 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082065 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082078 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082078 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082078 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082080 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082080 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082080 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082092 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082092 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082092 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082111 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082111 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082111 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082135 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082135 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082135 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082148 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082148 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082148 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082150 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082150 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082150 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082162 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082162 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082162 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082175 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082175 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082175 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 12 SKUs out of 12 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 12 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 4.803208ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 4.803916ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245537 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245537 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245537 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245540 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245540 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245540 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245577 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245577 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245577 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245589 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245589 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245589 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245607 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245607 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245607 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245610 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245610 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245610 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245634 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245634 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245634 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245659 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245659 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245659 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245661 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245661 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245661 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245674 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245674 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245674 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245686 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245686 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245686 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245698 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245698 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245698 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245703 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245703 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245703 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245716 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245716 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245716 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245730 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245730 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245730 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245743 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245743 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245743 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245755 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245755 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245755 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245770 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245770 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245770 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245782 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245782 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245782 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245794 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245794 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245794 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245800 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245800 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245800 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245813 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245813 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245813 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 22 SKUs out of 22 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 22 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 6.903625ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 6.906167ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095694811 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095694811 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095694811 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095694823 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095694823 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095694823 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 2 SKUs out of 2 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 2 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 7.141958ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 7.143291ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989292 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989292 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989292 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989308 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989308 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989308 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989311 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989311 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989311 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989323 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989323 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989323 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989335 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989335 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989335 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989348 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989348 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989348 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989350 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989350 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989350 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989362 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989362 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989362 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989375 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989375 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989375 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989387 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989387 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989387 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989399 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989399 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989399 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989404 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989404 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095989404 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097081970 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097081970 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097081970 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097081982 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097081982 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097081982 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097081994 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097081994 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097081994 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082001 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082001 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082001 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082014 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082014 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082014 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082026 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082026 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0097082026 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 18 SKUs out of 18 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 18 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 7.23225ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 7.237625ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245361 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245361 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245361 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245374 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245374 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245374 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245386 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245386 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245386 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245398 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245398 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245398 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245403 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245403 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245403 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245416 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245416 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245416 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245430 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245430 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245430 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245443 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245443 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245443 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245467 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245467 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245467 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245470 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245470 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245470 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245482 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245482 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245482 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245494 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245494 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245494 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245513 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245513 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094245513 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 13 SKUs out of 13 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 13 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 7.305084ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 7.305709ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049099 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049099 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049099 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049105 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049105 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049105 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049118 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049118 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049118 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049120 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049120 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049120 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049132 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049132 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049132 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049239 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049239 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049239 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049242 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049242 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049242 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049254 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049254 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049254 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049266 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049266 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049266 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049279 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049279 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094049279 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094103108 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094103108 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094103108 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 11 SKUs out of 11 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 11 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 4.990417ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 4.991167ms
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094508617", "0094508629", "0094508631", "0094508644", "0094508656", "0094508668", "0094508683", "0094508713", "0094508725"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 9 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 9 SKUs: ["0094508617", "0094508629", "0094508631", "0094508644", "0094508656", "0094508668", "0094508683", "0094508713", "0094508725"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094420991", "0094421008", "0094421011", "0094421048", "0094421050", "0094421062", "0094421087", "0094421099", "0094421105", "0094491178", "0094491208", "0094491223", "0094491235", "0094491248", "0094491250", "0094491262", "0094491275", "0095393851", "0095393863", "0095393876", "0095393888", "0095393890", "0095393906"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 23 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 23 SKUs: ["0094420991", "0094421008", "0094421011", "0094421048", "0094421050", "0094421062", "0094421087", "0094421099", "0094421105", "0094491178", "0094491208", "0094491223", "0094491235", "0094491248", "0094491250", "0094491262", "0094491275", "0095393851", "0095393863", "0095393876", "0095393888", "0095393890", "0095393906"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094475998", "0094476005", "0094476018", "0094476020"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 4 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 4 SKUs: ["0094475998", "0094476005", "0094476018", "0094476020"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094475947", "0094475959", "0094475961"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 3 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 3 SKUs: ["0094475947", "0094475959", "0094475961"]
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508617 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508617 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508617 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508629 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508629 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508629 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508631 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508631 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508631 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508644 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508644 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508644 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508656 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508656 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508656 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508668 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508668 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508668 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508683 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508683 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508683 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508713 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508713 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508713 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508725 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508725 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094508725 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 9 SKUs out of 9 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 9 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 1.624583ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094420991 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094420991 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094420991 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421008 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421008 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421008 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421011 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421011 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421011 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421048 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421048 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421048 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421050 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421050 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421050 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421062 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421062 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421062 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421087 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421087 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421087 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421099 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421099 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421099 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421105 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421105 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094421105 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491178 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491178 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491178 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491208 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491208 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491208 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491223 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491223 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491223 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491235 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491235 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491235 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491248 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491248 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491248 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491250 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491250 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491250 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491262 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491262 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491262 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491275 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491275 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094491275 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393851 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393851 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393851 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393863 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393863 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393863 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393876 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393876 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393876 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393888 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393888 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393888 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393890 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393890 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393890 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393906 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393906 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0095393906 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 23 SKUs out of 23 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 23 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 1.975083ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094475947 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094475947 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094475947 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094475959 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094475959 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094475959 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094475961 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094475961 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094475961 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 3 SKUs out of 3 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 3 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 2.269583ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 2.271666ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094475998 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094475998 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094475998 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476005 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476005 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476005 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476018 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476018 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476018 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476020 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476020 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476020 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 4 SKUs out of 4 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 4 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.117833ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.120667ms
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0096212953", "0096212965", "0096212978", "0096212980"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 4 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 4 SKUs: ["0096212953", "0096212965", "0096212978", "0096212980"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0096213300", "0096213313", "0096213325", "0096213337"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 4 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 4 SKUs: ["0096213300", "0096213313", "0096213325", "0096213337"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094476524", "0094476536", "0094476549", "0094476551"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 4 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 4 SKUs: ["0094476524", "0094476536", "0094476549", "0094476551"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0096213228", "0096213230", "0096213243", "0096213255"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 4 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 4 SKUs: ["0096213228", "0096213230", "0096213243", "0096213255"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0092819923"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 1 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 1 SKUs: ["0092819923"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0096404879", "0096404881", "0096404893", "0096404909", "0096404912", "0096404936", "0096405086", "0096405098", "0096405104", "0096405117", "0096405129", "0096405131", "0096405144", "0096405168", "0096405171", "0096405183", "0096405195", "0096405201", "0096405214", "0096405226"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 20 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 20 SKUs: ["0096404879", "0096404881", "0096404893", "0096404909", "0096404912", "0096404936", "0096405086", "0096405098", "0096405104", "0096405117", "0096405129", "0096405131", "0096405144", "0096405168", "0096405171", "0096405183", "0096405195", "0096405201", "0096405214", "0096405226"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094373149"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 1 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 1 SKUs: ["0094373149"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094373054"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 1 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 1 SKUs: ["0094373054"]
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094373054 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094373054 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094373054 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 1 SKUs out of 1 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 1 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 2.598208ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 2.599791ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092819923 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092819923 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092819923 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 1 SKUs out of 1 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 1 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.487042ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.491625ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476524 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476524 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476524 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476536 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476536 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476536 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476549 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476549 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476549 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476551 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476551 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476551 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 4 SKUs out of 4 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 4 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.629958ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.631125ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213228 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213228 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213228 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213230 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213230 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213230 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213243 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213243 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213243 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213255 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213255 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213255 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 4 SKUs out of 4 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 4 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.683667ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.684875ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213300 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213300 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213300 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213313 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213313 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213313 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213325 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213325 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213325 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213337 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213337 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213337 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 4 SKUs out of 4 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 4 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.792292ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.79375ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212953 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212953 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212953 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212965 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212965 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212965 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212978 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212978 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212978 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212980 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212980 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212980 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 4 SKUs out of 4 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 4 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.904209ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.905292ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094373149 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094373149 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094373149 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 1 SKUs out of 1 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 1 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.776958ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.778ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404879 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404879 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404879 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404881 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404881 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404881 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404893 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404893 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404893 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404909 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404909 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404909 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404912 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404912 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404912 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404936 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404936 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096404936 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405086 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405086 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405086 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405098 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405098 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405098 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405104 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405104 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405104 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405117 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405117 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405117 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405129 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405129 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405129 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405131 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405131 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405131 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405144 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405144 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405144 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405168 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405168 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405168 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405171 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405171 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405171 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405183 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405183 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405183 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405195 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405195 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405195 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405201 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405201 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405201 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405214 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405214 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405214 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405226 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405226 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096405226 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 20 SKUs out of 20 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 20 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 4.498791ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 4.501083ms
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094372791"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 1 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 1 SKUs: ["0094372791"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094124946", "0094124958", "0094124960", "0094124973", "0094124985", "0094124997", "0094125004", "0094125017"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 8 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 8 SKUs: ["0094124946", "0094124958", "0094124960", "0094124973", "0094124985", "0094124997", "0094125004", "0094125017"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094113887", "0094113899", "0094113905", "0094113918", "0094113932", "0094113945", "0094113957"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 7 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 7 SKUs: ["0094113887", "0094113899", "0094113905", "0094113918", "0094113932", "0094113945", "0094113957"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094124781", "0094124793", "0094124809", "0094124812", "0094124824", "0094124836", "0094124849", "0094124851", "0094124863", "0094124876", "0094124888", "0094124890", "0094124906", "0094124919", "0094124921", "0094124933"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 16 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 16 SKUs: ["0094124781", "0094124793", "0094124809", "0094124812", "0094124824", "0094124836", "0094124849", "0094124851", "0094124863", "0094124876", "0094124888", "0094124890", "0094124906", "0094124919", "0094124921", "0094124933"]
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124946 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124946 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124946 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124958 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124958 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124958 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124960 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124960 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124960 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124973 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124973 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124973 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124985 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124985 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124985 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124997 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124997 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124997 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094125004 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094125004 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094125004 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094125017 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094125017 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094125017 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 8 SKUs out of 8 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 8 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 2.726625ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 2.728083ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094372791 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094372791 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094372791 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 1 SKUs out of 1 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 1 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.662459ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.6635ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113887 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113887 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113887 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113899 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113899 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113899 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113905 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113905 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113905 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113918 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113918 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113918 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113932 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113932 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113932 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113945 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113945 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113945 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113957 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113957 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094113957 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 7 SKUs out of 7 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 7 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.561125ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.564334ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124781 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124781 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124781 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124793 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124793 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124793 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124809 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124809 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124809 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124812 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124812 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124812 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124824 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124824 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124824 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124836 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124836 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124836 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124849 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124849 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124849 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124851 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124851 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124851 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124863 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124863 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124863 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124876 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124876 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124876 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124888 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124888 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124888 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124890 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124890 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124890 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124906 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124906 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124906 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124919 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124919 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124919 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124921 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124921 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124921 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124933 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124933 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094124933 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 16 SKUs out of 16 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 16 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.830667ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.832292ms
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0092830122", "0092830134"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 2 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 2 SKUs: ["0092830122", "0092830134"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0092830000", "0092830013"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 2 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 2 SKUs: ["0092830000", "0092830013"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094476360", "0094476373", "0094476385", "0096213267", "0096213270", "0096213282", "0096213294"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 7 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 7 SKUs: ["0094476360", "0094476373", "0094476385", "0096213267", "0096213270", "0096213282", "0096213294"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0092829706"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 1 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 1 SKUs: ["0092829706"]
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476360 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476360 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476360 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476373 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476373 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476373 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476385 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476385 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476385 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213267 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213267 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213267 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213270 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213270 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213270 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213282 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213282 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213282 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213294 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213294 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213294 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 7 SKUs out of 7 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 7 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 2.614625ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 2.616083ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092830122 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092830122 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092830122 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092830134 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092830134 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092830134 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 2 SKUs out of 2 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 2 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.449958ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.451166ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092830000 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092830000 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092830000 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092830013 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092830013 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092830013 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 2 SKUs out of 2 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 2 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.444583ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.445208ms
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092829706 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092829706 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0092829706 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 1 SKUs out of 1 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 1 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.509ms
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 3.509666ms
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094476481", "0094476493", "0094476509", "0094476512"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 4 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 4 SKUs: ["0094476481", "0094476493", "0094476509", "0094476512"]
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476481 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476481 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476481 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476493 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476493 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476493 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476509 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476509 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476509 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476512 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476512 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476512 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 4 SKUs out of 4 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 4 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 1.475ms
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0094476402", "0094476415", "0094476427"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 3 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 3 SKUs: ["0094476402", "0094476415", "0094476427"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0096212992", "0096213009", "0096213012", "0096213024"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 4 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 4 SKUs: ["0096212992", "0096213009", "0096213012", "0096213024"]
+rust-commerce-inventory-service  |  DEBUG inventory_service                             > 📨 Processing inventory operation: get_all_locations_by_sku from subject: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  Starting operation: inventory.get_all_locations_by_sku
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers                   > get all locations by sku request: InventoryGetAllLocationsBySkuRequest { skus: ["0096213446", "0096213458", "0096213460", "0096213473"] }
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Before call to get_items_by_skus for 4 SKUs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Getting inventory items for 4 SKUs: ["0096213446", "0096213458", "0096213460", "0096213473"]
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212992 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212992 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096212992 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213009 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213009 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213009 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213012 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213012 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213012 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213024 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213024 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213024 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 4 SKUs out of 4 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 4 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 844.209µs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213446 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213446 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213446 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213458 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213458 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213458 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213460 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213460 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213460 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213473 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213473 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0096213473 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 4 SKUs out of 4 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 4 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 872.541µs
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476402 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476402 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476402 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476415 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476415 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476415 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476427 at DC - Dallas, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476427 at STORE - Spring, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory item: 0094476427 at STORE - Austin, TX
+rust-commerce-inventory-service  |  DEBUG inventory_service::persistence::inventory_dao > Found inventory for 3 SKUs out of 3 requested
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > After call to get_items_by_skus: true
+rust-commerce-inventory-service  |  DEBUG inventory_service::handlers::handlers_inner   > Found 3 SKUs, 0 not found
+rust-commerce-inventory-service  |  DEBUG rust_common::logging_utils                    > ⏱️  inventory.get_all_locations_by_sku completed in 937.625µs

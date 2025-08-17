@@ -7,7 +7,7 @@ app = 'rust-commerce-catalog'
 primary_region = 'iad'
 
 [build]
-  dockerfile = "catalog/Dockerfile"
+  dockerfile = "Dockerfile"
   context = ".."
 
 [env]
@@ -19,6 +19,8 @@ primary_region = 'iad'
 
 [[vm]]
   size = 'shared-cpu-1x'
+  cpu_kind = "shared"
+  cpus = 1
 
 # Machine scaling configuration to keep at least 1 machine running
 [machine]

@@ -7,7 +7,7 @@ primary_region = "iad"
 
 [build]
   dockerfile = "Dockerfile"
-  context = "."
+  context = ".."
 
 [env]
   RUST_ENV = "production"
