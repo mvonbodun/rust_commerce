@@ -133,17 +133,9 @@ create_app() {
         fi
     else
         print_status "Creating new app: $app_name"
-        
-        # Change to service directory
-        cd "../$service"
-        
-        # Create the app without deploying
+        # Create the app without deploying (no need to change directory)
         flyctl apps create "$app_name"
-        
         print_success "App '$app_name' created successfully"
-        
-        # Return to scripts directory
-        cd "../scripts"
     fi
 }
 
@@ -179,19 +171,16 @@ deploy_app() {
     
     print_header "Deploying App: $app_name"
     
-    # Change to service directory
-    cd "../$service"
-    
-    print_status "Starting deployment..."
-    if flyctl deploy --app "$app_name"; then
+    # Deploy from repo root as build context (..) and use the service-specific fly.toml
+    print_status "Starting deployment with repo-root context and $service/fly.toml..."
+    if flyctl deploy .. -c "$service/fly.toml" --app "$app_name"; then
         print_success "Deployment completed successfully"
     else
         print_error "Deployment failed"
+        echo "Hint: ensure you are running this script from scripts/ directory."
+        echo "       You can also run manually: flyctl deploy .. -c ../$service/fly.toml --app $app_name"
         exit 1
     fi
-    
-    # Return to scripts directory
-    cd "../scripts"
 }
 
 # Show app status
