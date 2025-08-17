@@ -3,6 +3,8 @@ WORKDIR /app
 RUN apt update && apt install lld clang protobuf-compiler -y
 
 FROM chef AS planner
+# Copy the workspace Cargo.toml (essential for workspace resolution)
+COPY Cargo.toml ./Cargo.toml
 # Copy the rust-common library
 COPY rust-common/ ./rust-common/
 # Copy the orders service
@@ -13,6 +15,8 @@ WORKDIR /app/orders
 RUN cargo chef prepare --recipe-path recipe.json --bin order-service
 
 FROM chef AS builder
+# Copy the workspace Cargo.toml (essential for workspace resolution)
+COPY Cargo.toml ./Cargo.toml
 # Copy the rust-common library first
 COPY rust-common/ ./rust-common/
 # Copy the orders service

@@ -3,20 +3,24 @@ WORKDIR /app
 RUN apt update && apt install lld clang protobuf-compiler -y
 
 FROM chef AS planner
-# Copy the rust-common library (one level up from inventory)
-COPY ../rust-common/ ./rust-common/
-# Copy the inventory service (current directory)
-COPY . ./inventory/
+# Copy the workspace Cargo.toml (essential for workspace resolution)
+COPY Cargo.toml ./Cargo.toml
+# Copy the rust-common library
+COPY rust-common/ ./rust-common/
+# Copy the inventory service
+COPY inventory/ ./inventory/
 # Set working directory to the service
 WORKDIR /app/inventory
 # Compute a lock-like file for our project
 RUN cargo chef prepare --recipe-path recipe.json --bin inventory-service
 
 FROM chef AS builder
-# Copy the rust-common library first (one level up from inventory)
-COPY ../rust-common/ ./rust-common/
-# Copy the inventory service (current directory)
-COPY . ./inventory/
+# Copy the workspace Cargo.toml (essential for workspace resolution)
+COPY Cargo.toml ./Cargo.toml
+# Copy the rust-common library first
+COPY rust-common/ ./rust-common/
+# Copy the inventory service
+COPY inventory/ ./inventory/
 # Set working directory to the service (needed for cargo chef cook)
 WORKDIR /app/inventory
 COPY --from=planner /app/inventory/recipe.json recipe.json

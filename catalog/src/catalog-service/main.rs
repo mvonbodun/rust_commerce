@@ -12,7 +12,7 @@ use persistence::{
     product_dao::ProductDaoImpl,
     category_dao::CategoryDaoImpl,
 };
-use std::{env, error::Error, sync::Arc};
+use std::{env, error::Error, sync::Arc, io::{self, Write}};
 
 use rust_common::{
     load_environment, mask_sensitive_url, OperationTimer, HealthMonitor,
@@ -36,6 +36,10 @@ pub struct AppState {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
+    // Early boot diagnostic
+    println!("BOOT: entering main");
+    let _ = io::stdout().flush();
+    
     // Load environment configuration FIRST, before initializing logger
     load_environment();
     

@@ -1,38 +1,41 @@
 FROM lukemathwalker/cargo-chef:latest-rust-1.89 AS chef
 WORKDIR /app
-RUN apt update && apt install lld clang protobuf-compiler -y
+RUN apt-get update && apt-get install -y lld clang protobuf-compiler && rm -rf /var/lib/apt/lists/*
 
+# Plan dependencies using only manifests to maximize cache hits
 FROM chef AS planner
-# Copy the rust-common library
-COPY rust-common/ ./rust-common/
-# Copy the catalog service
-COPY catalog/ ./catalog/
-# Set working directory to the service
+# Copy manifests for path dependency and the service
+COPY rust-common/Cargo.toml /app/rust-common/Cargo.toml
+COPY catalog/Cargo.toml /app/catalog/Cargo.toml
 WORKDIR /app/catalog
-# Compute a lock-like file for our project
-RUN cargo chef prepare --recipe-path recipe.json --bin catalog-service
+RUN cargo chef prepare --recipe-path recipe.json
 
+# Build dependencies and then the binary
 FROM chef AS builder
-# Copy the rust-common library first
-COPY rust-common/ ./rust-common/
-# Copy the catalog service
-COPY catalog/ ./catalog/
-# Set working directory to the service (needed for cargo chef cook)
+# Work inside the service dir so relative paths in recipe.json (e.g., ../rust-common) resolve to /app/rust-common
 WORKDIR /app/catalog
-COPY --from=planner /app/catalog/recipe.json recipe.json
-# Build our project dependencies, not our application!
+# Bring in the recipe computed in the previous stage
+COPY --from=planner /app/catalog/recipe.json /app/catalog/recipe.json
+# Provide path dependency sources before cooking deps
+COPY rust-common/ /app/rust-common/
+# Cook dependency layers only (this may create a temporary src with dummy main; we haven't copied our sources yet)
 RUN cargo chef cook --release --recipe-path recipe.json
-# Build our project
+# Now copy full service sources
+COPY catalog/ /app/catalog/
+# Build the service binary
 RUN cargo build --release --bin catalog-service
 
+# Runtime image
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends openssl ca-certificates \
-    # Clean up
-    && apt-get autoremove -y \
-    && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /app/catalog/target/release/catalog-service catalog-service
+# Copy the compiled binary
+COPY --from=builder /app/catalog/target/release/catalog-service /app/catalog-service
+# Sensible defaults (overridable via Compose)
 ENV RUST_ENV=production
-ENTRYPOINT ["./catalog-service"]
+ENV RUST_LOG=info
+# If the service exposes HTTP, uncomment the next line
+# EXPOSE 8080
+ENTRYPOINT ["/app/catalog-service"]

@@ -1,3 +1,5 @@
+name: rust_commerce
+
 services:
   # MongoDB Database
   mongodb:
@@ -36,15 +38,17 @@ services:
   # Catalog Service
   catalog-service:
     build:
-      context: ./catalog
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: catalog/Dockerfile
     container_name: rust-commerce-catalog-service
     restart: unless-stopped
     environment:
-      - RUST_ENV=production
-      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017
+      - RUST_ENV=local
+      - MONGODB_URL=mongodb://admin:password123@rust-commerce-mongodb:27017/?authSource=admin
       - NATS_URL=nats://rust-commerce-nats:4222
       - RUST_LOG=debug
+      - RUST_LOG_STYLE=always
+      - RUST_BACKTRACE=1
       - LOG_LEVEL=debug
     depends_on:
       mongodb:
@@ -57,8 +61,8 @@ services:
   # Inventory Service
   inventory-service:
     build:
-      context: ./inventory
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: inventory/Dockerfile
     container_name: rust-commerce-inventory-service
     restart: unless-stopped
     environment:
@@ -78,8 +82,8 @@ services:
   # Orders Service
   orders-service:
     build:
-      context: ./orders
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: orders/Dockerfile
     container_name: rust-commerce-order-service
     restart: unless-stopped
     environment:
@@ -99,8 +103,8 @@ services:
   # Price Service
   price-service:
     build:
-      context: ./price
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: price/Dockerfile
     container_name: rust-commerce-price-service
     restart: unless-stopped
     environment:
