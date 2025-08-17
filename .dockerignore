@@ -1,0 +1,21 @@
+# Rust build artifacts
+target/
+**/.env*
+**/node_modules/
+**/.git
+**/.gitignore
+**/README.md
+**/Dockerfile
+.dockerignore
+
+# Service-specific files to exclude
+**/scripts/
+**/sample_records/
+**/sample_records_backup/
+**/mongodb/
+**/tests/
+**/co-pilot-dev-plans/
+
+# OS files
+.DS_Store
+Thumbs.db

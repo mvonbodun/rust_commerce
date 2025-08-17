@@ -6,8 +6,8 @@ app = "rust-commerce-inventory"
 primary_region = "iad"
 
 [build]
-  dockerfile = "inventory/Dockerfile"
-  context = ".."
+  dockerfile = "Dockerfile"
+  context = "."
 
 [env]
   RUST_ENV = "production"
@@ -26,3 +26,8 @@ primary_region = "iad"
 [machine]
   auto_stop_machines = false
   min_machines_running = 1
+
+# Add restart policy for debugging
+[[restart]]
+  policy = "always"
+  retries = 3
