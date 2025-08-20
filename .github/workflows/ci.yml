@@ -1,0 +1,169 @@
+name: Rust CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_ENV: ci
+
+jobs:
+  fmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: rustfmt
+      - name: Enforce formatting
+        run: cargo fmt --all --check
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: clippy
+      - name: Linting
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler pkg-config libssl-dev
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+      - name: Build workspace
+        run: cargo build --workspace --all-targets
+      - name: Run unit tests (libs & bins)
+        run: |
+          cargo test --workspace --lib --bins
+
+  integration-tests:
+    name: Integration tests (MongoDB + NATS)
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:7
+        ports: [ '27017:27017' ]
+        env:
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: password123
+      nats:
+        image: nats:latest
+        ports: [ '4222:4222', '8222:8222' ]
+    env:
+      MONGODB_URL: mongodb://admin:password123@localhost:27017/?authSource=admin
+      NATS_URL: nats://127.0.0.1:4222
+      NATS_TEST_URL: nats://127.0.0.1:4222
+      RUST_LOG: info
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler pkg-config libssl-dev netcat-openbsd
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+      - name: Wait for MongoDB
+        run: |
+          for i in {1..30}; do
+            if nc -z 127.0.0.1 27017; then echo "MongoDB is up"; exit 0; fi
+            echo "Waiting for MongoDB..."; sleep 2;
+          done
+          echo "MongoDB did not start in time"; exit 1
+      - name: Wait for NATS
+        run: |
+          for i in {1..30}; do
+            if nc -z 127.0.0.1 4222; then echo "NATS is up"; exit 0; fi
+            echo "Waiting for NATS..."; sleep 2;
+          done
+          echo "NATS did not start in time"; exit 1
+      - name: Build workspace
+        run: cargo build --workspace --all-targets
+      - name: Start catalog-service
+        run: |
+          nohup cargo run -p rust-catalog --bin catalog-service >/tmp/catalog.log 2>&1 &
+          echo $! > /tmp/catalog.pid
+      - name: Start inventory-service
+        run: |
+          nohup cargo run -p rust-inventory --bin inventory-service >/tmp/inventory.log 2>&1 &
+          echo $! > /tmp/inventory.pid
+      - name: Start order-service
+        run: |
+          nohup cargo run -p rust-orders --bin order-service >/tmp/orders.log 2>&1 &
+          echo $! > /tmp/orders.pid
+      - name: Start price-service
+        run: |
+          nohup cargo run -p rust-price --bin price-service >/tmp/price.log 2>&1 &
+          echo $! > /tmp/price.pid
+      - name: Wait for services to be ready
+        run: |
+          sleep 10
+      - name: Run integration tests
+        run: cargo test --workspace --tests -- --nocapture
+      - name: Upload service logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: service-logs
+          path: |
+            /tmp/catalog.log
+            /tmp/inventory.log
+            /tmp/orders.log
+            /tmp/price.log
+
+  deploy:
+    name: Deploy to Fly.io
+    needs: [fmt, clippy, unit-tests, integration-tests]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy Catalog service
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          cd catalog
+          flyctl deploy --remote-only --no-confirm
+      - name: Deploy Inventory service
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          cd inventory
+          flyctl deploy --remote-only --no-confirm
+      - name: Deploy Orders service
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          cd orders
+          flyctl deploy --remote-only --no-confirm
+      - name: Deploy Price service
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          cd price
+          flyctl deploy --remote-only --no-confirm

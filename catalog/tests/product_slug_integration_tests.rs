@@ -19,7 +19,9 @@ mod product_slug_integration_tests {
     };
 
     async fn setup_nats_client() -> async_nats::Client {
-        async_nats::connect("0.0.0.0:4222").await.expect("Failed to connect to NATS")
+        let url = std::env::var("NATS_TEST_URL")
+            .unwrap_or_else(|_| "nats://127.0.0.1:4222".to_string());
+        async_nats::connect(url).await.expect("Failed to connect to NATS")
     }
 
     async fn create_test_product(client: &async_nats::Client, name: &str, slug: &str) -> Result<String, Box<dyn std::error::Error>> {
