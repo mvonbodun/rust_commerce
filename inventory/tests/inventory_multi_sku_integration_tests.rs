@@ -262,7 +262,7 @@ mod inventory_multi_sku_integration_tests {
         let client = setup_nats_client().await;
 
         // Test with more than 100 SKUs
-    let skus: Vec<String> = (0..101).map(|i| format!("SKU-{i}")).collect();
+        let skus: Vec<String> = (0..101).map(|i| format!("SKU-{i}")).collect();
 
         let request = InventoryGetAllLocationsBySkuRequest { skus };
 

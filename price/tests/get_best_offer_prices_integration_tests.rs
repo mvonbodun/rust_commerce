@@ -54,14 +54,14 @@ mod tests {
         assert!(skus.len() > 100, "Over 100 SKUs should fail validation");
 
         // Test valid SKUs list
-    let skus = ["SKU-001".to_string(), "SKU-002".to_string()];
+        let skus = ["SKU-001".to_string(), "SKU-002".to_string()];
         assert!(
             !skus.is_empty() && skus.len() <= 100,
             "Valid SKUs list should pass"
         );
 
         // Test SKU with empty string
-    let skus = ["SKU-001".to_string(), "".to_string()];
+        let skus = ["SKU-001".to_string(), "".to_string()];
         let has_empty = skus.iter().any(|s| s.trim().is_empty());
         assert!(has_empty, "List with empty SKU should fail validation");
 
