@@ -244,8 +244,9 @@ jobs:
             /tmp/orders.log
             /tmp/price.log
 
-  deploy:
-    name: Deploy to Fly.io
+
+  deploy-catalog:
+    name: Deploy Catalog to Fly.io
     needs: [fmt, clippy, unit-tests, integration-tests]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
@@ -259,18 +260,48 @@ jobs:
         run: |
           cd scripts
           flyctl deploy .. -c catalog/fly.toml --remote-only --yes
+
+  deploy-inventory:
+    name: Deploy Inventory to Fly.io
+    needs: [fmt, clippy, unit-tests, integration-tests]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy Inventory service
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
           cd scripts
           flyctl deploy .. -c inventory/fly.toml --remote-only --yes
+
+  deploy-orders:
+    name: Deploy Orders to Fly.io
+    needs: [fmt, clippy, unit-tests, integration-tests]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy Orders service
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
           cd scripts
           flyctl deploy .. -c orders/fly.toml --remote-only --yes
+
+  deploy-price:
+    name: Deploy Price to Fly.io
+    needs: [fmt, clippy, unit-tests, integration-tests]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy Price service
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
