@@ -13,7 +13,6 @@ use prost_types::Timestamp;
 use rust_common::env_config::load_environment;
 use rust_price::Offer;
 use serde::Deserialize;
-use serde_json;
 use std::fs;
 use std::path::PathBuf;
 use std::str::FromStr;
@@ -173,8 +172,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             max_quantity,
         }) => {
             // Validate currency
-            Currency::from_code(currency)
-                .ok_or_else(|| format!("Invalid currency: {currency}"))?;
+            Currency::from_code(currency).ok_or_else(|| format!("Invalid currency: {currency}"))?;
 
             // Validate price format
             Decimal128::from_str(price).map_err(|_| format!("Invalid price format: {price}"))?;
@@ -241,8 +239,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             date,
         }) => {
             // Validate currency
-            Currency::from_code(currency)
-                .ok_or_else(|| format!("Invalid currency: {currency}"))?;
+            Currency::from_code(currency).ok_or_else(|| format!("Invalid currency: {currency}"))?;
 
             let get_best_offer_request = GetBestOfferPriceRequest {
                 sku: sku.clone(),
@@ -301,8 +298,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             date,
         }) => {
             // Validate currency
-            Currency::from_code(currency)
-                .ok_or_else(|| format!("Invalid currency: {currency}"))?;
+            Currency::from_code(currency).ok_or_else(|| format!("Invalid currency: {currency}"))?;
 
             // Parse comma-separated SKUs
             let sku_list: Vec<String> = skus

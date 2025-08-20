@@ -25,12 +25,14 @@ pub struct OfferPrice {
 }
 
 impl Offer {
+    #[allow(dead_code)]
     pub fn builder() -> OfferBuilder {
         OfferBuilder::default()
     }
 }
 
 #[derive(Default)]
+#[allow(dead_code)]
 pub struct OfferBuilder {
     id: Option<String>,
     sku: String,
@@ -41,6 +43,7 @@ pub struct OfferBuilder {
     offer_prices: Vec<OfferPrice>,
 }
 
+#[allow(dead_code)]
 impl OfferBuilder {
     pub fn new(
         sku: String,
@@ -67,6 +70,7 @@ impl OfferBuilder {
         self.max_quantity = Some(max_quantity);
         self
     }
+    #[allow(dead_code)]
     pub fn build(&mut self) -> Offer {
         Offer {
             id: self.id.clone(),
@@ -81,6 +85,7 @@ impl OfferBuilder {
 }
 
 #[derive(Debug, Error)]
+#[allow(dead_code)]
 pub enum DBError {
     #[error("Database connection error")]
     Connection,
@@ -118,6 +123,6 @@ mod tests {
             ],
         )
         .build();
-    println!("Offer: {offer:?}");
+        println!("Offer: {offer:?}");
     }
 }

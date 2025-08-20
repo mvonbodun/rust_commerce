@@ -29,13 +29,13 @@ pub struct Response {
     pub payload: Bytes,
 }
 
-pub trait HandlerFn {
+pub trait HandlerFn: Send + Sync {
     fn call(&self, dao: Arc<OfferDaoImpl>, req: Request) -> BoxFuture<'static, Response>;
 }
 
 impl<T, F> HandlerFn for T
 where
-    T: Fn(Arc<OfferDaoImpl>, Request) -> F + Sync,
+    T: Fn(Arc<OfferDaoImpl>, Request) -> F + Sync + Send + 'static,
     F: Future<Output = Response> + 'static + Send,
 {
     fn call(&self, dao: Arc<OfferDaoImpl>, req: Request) -> BoxFuture<'static, Response> {
@@ -67,6 +67,7 @@ impl Router {
         self.route_map.insert(path, f);
         self
     }
+    #[allow(dead_code)]
     pub async fn route(
         client: Client,
         routes: &RouteMap,
@@ -488,8 +489,8 @@ mod tests {
                 currency: "USD".to_string(),
             }],
         };
-    let model_offer = map_proto_offer_to_model_offer(offer_create_request);
-    println!("model_offer: {model_offer:?}");
+        let model_offer = map_proto_offer_to_model_offer(offer_create_request);
+        println!("model_offer: {model_offer:?}");
     }
 
     #[test]
@@ -506,8 +507,8 @@ mod tests {
                 currency: Currency::USD,
             }],
         };
-    let proto_offer = map_model_offer_to_proto_offer(model_offer);
-    println!("proto_offer: {proto_offer:?}");
+        let proto_offer = map_model_offer_to_proto_offer(model_offer);
+        println!("proto_offer: {proto_offer:?}");
     }
 
     #[test]

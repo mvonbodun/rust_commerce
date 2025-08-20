@@ -50,7 +50,7 @@ mod tests {
         assert!(skus.is_empty(), "Empty SKUs list should fail validation");
 
         // Test too many SKUs (over 100)
-    let skus: Vec<String> = (0..101).map(|i| format!("SKU-{i:03}")).collect();
+        let skus: Vec<String> = (0..101).map(|i| format!("SKU-{i:03}")).collect();
         assert!(skus.len() > 100, "Over 100 SKUs should fail validation");
 
         // Test valid SKUs list
@@ -80,10 +80,10 @@ mod tests {
 
         // Test quantity validation
         let quantity = 5;
-    assert!(quantity > 0, "Positive quantity should pass validation");
+        assert!(quantity > 0, "Positive quantity should pass validation");
 
-    let quantity = 0;
-    assert!(quantity <= 0, "Zero quantity should fail validation");
+        let quantity = 0;
+        assert!(quantity <= 0, "Zero quantity should fail validation");
     }
 
     #[test]
@@ -188,7 +188,7 @@ mod tests {
         }
 
         // Test too many SKUs
-    let many_skus: Vec<String> = (0..101).map(|i| format!("SKU-{i:03}")).collect();
+        let many_skus: Vec<String> = (0..101).map(|i| format!("SKU-{i:03}")).collect();
         let result = get_best_offer_prices(many_skus, 5, None, "USD".to_string(), &mock_dao).await;
 
         match result {

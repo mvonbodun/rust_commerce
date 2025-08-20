@@ -21,7 +21,9 @@ pub async fn create_offer(
         Ok(offer) => Ok(offer),
         Err(e) => {
             error!("Error creating offer: {e}");
-            Err(HandlerError::InternalError(format!("Failed to create offer: {e}")))
+            Err(HandlerError::InternalError(format!(
+                "Failed to create offer: {e}"
+            )))
         }
     }
 }
@@ -39,7 +41,9 @@ pub async fn get_offer(
         Ok(None) => Ok(None),
         Err(e) => {
             error!("Error getting offer: {e}");
-            Err(HandlerError::InternalError(format!("Failed to get offer: {e}")))
+            Err(HandlerError::InternalError(format!(
+                "Failed to get offer: {e}"
+            )))
         }
     }
 }
@@ -53,7 +57,9 @@ pub async fn delete_offer(
         Ok(()) => Ok(()),
         Err(e) => {
             error!("Error deleting offer: {e}");
-            Err(HandlerError::InternalError(format!("Failed to delete offer: {e}")))
+            Err(HandlerError::InternalError(format!(
+                "Failed to delete offer: {e}"
+            )))
         }
     }
 }

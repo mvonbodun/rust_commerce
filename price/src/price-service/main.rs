@@ -52,7 +52,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     // Get NATS URL
     let nats_url = env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
-    info!("  NATS_URL: {}", &nats_url);
+    info!("  NATS_URL: {nats_url}");
 
     // Phase 1.2: MongoDB Connection Logging
     info!("🔗 Connecting to MongoDB...");
@@ -62,17 +62,17 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             // Test the connection
             match client.list_database_names().await {
                 Ok(databases) => {
-                    debug!("📋 Available databases: {:?}", databases);
+                    debug!("📋 Available databases: {databases:?}");
                     client
                 }
                 Err(e) => {
-                    error!("❌ Failed to list databases: {}", e);
+                    error!("❌ Failed to list databases: {e}");
                     return Err(e.into());
                 }
             }
         }
         Err(e) => {
-            error!("❌ Failed to connect to MongoDB: {}", e);
+            error!("❌ Failed to connect to MongoDB: {e}");
             return Err(e.into());
         }
     };
@@ -112,7 +112,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             debug!("Price indexes: sku, sku+dates, quantity_ranges, currency, currency+price");
         }
         Err(e) => {
-            error!("❌ Failed to create price indexes: {}", e);
+            error!("❌ Failed to create price indexes: {e}");
             return Err(e.into());
         }
     }
@@ -148,18 +148,18 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         );
 
     let route_count = 5;
-    info!("✅ Configured {} price routes", route_count);
+    info!("✅ Configured {route_count} price routes");
     debug!("Price routes: create_offer, get_offer, delete_offer, get_best_offer_price, get_best_offer_prices");
 
     // Phase 1.4: NATS Connection Logging
-    info!("🔗 Connecting to NATS server: {}", nats_url);
+    info!("🔗 Connecting to NATS server: {nats_url}");
     let nats_client = match async_nats::connect(&nats_url).await {
         Ok(client) => {
             info!("✅ Successfully connected to NATS");
             client
         }
         Err(e) => {
-            error!("❌ Failed to connect to NATS: {}", e);
+            error!("❌ Failed to connect to NATS: {e}");
             return Err(e.into());
         }
     };
@@ -182,7 +182,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             subscription
         }
         Err(e) => {
-            error!("❌ Failed to subscribe to NATS queue: {}", e);
+            error!("❌ Failed to subscribe to NATS queue: {e}");
             return Err(e.into());
         }
     };
@@ -218,7 +218,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                 );
 
                 // Phase 5: Use OperationTimer for performance monitoring
-                let _timer = OperationTimer::new(&format!("offers.{}", operation));
+                let _timer = OperationTimer::new(&format!("offers.{operation}"));
 
                 let result = if let Some(handler) = routes.get(&operation) {
                     // Note: Price service handlers return Response objects that need to be published
@@ -228,14 +228,14 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                         .publish(response.subject, response.payload)
                         .await
                     {
-                        error!("❌ Failed to publish response: {}", e);
+                        error!("❌ Failed to publish response: {e}");
                         Err(Box::new(e) as Box<dyn std::error::Error + Send + Sync>)
                     } else {
-                        debug!("✅ Price operation {} completed", operation);
+                        debug!("✅ Price operation {operation} completed");
                         Ok(())
                     }
                 } else {
-                    error!("No handler found for operation: {}", operation);
+                    error!("No handler found for operation: {operation}");
                     Ok(())
                 };
 
@@ -245,7 +245,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                     }
                     Err(e) => {
                         _timer.log_elapsed("error");
-                        error!("❌ Error details: {:?}", e);
+                        error!("❌ Error details: {e:?}");
                     }
                 }
             }

@@ -58,23 +58,23 @@ impl OfferDao for OfferDaoImpl {
     async fn get_offer(&self, offer_id: String) -> Result<Option<Offer>, DBError> {
         // Implement logic to get an offer from the database
         // by its offer ID and return the offer or an error if one occurred
-    debug!("before call to find_one - offer_id: {offer_id:?}");
+        debug!("before call to find_one - offer_id: {offer_id:?}");
         let find_result = self
             .collection
             .find_one(doc! {"_id": &offer_id})
             .await
             .map_err(|error| {
-        error!("DB error: {error:?}");
+                error!("DB error: {error:?}");
                 DBError::Other(Box::new(error))
             })?;
 
         match find_result {
             Some(offer) => {
-        debug!("Found offer: {offer:?}");
+                debug!("Found offer: {offer:?}");
                 Ok(Some(offer))
             }
             None => {
-        debug!("Offer not found for offer_id: {offer_id:?}");
+                debug!("Offer not found for offer_id: {offer_id:?}");
                 Ok(None)
             }
         }
@@ -127,7 +127,7 @@ impl OfferDao for OfferDaoImpl {
             "offer_prices": { "$elemMatch": { "currency": currency } }
         };
 
-    debug!("MongoDB query: {query:?}");
+        debug!("MongoDB query: {query:?}");
 
         // Execute the query with sort and limit using find() instead of find_one()
         // because find_one() doesn't support sorting
@@ -203,7 +203,7 @@ impl OfferDao for OfferDaoImpl {
             "offer_prices": { "$elemMatch": { "currency": currency } }
         };
 
-    debug!("MongoDB multi-SKU query: {query:?}");
+        debug!("MongoDB multi-SKU query: {query:?}");
 
         // Execute the query with sort to get best prices (lowest first)
         let find_options = mongodb::options::FindOptions::builder()
