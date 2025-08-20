@@ -1,18 +1,18 @@
+use chrono::Utc;
 use clap::{Parser, Subcommand};
 use inventory_messages::{
-    InventoryCreateRequest, InventoryCreateResponse, InventoryGetRequest, InventoryGetResponse,
-    InventoryDeleteRequest, InventoryDeleteResponse, InventoryUpdateStockRequest, InventoryUpdateStockResponse,
-    InventoryGetAllLocationsBySkuRequest, InventoryGetAllLocationsBySkuResponse,
+    InventoryCreateRequest, InventoryCreateResponse, InventoryDeleteRequest,
+    InventoryDeleteResponse, InventoryGetAllLocationsBySkuRequest,
+    InventoryGetAllLocationsBySkuResponse, InventoryGetRequest, InventoryGetResponse,
+    InventoryUpdateStockRequest, InventoryUpdateStockResponse,
 };
 use log::debug;
 use prost::Message;
+use rust_common::load_environment;
+use rust_inventory::model::InventoryItem;
 use serde::Deserialize;
-use serde_json;
 use std::fs;
 use std::path::PathBuf;
-use rust_inventory::InventoryItem;
-use rust_common::load_environment;
-use chrono::Utc;
 
 pub mod inventory_messages {
     include!(concat!(env!("OUT_DIR"), "/inventory_messages.rs"));
@@ -115,21 +115,36 @@ enum Commands {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     pretty_env_logger::init();
-    
+
     // Load environment variables
     load_environment();
-    
+
     let cli = Cli::parse();
 
     // Get NATS URL from environment
-    let nats_url = std::env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
+    let nats_url =
+        std::env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
 
     // Connect to NATS
     let client = async_nats::connect(&nats_url).await?;
 
     match cli.command {
-        Commands::Create { sku, quantity, reserved_quantity, min_stock_level, location } => {
-            create_inventory_item(&client, sku, quantity, reserved_quantity, min_stock_level, location).await?;
+        Commands::Create {
+            sku,
+            quantity,
+            reserved_quantity,
+            min_stock_level,
+            location,
+        } => {
+            create_inventory_item(
+                &client,
+                sku,
+                quantity,
+                reserved_quantity,
+                min_stock_level,
+                location,
+            )
+            .await?;
         }
         Commands::Get { sku } => {
             get_inventory_item(&client, sku).await?;
@@ -137,7 +152,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Commands::Delete { sku } => {
             delete_inventory_item(&client, sku).await?;
         }
-        Commands::UpdateStock { sku, quantity_change, reason } => {
+        Commands::UpdateStock {
+            sku,
+            quantity_change,
+            reason,
+        } => {
             update_stock(&client, sku, quantity_change, reason).await?;
         }
         Commands::GetMultiSku { skus } => {
@@ -172,7 +191,7 @@ async fn create_inventory_item(
         .await?;
 
     let response = InventoryCreateResponse::decode(response.payload)?;
-    debug!("Create response: {:?}", response);
+    debug!("Create response: {response:?}");
 
     match response.status {
         Some(status) if status.code == inventory_messages::Code::Ok as i32 => {
@@ -206,7 +225,7 @@ async fn get_inventory_item(
         .await?;
 
     let response = InventoryGetResponse::decode(response.payload)?;
-    debug!("Get response: {:?}", response);
+    debug!("Get response: {response:?}");
 
     match response.status {
         Some(status) if status.code == inventory_messages::Code::Ok as i32 => {
@@ -246,7 +265,7 @@ async fn delete_inventory_item(
         .await?;
 
     let response = InventoryDeleteResponse::decode(response.payload)?;
-    debug!("Delete response: {:?}", response);
+    debug!("Delete response: {response:?}");
 
     match response.status {
         Some(status) if status.code == inventory_messages::Code::Ok as i32 => {
@@ -280,7 +299,7 @@ async fn update_stock(
         .await?;
 
     let response = InventoryUpdateStockResponse::decode(response.payload)?;
-    debug!("Update stock response: {:?}", response);
+    debug!("Update stock response: {response:?}");
 
     match response.status {
         Some(status) if status.code == inventory_messages::Code::Ok as i32 => {
@@ -312,11 +331,15 @@ async fn import_inventory_items(
     let file_content = fs::read_to_string(&file_path)?;
     let items: Vec<InventoryItemImport> = serde_json::from_str(&file_content)?;
 
-    println!("Importing {} inventory items from {:?}", items.len(), file_path);
+    println!(
+        "Importing {} inventory items from {:?}",
+        items.len(),
+        file_path
+    );
 
     for item_import in items {
         let item = item_import.to_inventory_item()?;
-        
+
         let request = InventoryCreateRequest {
             sku: item.sku.clone(),
             quantity: item.quantity,
@@ -357,18 +380,22 @@ async fn get_multi_sku_inventory(
     }
 
     if skus.len() > 100 {
-        println!("❌ Too many SKUs provided. Maximum is 100, got {}", skus.len());
+        println!(
+            "❌ Too many SKUs provided. Maximum is 100, got {}",
+            skus.len()
+        );
         return Ok(());
     }
 
     println!("📦 Getting inventory for {} SKU(s)...", skus.len());
 
-    let request = InventoryGetAllLocationsBySkuRequest {
-        skus: skus.clone(),
-    };
+    let request = InventoryGetAllLocationsBySkuRequest { skus: skus.clone() };
 
     let response = client
-        .request("inventory.get_all_locations_by_sku", request.encode_to_vec().into())
+        .request(
+            "inventory.get_all_locations_by_sku",
+            request.encode_to_vec().into(),
+        )
         .await?;
 
     let response = InventoryGetAllLocationsBySkuResponse::decode(response.payload)?;
@@ -380,21 +407,26 @@ async fn get_multi_sku_inventory(
             // Display found SKUs
             for sku_summary in &response.sku_summaries {
                 println!("📋 SKU: {}", sku_summary.sku);
-                
+
                 if let Some(total) = &sku_summary.total_inventory {
-                    println!("  📊 Total Inventory: {} units ({} available, {} reserved)",
+                    println!(
+                        "  📊 Total Inventory: {} units ({} available, {} reserved)",
                         total.total_quantity,
                         total.total_available_quantity,
                         total.total_reserved_quantity
                     );
                     println!("  📍 Locations: {}", total.location_count);
-                    println!("  ⚠️  Min Stock Level: {}", total.min_stock_level_across_locations);
+                    println!(
+                        "  ⚠️  Min Stock Level: {}",
+                        total.min_stock_level_across_locations
+                    );
                 }
 
                 if !sku_summary.location_details.is_empty() {
                     println!("  🏪 Location Details:");
                     for detail in &sku_summary.location_details {
-                        println!("    ├─ {}: {} units ({} available, {} reserved, min: {})",
+                        println!(
+                            "    ├─ {}: {} units ({} available, {} reserved, min: {})",
                             detail.location,
                             detail.quantity,
                             detail.available_quantity,
@@ -410,7 +442,7 @@ async fn get_multi_sku_inventory(
             if !response.not_found_skus.is_empty() {
                 println!("❌ SKUs not found:");
                 for not_found_sku in &response.not_found_skus {
-                    println!("  ✗ {}", not_found_sku);
+                    println!("  ✗ {not_found_sku}");
                 }
                 println!();
             }

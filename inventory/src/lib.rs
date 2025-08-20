@@ -16,14 +16,6 @@ pub mod persistence {
 }
 
 // Handlers for gRPC/NATS
-#[path = "inventory-service/handlers"]
-pub mod handlers {
-    pub mod handlers_inner;
-    
-    #[path = "mod.rs"]
-    pub mod handler_mod;
-}
-
-// Re-export commonly used types
-pub use model::{InventoryItem, DBError};
-pub use persistence::inventory_dao::{InventoryDao, InventoryDaoImpl};
+#[path = "inventory-service/handlers/mod.rs"]
+pub mod handlers;
+pub use handlers::handlers_inner;

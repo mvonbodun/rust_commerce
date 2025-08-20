@@ -582,9 +582,9 @@ mod tests {
                     .build(),
             )
             .build();
-        println!("{:#?}", order.build());
+    println!("{:#?}", order.build());
 
         let order_json = serde_json::to_string(&order.build()).unwrap();
-        println!("{:#?}", order_json);
+    println!("{order_json:#?}");
     }
 }

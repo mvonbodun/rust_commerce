@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::Arc};
 
 use async_nats::{Client, Subject};
 use bytes::Bytes;
-use chrono::{DateTime, Timelike, Utc};
+use chrono::{Timelike, Utc};
 use futures::future::BoxFuture;
 use log::{debug, error};
 use prost::Message as ProstMessage;
@@ -11,8 +11,8 @@ use prost_types::Timestamp;
 use uuid::Uuid;
 
 use crate::{
-    model,
     inventory_messages::{self},
+    model,
     persistence::inventory_dao::InventoryDaoImpl,
 };
 
@@ -26,13 +26,13 @@ pub struct Response {
     pub payload: Bytes,
 }
 
-pub trait HandlerFn {
+pub trait HandlerFn: Send + Sync {
     fn call(&self, dao: Arc<InventoryDaoImpl>, req: Request) -> BoxFuture<'static, Response>;
 }
 
 impl<T, F> HandlerFn for T
 where
-    T: Fn(Arc<InventoryDaoImpl>, Request) -> F + Sync,
+    T: Fn(Arc<InventoryDaoImpl>, Request) -> F + Sync + Send + 'static,
     F: Future<Output = Response> + 'static + Send,
 {
     fn call(&self, dao: Arc<InventoryDaoImpl>, req: Request) -> BoxFuture<'static, Response> {
@@ -51,10 +51,20 @@ impl Router {
             route_map: HashMap::new(),
         }
     }
+}
+
+impl Default for Router {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Router {
     pub fn add_route(&mut self, path: String, f: Box<dyn HandlerFn>) -> &mut Self {
         self.route_map.insert(path, f);
         self
     }
+    #[allow(dead_code)]
     pub async fn route(
         client: Client,
         routes: &RouteMap,
@@ -71,14 +81,19 @@ impl Router {
     }
 }
 
-pub async fn create_item(inventory_dao: Arc<InventoryDaoImpl>, inventory_create_request: Request) -> Response {
-    let item = inventory_messages::InventoryCreateRequest::decode(inventory_create_request.payload.clone());
+pub async fn create_item(
+    inventory_dao: Arc<InventoryDaoImpl>,
+    inventory_create_request: Request,
+) -> Response {
+    let item = inventory_messages::InventoryCreateRequest::decode(
+        inventory_create_request.payload.clone(),
+    );
     let mut inventory_create_response = inventory_messages::InventoryCreateResponse {
         ..Default::default()
     };
     match item {
         Ok(item) => {
-            debug!("inventory item: {:?}", item);
+            debug!("inventory item: {item:?}");
             let model_item = map_proto_item_to_model_item(item);
 
             let result = handlers_inner::create_item(model_item, inventory_dao.as_ref()).await;
@@ -91,28 +106,19 @@ pub async fn create_item(inventory_dao: Arc<InventoryDaoImpl>, inventory_create_
                         details: vec![],
                     });
                 }
-                Err(err) => {
-                    match err {
-                        handlers_inner::HandlerError::InternalError(msg) => {
-                            inventory_create_response.status = Some(inventory_messages::Status {
-                                code: inventory_messages::Code::Internal.into(),
-                                message: msg,
-                                details: vec![],
-                            });
-                        }
-                        handlers_inner::HandlerError::ValidationError(msg) => {
-                            inventory_create_response.status = Some(inventory_messages::Status {
-                                code: inventory_messages::Code::InvalidArgument.into(),
-                                message: msg,
-                                details: vec![],
-                            });
-                        }
+                Err(err) => match err {
+                    handlers_inner::HandlerError::InternalError(msg) => {
+                        inventory_create_response.status = Some(inventory_messages::Status {
+                            code: inventory_messages::Code::Internal.into(),
+                            message: msg,
+                            details: vec![],
+                        });
                     }
-                }
+                },
             }
         }
         Err(e) => {
-            error!("Error decoding inventory create request: {}", e);
+            error!("Error decoding inventory create request: {e}");
             inventory_create_response.status = Some(inventory_messages::Status {
                 code: inventory_messages::Code::InvalidArgument.into(),
                 message: "Failed to decode request".to_owned(),
@@ -127,15 +133,19 @@ pub async fn create_item(inventory_dao: Arc<InventoryDaoImpl>, inventory_create_
     }
 }
 
-pub async fn get_item(inventory_dao: Arc<InventoryDaoImpl>, inventory_get_request: Request) -> Response {
-    let item = inventory_messages::InventoryGetRequest::decode(inventory_get_request.payload.clone());
+pub async fn get_item(
+    inventory_dao: Arc<InventoryDaoImpl>,
+    inventory_get_request: Request,
+) -> Response {
+    let item =
+        inventory_messages::InventoryGetRequest::decode(inventory_get_request.payload.clone());
     let mut inventory_get_response = inventory_messages::InventoryGetResponse {
         ..Default::default()
     };
-    
+
     match item {
         Ok(item) => {
-            debug!("get inventory item: {:?}", item);
+            debug!("get inventory item: {item:?}");
             let result = handlers_inner::get_item(item.sku, inventory_dao.as_ref()).await;
             match result {
                 Ok(Some(i)) => {
@@ -153,28 +163,19 @@ pub async fn get_item(inventory_dao: Arc<InventoryDaoImpl>, inventory_get_reques
                         details: vec![],
                     });
                 }
-                Err(err) => {
-                    match err {
-                        handlers_inner::HandlerError::InternalError(msg) => {
-                            inventory_get_response.status = Some(inventory_messages::Status {
-                                code: inventory_messages::Code::Internal.into(),
-                                message: msg,
-                                details: vec![],
-                            });
-                        }
-                        handlers_inner::HandlerError::ValidationError(msg) => {
-                            inventory_get_response.status = Some(inventory_messages::Status {
-                                code: inventory_messages::Code::InvalidArgument.into(),
-                                message: msg,
-                                details: vec![],
-                            });
-                        }
+                Err(err) => match err {
+                    handlers_inner::HandlerError::InternalError(msg) => {
+                        inventory_get_response.status = Some(inventory_messages::Status {
+                            code: inventory_messages::Code::Internal.into(),
+                            message: msg,
+                            details: vec![],
+                        });
                     }
-                }
+                },
             }
         }
         Err(e) => {
-            error!("Error decoding inventory get request: {}", e);
+            error!("Error decoding inventory get request: {e}");
             inventory_get_response.status = Some(inventory_messages::Status {
                 code: inventory_messages::Code::InvalidArgument.into(),
                 message: "Failed to decode request".to_owned(),
@@ -189,15 +190,20 @@ pub async fn get_item(inventory_dao: Arc<InventoryDaoImpl>, inventory_get_reques
     }
 }
 
-pub async fn delete_item(inventory_dao: Arc<InventoryDaoImpl>, inventory_delete_request: Request) -> Response {
-    let item = inventory_messages::InventoryDeleteRequest::decode(inventory_delete_request.payload.clone());
+pub async fn delete_item(
+    inventory_dao: Arc<InventoryDaoImpl>,
+    inventory_delete_request: Request,
+) -> Response {
+    let item = inventory_messages::InventoryDeleteRequest::decode(
+        inventory_delete_request.payload.clone(),
+    );
     let mut inventory_delete_response = inventory_messages::InventoryDeleteResponse {
         ..Default::default()
     };
-    
+
     match item {
         Ok(item) => {
-            debug!("delete inventory item: {:?}", item);
+            debug!("delete inventory item: {item:?}");
             let result = handlers_inner::delete_item(item.sku, inventory_dao.as_ref()).await;
             match result {
                 Ok(_) => {
@@ -207,28 +213,19 @@ pub async fn delete_item(inventory_dao: Arc<InventoryDaoImpl>, inventory_delete_
                         details: vec![],
                     });
                 }
-                Err(err) => {
-                    match err {
-                        handlers_inner::HandlerError::InternalError(msg) => {
-                            inventory_delete_response.status = Some(inventory_messages::Status {
-                                code: inventory_messages::Code::Internal.into(),
-                                message: msg,
-                                details: vec![],
-                            });
-                        }
-                        handlers_inner::HandlerError::ValidationError(msg) => {
-                            inventory_delete_response.status = Some(inventory_messages::Status {
-                                code: inventory_messages::Code::InvalidArgument.into(),
-                                message: msg,
-                                details: vec![],
-                            });
-                        }
+                Err(err) => match err {
+                    handlers_inner::HandlerError::InternalError(msg) => {
+                        inventory_delete_response.status = Some(inventory_messages::Status {
+                            code: inventory_messages::Code::Internal.into(),
+                            message: msg,
+                            details: vec![],
+                        });
                     }
-                }
+                },
             }
         }
         Err(e) => {
-            error!("Error decoding inventory delete request: {}", e);
+            error!("Error decoding inventory delete request: {e}");
             inventory_delete_response.status = Some(inventory_messages::Status {
                 code: inventory_messages::Code::InvalidArgument.into(),
                 message: "Failed to decode request".to_owned(),
@@ -243,21 +240,27 @@ pub async fn delete_item(inventory_dao: Arc<InventoryDaoImpl>, inventory_delete_
     }
 }
 
-pub async fn update_stock(inventory_dao: Arc<InventoryDaoImpl>, inventory_update_request: Request) -> Response {
-    let update = inventory_messages::InventoryUpdateStockRequest::decode(inventory_update_request.payload.clone());
+pub async fn update_stock(
+    inventory_dao: Arc<InventoryDaoImpl>,
+    inventory_update_request: Request,
+) -> Response {
+    let update = inventory_messages::InventoryUpdateStockRequest::decode(
+        inventory_update_request.payload.clone(),
+    );
     let mut inventory_update_response = inventory_messages::InventoryUpdateStockResponse {
         ..Default::default()
     };
-    
+
     match update {
         Ok(update) => {
-            debug!("update inventory stock: {:?}", update);
+            debug!("update inventory stock: {update:?}");
             let result = handlers_inner::update_stock(
-                update.sku, 
-                update.quantity_change, 
-                update.reason, 
-                inventory_dao.as_ref()
-            ).await;
+                update.sku,
+                update.quantity_change,
+                update.reason,
+                inventory_dao.as_ref(),
+            )
+            .await;
             match result {
                 Ok(Some(i)) => {
                     inventory_update_response.item = Some(map_model_item_to_proto_item(i));
@@ -274,28 +277,19 @@ pub async fn update_stock(inventory_dao: Arc<InventoryDaoImpl>, inventory_update
                         details: vec![],
                     });
                 }
-                Err(err) => {
-                    match err {
-                        handlers_inner::HandlerError::InternalError(msg) => {
-                            inventory_update_response.status = Some(inventory_messages::Status {
-                                code: inventory_messages::Code::Internal.into(),
-                                message: msg,
-                                details: vec![],
-                            });
-                        }
-                        handlers_inner::HandlerError::ValidationError(msg) => {
-                            inventory_update_response.status = Some(inventory_messages::Status {
-                                code: inventory_messages::Code::InvalidArgument.into(),
-                                message: msg,
-                                details: vec![],
-                            });
-                        }
+                Err(err) => match err {
+                    handlers_inner::HandlerError::InternalError(msg) => {
+                        inventory_update_response.status = Some(inventory_messages::Status {
+                            code: inventory_messages::Code::Internal.into(),
+                            message: msg,
+                            details: vec![],
+                        });
                     }
-                }
+                },
             }
         }
         Err(e) => {
-            error!("Error decoding inventory update request: {}", e);
+            error!("Error decoding inventory update request: {e}");
             inventory_update_response.status = Some(inventory_messages::Status {
                 code: inventory_messages::Code::InvalidArgument.into(),
                 message: "Failed to decode request".to_owned(),
@@ -310,16 +304,20 @@ pub async fn update_stock(inventory_dao: Arc<InventoryDaoImpl>, inventory_update
     }
 }
 
-pub async fn get_all_locations_by_sku(inventory_dao: Arc<InventoryDaoImpl>, request: Request) -> Response {
-    let request_data = inventory_messages::InventoryGetAllLocationsBySkuRequest::decode(request.payload.clone());
+pub async fn get_all_locations_by_sku(
+    inventory_dao: Arc<InventoryDaoImpl>,
+    request: Request,
+) -> Response {
+    let request_data =
+        inventory_messages::InventoryGetAllLocationsBySkuRequest::decode(request.payload.clone());
     let mut response = inventory_messages::InventoryGetAllLocationsBySkuResponse {
         ..Default::default()
     };
-    
+
     match request_data {
         Ok(req) => {
-            debug!("get all locations by sku request: {:?}", req);
-            
+            debug!("get all locations by sku request: {req:?}");
+
             // Validate SKU count (max 100)
             if req.skus.len() > 100 {
                 response.status = Some(inventory_messages::Status {
@@ -332,7 +330,7 @@ pub async fn get_all_locations_by_sku(inventory_dao: Arc<InventoryDaoImpl>, requ
                     payload: Bytes::from(response.encode_to_vec()),
                 };
             }
-            
+
             // Validate that SKUs array is not empty
             if req.skus.is_empty() {
                 response.status = Some(inventory_messages::Status {
@@ -345,41 +343,48 @@ pub async fn get_all_locations_by_sku(inventory_dao: Arc<InventoryDaoImpl>, requ
                     payload: Bytes::from(response.encode_to_vec()),
                 };
             }
-            
-            let result = handlers_inner::get_all_locations_by_sku(req.skus.clone(), inventory_dao.as_ref()).await;
+
+            let result =
+                handlers_inner::get_all_locations_by_sku(req.skus.clone(), inventory_dao.as_ref())
+                    .await;
             match result {
                 Ok((inventory_by_sku, not_found_skus)) => {
                     let mut sku_summaries = Vec::new();
-                    
+
                     // Process each SKU that was found
                     for (sku, items) in inventory_by_sku {
                         if !items.is_empty() {
                             // Calculate aggregated totals
                             let total_quantity: i32 = items.iter().map(|i| i.quantity).sum();
-                            let total_reserved: i32 = items.iter().map(|i| i.reserved_quantity).sum();
-                            let total_available: i32 = items.iter().map(|i| i.available_quantity).sum();
-                            let min_stock_level: i32 = items.iter().map(|i| i.min_stock_level).min().unwrap_or(0);
+                            let total_reserved: i32 =
+                                items.iter().map(|i| i.reserved_quantity).sum();
+                            let total_available: i32 =
+                                items.iter().map(|i| i.available_quantity).sum();
+                            let min_stock_level: i32 =
+                                items.iter().map(|i| i.min_stock_level).min().unwrap_or(0);
                             let location_count = items.len() as i32;
-                            
+
                             // Create location details
-                            let location_details: Vec<inventory_messages::InventoryLocationDetail> = items.into_iter().map(|item| {
-                                inventory_messages::InventoryLocationDetail {
-                                    location: item.location,
-                                    quantity: item.quantity,
-                                    reserved_quantity: item.reserved_quantity,
-                                    available_quantity: item.available_quantity,
-                                    min_stock_level: item.min_stock_level,
-                                    last_updated: Some(Timestamp {
-                                        seconds: item.last_updated.timestamp(),
-                                        nanos: item.last_updated.nanosecond() as i32,
-                                    }),
-                                    created_at: Some(Timestamp {
-                                        seconds: item.created_at.timestamp(),
-                                        nanos: item.created_at.nanosecond() as i32,
-                                    }),
-                                }
-                            }).collect();
-                            
+                            let location_details: Vec<inventory_messages::InventoryLocationDetail> =
+                                items
+                                    .into_iter()
+                                    .map(|item| inventory_messages::InventoryLocationDetail {
+                                        location: item.location,
+                                        quantity: item.quantity,
+                                        reserved_quantity: item.reserved_quantity,
+                                        available_quantity: item.available_quantity,
+                                        min_stock_level: item.min_stock_level,
+                                        last_updated: Some(Timestamp {
+                                            seconds: item.last_updated.timestamp(),
+                                            nanos: item.last_updated.nanosecond() as i32,
+                                        }),
+                                        created_at: Some(Timestamp {
+                                            seconds: item.created_at.timestamp(),
+                                            nanos: item.created_at.nanosecond() as i32,
+                                        }),
+                                    })
+                                    .collect();
+
                             // Create SKU summary
                             let sku_summary = inventory_messages::SkuInventorySummary {
                                 sku: sku.clone(),
@@ -392,42 +397,33 @@ pub async fn get_all_locations_by_sku(inventory_dao: Arc<InventoryDaoImpl>, requ
                                 }),
                                 location_details,
                             };
-                            
+
                             sku_summaries.push(sku_summary);
                         }
                     }
-                    
+
                     response.sku_summaries = sku_summaries;
                     response.not_found_skus = not_found_skus;
-                    
+
                     response.status = Some(inventory_messages::Status {
                         code: inventory_messages::Code::Ok.into(),
                         message: "".to_owned(),
                         details: vec![],
                     });
                 }
-                Err(err) => {
-                    match err {
-                        handlers_inner::HandlerError::InternalError(msg) => {
-                            response.status = Some(inventory_messages::Status {
-                                code: inventory_messages::Code::Internal.into(),
-                                message: msg,
-                                details: vec![],
-                            });
-                        }
-                        handlers_inner::HandlerError::ValidationError(msg) => {
-                            response.status = Some(inventory_messages::Status {
-                                code: inventory_messages::Code::InvalidArgument.into(),
-                                message: msg,
-                                details: vec![],
-                            });
-                        }
+                Err(err) => match err {
+                    handlers_inner::HandlerError::InternalError(msg) => {
+                        response.status = Some(inventory_messages::Status {
+                            code: inventory_messages::Code::Internal.into(),
+                            message: msg,
+                            details: vec![],
+                        });
                     }
-                }
+                },
             }
         }
         Err(e) => {
-            error!("Error decoding get all locations by sku request: {}", e);
+            error!("Error decoding get all locations by sku request: {e}");
             response.status = Some(inventory_messages::Status {
                 code: inventory_messages::Code::InvalidArgument.into(),
                 message: "Failed to decode request".to_owned(),
@@ -443,7 +439,9 @@ pub async fn get_all_locations_by_sku(inventory_dao: Arc<InventoryDaoImpl>, requ
 }
 
 // Helper functions to map between protobuf and model types
-fn map_proto_item_to_model_item(proto_item: inventory_messages::InventoryCreateRequest) -> model::InventoryItem {
+fn map_proto_item_to_model_item(
+    proto_item: inventory_messages::InventoryCreateRequest,
+) -> model::InventoryItem {
     let now = Utc::now();
     model::InventoryItem {
         id: Some(Uuid::new_v4().to_string()),
@@ -458,7 +456,9 @@ fn map_proto_item_to_model_item(proto_item: inventory_messages::InventoryCreateR
     }
 }
 
-fn map_model_item_to_proto_item(model_item: model::InventoryItem) -> inventory_messages::InventoryItem {
+fn map_model_item_to_proto_item(
+    model_item: model::InventoryItem,
+) -> inventory_messages::InventoryItem {
     inventory_messages::InventoryItem {
         id: model_item.id,
         sku: model_item.sku,

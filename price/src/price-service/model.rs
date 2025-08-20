@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use uuid::Uuid;
 
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Offer {
     #[serde(rename = "_id")]
@@ -119,6 +118,6 @@ mod tests {
             ],
         )
         .build();
-        println!("Offer: {:?}", offer);
+    println!("Offer: {offer:?}");
     }
 }

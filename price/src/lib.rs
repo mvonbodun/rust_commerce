@@ -16,14 +16,10 @@ pub mod persistence {
 }
 
 // Handlers for gRPC/NATS
-#[path = "price-service/handlers"]
-pub mod handlers {
-    pub mod handlers_inner;
-    
-    #[path = "mod.rs"]
-    pub mod handler_mod;
-}
+#[path = "price-service/handlers/mod.rs"]
+pub mod handlers;
+pub use handlers::handlers_inner;
 
 // Re-export commonly used types
-pub use model::{Offer, OfferPrice, DBError};
+pub use model::{DBError, Offer, OfferPrice};
 pub use persistence::offer_dao::{OfferDao, OfferDaoImpl};

@@ -27,8 +27,11 @@ mod handlers_inner;
 //     }
 // }
 
-pub type NatsFn =
-    Box<dyn Fn(Client, Arc<OrdersDaoImpl>, Message) -> Pin<Box<dyn Future<Output = ()>>>>;
+pub type NatsFn = Box<
+    dyn Fn(Client, Arc<OrdersDaoImpl>, Message) -> Pin<Box<dyn Future<Output = ()> + Send>>
+        + Send
+        + Sync,
+>;
 
 pub struct Router {
     pub route_map: HashMap<String, NatsFn>,
@@ -40,10 +43,20 @@ impl Router {
             route_map: HashMap::new(),
         }
     }
+}
+
+impl Default for Router {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Router {
     pub fn add_route(&mut self, path: String, f: NatsFn) -> &mut Self {
         self.route_map.insert(path, f);
         self
     }
+    #[allow(dead_code)]
     pub async fn route(
         client: Client,
         routes: &HashMap<String, NatsFn>,
@@ -51,9 +64,7 @@ impl Router {
         orders_dao: Arc<OrdersDaoImpl>,
         request: Message,
     ) {
-        let r: &Box<
-            dyn Fn(Client, Arc<OrdersDaoImpl>, Message) -> Pin<Box<dyn Future<Output = ()>>>,
-        > = routes.get(&path).unwrap();
+        let r = routes.get(&path).unwrap();
         r(client, orders_dao.clone(), request).await;
     }
 }
@@ -123,7 +134,7 @@ pub async fn create_order(
                 Err(err) => {
                     match err {
                         handlers_inner::HandlerError::InternalError(msg) => {
-                            error!("Error creating order: {}", msg);
+                            error!("Error creating order: {msg}");
                             client
                                 .publish(
                                     order_create_request.reply.unwrap(),
@@ -137,7 +148,7 @@ pub async fn create_order(
             }
         }
         Err(err) => {
-            warn!("Invalid order format: {:?}", err);
+            warn!("Invalid order format: {err:?}");
             client
                 .publish(
                     order_create_request.reply.unwrap(),
@@ -188,8 +199,8 @@ pub async fn get_order(client: Client, orders_dao: Arc<OrdersDaoImpl>, order_get
                         .await
                         .unwrap();
                 }
-                Err(_) => {
-                    error!("Error getting order {}", request.id.clone());
+        Err(_) => {
+            error!("Error getting order {}", request.id.clone());
                     let order_get_response = OrderGetResponse {
                         order: None,
                         status: Some(order_messages::Status {
@@ -208,12 +219,12 @@ pub async fn get_order(client: Client, orders_dao: Arc<OrdersDaoImpl>, order_get
             }
         }
         Err(err) => {
-            error!("Error decoding message: {:?}", err);
+        error!("Error decoding message: {err:?}");
             let order_get_response = OrderGetResponse {
                 order: None,
                 status: Some(order_messages::Status {
                     code: order_messages::Code::InvalidArgument.into(),
-                    message: format!("Invalid OrderGetRequest format {:?}", err),
+            message: format!("Invalid OrderGetRequest format {err:?}"),
                     details: vec![],
                 }),
             };
@@ -238,7 +249,7 @@ pub async fn delete_order(
     match request {
         Ok(request) => {
             let order_id = request.id;
-            debug!("order_id: {}", order_id);
+            debug!("order_id: {order_id}");
             let result = handlers_inner::delete_order(order_id, orders_dao.as_ref()).await;
             match result {
                 Ok(_) => {
@@ -257,14 +268,14 @@ pub async fn delete_order(
                         .await
                         .unwrap();
                 }
-                Err(e) => {
+        Err(e) => {
                     match e {
                         handlers_inner::HandlerError::InternalError(msg) => {
-                            error!("Internal error deleting order: {:?}", msg);
+                error!("Internal error deleting order: {msg:?}");
                             let odresp = order_messages::OrderDeleteResponse {
                                 status: Some(order_messages::Status {
                                     code: order_messages::Code::Internal.into(),
-                                    message: format!("Internal error deleting order {:?}", msg),
+                    message: format!("Internal error deleting order {msg:?}"),
                                     details: vec![],
                                 }),
                             };
@@ -280,11 +291,11 @@ pub async fn delete_order(
             }
         }
         Err(err) => {
-            error!("Invalid OrderDeleteRequest format: {:?}", err);
+        error!("Invalid OrderDeleteRequest format: {err:?}");
             let odresp = order_messages::OrderDeleteResponse {
                 status: Some(order_messages::Status {
                     code: order_messages::Code::InvalidArgument.into(),
-                    message: format!("Invalid OrderDeleteRequest format {:?}", err),
+            message: format!("Invalid OrderDeleteRequest format {err:?}"),
                     details: vec![],
                 }),
             };

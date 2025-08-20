@@ -30,10 +30,11 @@ enum Commands {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Load environment variables
     env_config::load_environment();
-    
+
     // Get NATS URL from environment
-    let nats_url = std::env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
-    
+    let nats_url =
+        std::env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
+
     // Connect to the nats server
     let client = async_nats::connect(&nats_url).await?;
 
@@ -60,7 +61,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     order.encode(&mut buf)?;
     let result = client.request("orders.create_order", buf.into()).await?;
     let response = OrderCreateResponse::decode(result.payload)?;
-    println!("response: {:?}", response);
+    println!("response: {response:?}");
 
     // Extract the order_id
     let order_id = response
@@ -78,7 +79,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     order.encode(&mut buf)?;
     let result = client.request("orders.get_order", buf.into()).await?;
     let response = OrderGetResponse::decode(result.payload)?;
-    println!("response from get_order: {:?}", response);
+    println!("response from get_order: {response:?}");
 
     let order_delete_request = OrderDeleteRequest {
         id: order_id.clone(),
@@ -88,7 +89,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     order_delete_request.encode(&mut buf)?;
     let result = client.request("orders.delete_order", buf.into()).await?;
     let response = OrderDeleteResponse::decode(result.payload)?;
-    println!("response from delete request: {:?}", response);
+    println!("response from delete request: {response:?}");
 
     Ok(())
 }

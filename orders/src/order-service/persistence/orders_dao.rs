@@ -30,12 +30,12 @@ impl OrdersDao for OrdersDaoImpl {
         // Implement logic to create an order in the database
         // and return the created order or an error if one occurred
         let insert_result = self.collection.insert_one(&order).await.map_err(|error| {
-            error!("Error on insert: {:?}", error);
+            error!("Error on insert: {error:?}");
             DBError::Other(Box::new(error))
         })?;
 
-        info!("Inserted order result: {:?}", insert_result);
-        debug!("Order after insert: {:?}", order);
+        info!("Inserted order result: {insert_result:?}");
+        debug!("Order after insert: {order:?}");
         Ok(order)
     }
 
@@ -43,23 +43,23 @@ impl OrdersDao for OrdersDaoImpl {
     async fn get_order(&self, order_id: String) -> Result<Option<Order>, DBError> {
         // Implement logic to get an order from the database
         // by its order ID and return the order or an error if one occurred
-        debug!("before call to find_one - order_id: {:?}", order_id);
+    debug!("before call to find_one - order_id: {order_id:?}");
         let find_result = self
             .collection
             .find_one(doc! {"_id": &order_id})
             .await
             .map_err(|error| {
-                error!("DB error: {:?}", error);
+        error!("DB error: {error:?}");
                 DBError::Other(Box::new(error))
             })?;
 
         match find_result {
             Some(order) => {
-                debug!("Found order: {:?}", order);
+        debug!("Found order: {order:?}");
                 Ok(Some(order))
             }
             None => {
-                debug!("Order not found for order_id: {:?}", order_id);
+        debug!("Order not found for order_id: {order_id:?}");
                 Ok(None)
             }
         }
@@ -80,7 +80,7 @@ impl OrdersDao for OrdersDaoImpl {
             return Err(DBError::Transaction);
         }
 
-        debug!("Deleted order result: {:?}", delete_result);
+    debug!("Deleted order result: {delete_result:?}");
         Ok(())
     }
 }

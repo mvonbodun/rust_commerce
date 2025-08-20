@@ -46,35 +46,35 @@ impl OfferDao for OfferDaoImpl {
         // Implement logic to create an offer in the database
         // and return the created offer or an error if one occurred
         let insert_result = self.collection.insert_one(&offer).await.map_err(|error| {
-            error!("Error on insert: {:?}", error);
+            error!("Error on insert: {error:?}");
             DBError::Other(Box::new(error))
         })?;
 
-        info!("Inserted offer result: {:?}", insert_result);
-        debug!("Offer after insert: {:?}", offer);
+        info!("Inserted offer result: {insert_result:?}");
+        debug!("Offer after insert: {offer:?}");
         Ok(offer)
     }
     // Get an offer
     async fn get_offer(&self, offer_id: String) -> Result<Option<Offer>, DBError> {
         // Implement logic to get an offer from the database
         // by its offer ID and return the offer or an error if one occurred
-        debug!("before call to find_one - offer_id: {:?}", offer_id);
+    debug!("before call to find_one - offer_id: {offer_id:?}");
         let find_result = self
             .collection
             .find_one(doc! {"_id": &offer_id})
             .await
             .map_err(|error| {
-                error!("DB error: {:?}", error);
+        error!("DB error: {error:?}");
                 DBError::Other(Box::new(error))
             })?;
 
         match find_result {
             Some(offer) => {
-                debug!("Found offer: {:?}", offer);
+        debug!("Found offer: {offer:?}");
                 Ok(Some(offer))
             }
             None => {
-                debug!("Offer not found for offer_id: {:?}", offer_id);
+        debug!("Offer not found for offer_id: {offer_id:?}");
                 Ok(None)
             }
         }
@@ -88,11 +88,11 @@ impl OfferDao for OfferDaoImpl {
             .delete_one(doc! {"_id": &offer_id})
             .await
             .map_err(|error| {
-                error!("Error on delete: {:?}", error);
+                error!("Error on delete: {error:?}");
                 DBError::Other(Box::new(error))
             })?;
 
-        info!("Deleted offer result: {:?}", delete_result);
+        info!("Deleted offer result: {delete_result:?}");
         Ok(())
     }
 
@@ -127,9 +127,9 @@ impl OfferDao for OfferDaoImpl {
             "offer_prices": { "$elemMatch": { "currency": currency } }
         };
 
-        debug!("MongoDB query: {:?}", query);
+    debug!("MongoDB query: {query:?}");
 
-        // Execute the query with sort and limit using find() instead of find_one() 
+        // Execute the query with sort and limit using find() instead of find_one()
         // because find_one() doesn't support sorting
         let find_options = mongodb::options::FindOptions::builder()
             .sort(doc! { "offer_prices.price": 1 })
@@ -142,7 +142,7 @@ impl OfferDao for OfferDaoImpl {
             .with_options(find_options)
             .await
             .map_err(|error| {
-                error!("DB error in find_best_offer_price: {:?}", error);
+                error!("DB error in find_best_offer_price: {error:?}");
                 DBError::Other(Box::new(error))
             })?;
 
@@ -153,18 +153,17 @@ impl OfferDao for OfferDaoImpl {
         match find_result {
             Some(result) => match result {
                 Ok(offer) => {
-                    debug!("Found best offer: {:?}", offer);
+                    debug!("Found best offer: {offer:?}");
                     Ok(Some(offer))
                 }
                 Err(error) => {
-                    error!("DB cursor error in find_best_offer_price: {:?}", error);
+                    error!("DB cursor error in find_best_offer_price: {error:?}");
                     Err(DBError::Other(Box::new(error)))
                 }
             },
             None => {
                 debug!(
-                    "No offer found for sku: {}, quantity: {}, date: {}, currency: {}",
-                    sku, quantity, date, currency
+                    "No offer found for sku: {sku}, quantity: {quantity}, date: {date}, currency: {currency}"
                 );
                 Ok(None)
             }
@@ -180,7 +179,10 @@ impl OfferDao for OfferDaoImpl {
     ) -> Result<HashMap<String, Option<Offer>>, DBError> {
         debug!(
             "Finding best offer prices for {} SKUs, quantity: {}, date: {}, currency: {}",
-            skus.len(), quantity, date, currency
+            skus.len(),
+            quantity,
+            date,
+            currency
         );
 
         // Convert NaiveDate to BSON DateTime for MongoDB query
@@ -201,7 +203,7 @@ impl OfferDao for OfferDaoImpl {
             "offer_prices": { "$elemMatch": { "currency": currency } }
         };
 
-        debug!("MongoDB multi-SKU query: {:?}", query);
+    debug!("MongoDB multi-SKU query: {query:?}");
 
         // Execute the query with sort to get best prices (lowest first)
         let find_options = mongodb::options::FindOptions::builder()
@@ -214,7 +216,7 @@ impl OfferDao for OfferDaoImpl {
             .with_options(find_options)
             .await
             .map_err(|error| {
-                error!("DB error in find_best_offer_prices: {:?}", error);
+                error!("DB error in find_best_offer_prices: {error:?}");
                 DBError::Other(Box::new(error))
             })?;
 
@@ -233,20 +235,22 @@ impl OfferDao for OfferDaoImpl {
                     // Only update if we haven't found an offer for this SKU yet
                     // (since results are sorted by price, first one is the best)
                     if results.get(sku).unwrap().is_none() {
-                        debug!("Found best offer for SKU {}: {:?}", sku, offer.id);
+                        debug!("Found best offer for SKU {sku}: {:?}", offer.id);
                         results.insert(sku.clone(), Some(offer));
                     }
                 }
                 Err(error) => {
-                    error!("DB cursor error in find_best_offer_prices: {:?}", error);
+                    error!("DB cursor error in find_best_offer_prices: {error:?}");
                     return Err(DBError::Other(Box::new(error)));
                 }
             }
         }
 
-        debug!("Found best offers for {} out of {} SKUs", 
-               results.values().filter(|v| v.is_some()).count(), 
-               skus.len());
+        debug!(
+            "Found best offers for {} out of {} SKUs",
+            results.values().filter(|v| v.is_some()).count(),
+            skus.len()
+        );
         Ok(results)
     }
 }

@@ -35,10 +35,9 @@ pub async fn create_order(
     match result {
         Ok(order) => Ok(order),
         Err(e) => {
-            error!("Error creating order: {}", e);
+            error!("Error creating order: {e}");
             Err(HandlerError::InternalError(format!(
-                "Failed to create order: {}",
-                e
+                "Failed to create order: {e}"
             )))
         }
     }
@@ -50,17 +49,14 @@ pub async fn get_order(
 ) -> Result<Option<Order>, HandlerError> {
     debug!("Before call to get_order hander_inner");
     let result = orders_dao.get_order(order_id).await;
-    debug!("After call to get_order hander_inner: {:?}", result);
+    debug!("After call to get_order hander_inner: {result:?}");
 
     match result {
         Ok(Some(order)) => Ok(Some(order)),
         Ok(None) => Ok(None),
         Err(e) => {
-            error!("Error getting order: {}", e);
-            Err(HandlerError::InternalError(format!(
-                "Failed to get order: {}",
-                e
-            )))
+            error!("Error getting order: {e}");
+            Err(HandlerError::InternalError(format!("Failed to get order: {e}")))
         }
     }
 }
@@ -74,10 +70,9 @@ pub async fn delete_order(
     match result {
         Ok(()) => Ok(()),
         Err(e) => {
-            error!("Error did not find order to delete: {}", e);
+            error!("Error did not find order to delete: {e}");
             Err(HandlerError::InternalError(format!(
-                "Error did not find order to delete: {}",
-                e
+                "Error did not find order to delete: {e}"
             )))
         }
     }

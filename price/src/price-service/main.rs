@@ -2,20 +2,22 @@ mod handlers;
 mod model;
 mod persistence;
 
-use handlers::{create_offer, delete_offer, get_offer, get_best_offer_price, get_best_offer_prices, Router};
+use handlers::{
+    create_offer, delete_offer, get_best_offer_price, get_best_offer_prices, get_offer, Router,
+};
 use persistence::offer_dao::OfferDaoImpl;
 use std::{env, error::Error, sync::Arc};
 
-use rust_common::{
-    load_environment, mask_sensitive_url, OperationTimer, HealthMonitor,
-    setup_signal_handlers, validate_price_dependencies
-};
 use log::{debug, error, info};
+use rust_common::{
+    load_environment, mask_sensitive_url, setup_signal_handlers, validate_price_dependencies,
+    HealthMonitor, OperationTimer,
+};
 
+use bson::doc;
 use futures::StreamExt;
 use model::Offer;
 use mongodb::{Client, Collection, IndexModel};
-use bson::doc;
 
 pub mod offer_messages {
     include!(concat!(env!("OUT_DIR"), "/offer_messages.rs"));
@@ -25,24 +27,33 @@ pub mod offer_messages {
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     // Load environment configuration FIRST, before initializing logger
     load_environment();
-    
+
     // Initialize logger after loading environment (so RUST_LOG from .env is used)
     pretty_env_logger::init();
-    
+
     // Phase 1.1: Environment & Configuration Logging
-    info!("🚀 Starting Rust Commerce Price Service v{}", env!("CARGO_PKG_VERSION"));
+    info!(
+        "🚀 Starting Rust Commerce Price Service v{}",
+        env!("CARGO_PKG_VERSION")
+    );
     info!("📋 Environment configuration:");
-    info!("  RUST_ENV: {}", env::var("RUST_ENV").unwrap_or_else(|_| "development".to_string()));
-    info!("  RUST_LOG: {}", env::var("RUST_LOG").unwrap_or_else(|_| "info".to_string()));
+    info!(
+        "  RUST_ENV: {}",
+        env::var("RUST_ENV").unwrap_or_else(|_| "development".to_string())
+    );
+    info!(
+        "  RUST_LOG: {}",
+        env::var("RUST_LOG").unwrap_or_else(|_| "info".to_string())
+    );
 
     // Get MongoDB URL
     let uri = env::var("MONGODB_URL").expect("MONGODB_URL must be set");
     info!("  MONGODB_URL: {}", mask_sensitive_url(&uri));
-    
+
     // Get NATS URL
     let nats_url = env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
     info!("  NATS_URL: {}", &nats_url);
-    
+
     // Phase 1.2: MongoDB Connection Logging
     info!("🔗 Connecting to MongoDB...");
     let client = match Client::with_uri_str(&uri).await {
@@ -67,15 +78,13 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     };
     let database = client.database("db_prices");
     info!("📊 Using database: db_prices");
-    
+
     // Phase 1.3: Price Collection & Index Setup Logging
     info!("📦 Setting up prices collection...");
     let price_coll: Collection<Offer> = database.collection("prices");
     let indexes = vec![
         // Primary index for SKU queries (most selective)
-        IndexModel::builder()
-            .keys(doc! { "sku": 1 })
-            .build(),
+        IndexModel::builder().keys(doc! { "sku": 1 }).build(),
         // Compound index for SKU + date range queries (main query pattern)
         IndexModel::builder()
             .keys(doc! { "sku": 1, "start_date": 1, "end_date": 1 })
@@ -96,7 +105,10 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     info!("🔍 Creating {} price indexes...", indexes.len());
     match price_coll.create_indexes(indexes).await {
         Ok(result) => {
-            info!("✅ Created {} price indexes successfully", result.index_names.len());
+            info!(
+                "✅ Created {} price indexes successfully",
+                result.index_names.len()
+            );
             debug!("Price indexes: sku, sku+dates, quantity_ranges, currency, currency+price");
         }
         Err(e) => {
@@ -134,7 +146,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             "get_best_offer_prices".to_owned(),
             Box::new(|d, m| Box::pin(get_best_offer_prices(d, m))),
         );
-    
+
     let route_count = 5;
     info!("✅ Configured {} price routes", route_count);
     debug!("Price routes: create_offer, get_offer, delete_offer, get_best_offer_price, get_best_offer_prices");
@@ -161,7 +173,10 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     // Phase 3.1: Queue Subscription Logging
     info!("📡 Subscribing to NATS queue: offers.*");
-    let requests = match nats_client.queue_subscribe("offers.*", "queue".to_owned()).await {
+    let requests = match nats_client
+        .queue_subscribe("offers.*", "queue".to_owned())
+        .await
+    {
         Ok(subscription) => {
             info!("✅ Successfully subscribed to offers.* queue");
             subscription
@@ -181,7 +196,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     info!("🚀 Price service is ready and listening for requests");
     info!("📊 Service startup completed successfully");
-    
+
     // Phase 3.2: Request Processing Logging
     requests
         .for_each_concurrent(25, |request| {
@@ -197,8 +212,11 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                 }
 
                 let operation = subject_parts[1].to_string();
-                debug!("📨 Processing price operation: {} from subject: {}", operation, request.subject);
-                
+                debug!(
+                    "📨 Processing price operation: {} from subject: {}",
+                    operation, request.subject
+                );
+
                 // Phase 5: Use OperationTimer for performance monitoring
                 let _timer = OperationTimer::new(&format!("offers.{}", operation));
 
@@ -206,7 +224,10 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                     // Note: Price service handlers return Response objects that need to be published
                     let response = handler.call(od, request).await;
                     // Publish response manually here since we don't have the Router::route method integrated
-                    if let Err(e) = client_clone.publish(response.subject, response.payload).await {
+                    if let Err(e) = client_clone
+                        .publish(response.subject, response.payload)
+                        .await
+                    {
                         error!("❌ Failed to publish response: {}", e);
                         Err(Box::new(e) as Box<dyn std::error::Error + Send + Sync>)
                     } else {

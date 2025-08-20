@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use rust_inventory::model::InventoryItem;
     use chrono::Utc;
+    use rust_inventory::model::InventoryItem;
 
     #[test]
     fn test_inventory_item_creation() {
