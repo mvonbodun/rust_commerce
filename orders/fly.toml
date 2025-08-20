@@ -6,7 +6,7 @@ app = "rust-commerce-orders"
 primary_region = "iad"
 
 [build]
-  dockerfile = "orders/Dockerfile"
+  dockerfile = "Dockerfile"
   context = ".."
 
 [env]
