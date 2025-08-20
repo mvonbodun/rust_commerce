@@ -1,9 +1,9 @@
 use chrono::{DateTime, Utc};
+use rust_decimal::Decimal;
+use rust_decimal_macros::dec;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use uuid::Uuid;
-use rust_decimal::Decimal;
-use rust_decimal_macros::dec;
 
 /// A lightweight struct specifically for retrieving product slugs efficiently
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -22,12 +22,12 @@ impl BayesianAverage {
         let decimal = Decimal::from_f32_retain(value).unwrap_or(dec!(0.0));
         Self(decimal.round_dp(1))
     }
-    
+
     /// Returns the value as an f32 for compatibility with existing code
     pub fn as_f32(&self) -> f32 {
         f32::try_from(self.0).unwrap_or(0.0)
     }
-    
+
     /// Returns the value as a Decimal for precise calculations
     pub fn as_decimal(&self) -> Decimal {
         self.0
@@ -65,8 +65,7 @@ impl<'de> Deserialize<'de> for BayesianAverage {
         D: serde::Deserializer<'de>,
     {
         let value_str = String::deserialize(deserializer)?;
-        let value = value_str.parse::<f32>()
-            .map_err(serde::de::Error::custom)?;
+        let value = value_str.parse::<f32>().map_err(serde::de::Error::custom)?;
         Ok(BayesianAverage::new(value))
     }
 }
@@ -120,13 +119,13 @@ pub struct ProductVariant {
     pub defining_attributes: Option<HashMap<String, String>>, // Made optional as some variants don't have it
     pub abbreviated_color: Option<String>,
     pub abbreviated_size: Option<String>, // Added field from sample data
-    pub height: Option<f64>, // Added dimension fields
+    pub height: Option<f64>,              // Added dimension fields
     pub width: Option<f64>,
     pub length: Option<f64>,
     pub weight: Option<f64>,
     pub weight_unit: Option<String>,
     pub packaging: Option<Packaging>, // Added packaging information
-    pub image_urls: Vec<String>, // Changed from single image to array of URLs
+    pub image_urls: Vec<String>,      // Changed from single image to array of URLs
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -262,7 +261,10 @@ impl ProductBuilder {
         self
     }
 
-    pub fn hierarchical_categories(&mut self, hierarchical_categories: HierarchicalCategories) -> &mut Self {
+    pub fn hierarchical_categories(
+        &mut self,
+        hierarchical_categories: HierarchicalCategories,
+    ) -> &mut Self {
         self.hierarchical_categories = Some(hierarchical_categories);
         self
     }
@@ -287,7 +289,10 @@ impl ProductBuilder {
         self
     }
 
-    pub fn defining_attributes(&mut self, defining_attributes: HashMap<String, String>) -> &mut Self {
+    pub fn defining_attributes(
+        &mut self,
+        defining_attributes: HashMap<String, String>,
+    ) -> &mut Self {
         self.defining_attributes = defining_attributes;
         self
     }
@@ -297,7 +302,10 @@ impl ProductBuilder {
         self
     }
 
-    pub fn descriptive_attributes(&mut self, descriptive_attributes: HashMap<String, String>) -> &mut Self {
+    pub fn descriptive_attributes(
+        &mut self,
+        descriptive_attributes: HashMap<String, String>,
+    ) -> &mut Self {
         self.descriptive_attributes = descriptive_attributes;
         self
     }
@@ -390,7 +398,10 @@ impl ProductVariantBuilder {
         }
     }
 
-    pub fn defining_attributes(&mut self, defining_attributes: HashMap<String, String>) -> &mut Self {
+    pub fn defining_attributes(
+        &mut self,
+        defining_attributes: HashMap<String, String>,
+    ) -> &mut Self {
         self.defining_attributes = Some(defining_attributes);
         self
     }
@@ -633,9 +644,9 @@ mod tests {
         let possible_paths = [
             "catalog/sample_records/sample_product_mongo_record.json",
             "sample_records/sample_product_mongo_record.json",
-            "../sample_records/sample_product_mongo_record.json"
+            "../sample_records/sample_product_mongo_record.json",
         ];
-        
+
         let mut sample_data = None;
         for path in &possible_paths {
             if let Ok(data) = fs::read_to_string(path) {
@@ -643,12 +654,13 @@ mod tests {
                 break;
             }
         }
-        
-        let sample_data = sample_data.expect("Failed to find sample product file in any expected location");
-        
+
+        let sample_data =
+            sample_data.expect("Failed to find sample product file in any expected location");
+
         // Try to deserialize it into our Product model
         let product: Result<Product, _> = serde_json::from_str(&sample_data);
-        
+
         match product {
             Ok(p) => {
                 println!("Successfully deserialized product: {}", p.name);
@@ -656,16 +668,16 @@ mod tests {
                 assert_eq!(p.brand, Some("Calvin Klein Performance".to_string()));
                 assert_eq!(p.product_ref, "P000223554");
                 assert!(!p.variants.is_empty());
-                
+
                 // Check first variant
                 let first_variant = &p.variants[0];
                 assert_eq!(first_variant.sku, "0096234260");
                 assert_eq!(first_variant.abbreviated_color, Some("GRAY".to_string()));
-                assert!(first_variant.image_urls.len() > 0);
+                assert!(!first_variant.image_urls.is_empty());
                 assert!(first_variant.packaging.is_some());
             }
             Err(e) => {
-                panic!("Failed to deserialize sample product: {}", e);
+                panic!("Failed to deserialize sample product: {e}");
             }
         }
     }
@@ -690,18 +702,30 @@ mod tests {
         assert_eq!(product.name, "Test Product");
         assert_eq!(product.product_ref, "TEST001");
         assert_eq!(product.brand, Some("Test Brand".to_string()));
-        assert_eq!(product.long_description, Some("This is a test product".to_string()));
-        assert_eq!(product.seo_title, Some("Test Product - Best Quality".to_string()));
+        assert_eq!(
+            product.long_description,
+            Some("This is a test product".to_string())
+        );
+        assert_eq!(
+            product.seo_title,
+            Some("Test Product - Best Quality".to_string())
+        );
         assert_eq!(product.tax_code, Some("TAX001".to_string()));
-        assert_eq!(product.display_on_site, true);
+    assert!(product.display_on_site);
         assert!(product.created_at.is_some());
         assert!(product.updated_at.is_some());
         assert_eq!(product.created_by, Some("test_user".to_string()));
-        
+
         // Check attributes
-        assert_eq!(product.defining_attributes.get("color"), Some(&"blue".to_string()));
-        assert_eq!(product.descriptive_attributes.get("material"), Some(&"cotton".to_string()));
-        
+        assert_eq!(
+            product.defining_attributes.get("color"),
+            Some(&"blue".to_string())
+        );
+        assert_eq!(
+            product.descriptive_attributes.get("material"),
+            Some(&"cotton".to_string())
+        );
+
         // Check categories
         assert_eq!(product.list_categories.len(), 2);
         assert!(product.list_categories.contains(&"clothing".to_string()));
@@ -736,7 +760,7 @@ mod tests {
         assert_eq!(variant.weight, Some(0.5));
         assert_eq!(variant.weight_unit, Some("kg".to_string()));
         assert_eq!(variant.image_urls.len(), 2);
-        
+
         if let Some(defining_attrs) = &variant.defining_attributes {
             assert_eq!(defining_attrs.get("size"), Some(&"Medium".to_string()));
         }
@@ -759,8 +783,7 @@ mod tests {
             .add_image_url("https://example.com/blue-large.jpg".to_string())
             .build();
 
-        let reviews = ReviewsBuilder::new(4.0, 25, 4)
-            .build();
+        let reviews = ReviewsBuilder::new(4.0, 25, 4).build();
 
         let categories = HierarchicalCategoriesBuilder::new()
             .lvl0("Clothing".to_string())
@@ -768,20 +791,23 @@ mod tests {
             .lvl2("Shirts".to_string())
             .build();
 
-        let product = ProductBuilder::new("Complete Test Product".to_string(), "COMPLETE001".to_string())
-            .brand("Premium Brand".to_string())
-            .long_description("A complete product with all features".to_string())
-            .add_variant(variant)
-            .reviews(reviews)
-            .hierarchical_categories(categories)
-            .created_by("product_manager".to_string())
-            .build();
+        let product = ProductBuilder::new(
+            "Complete Test Product".to_string(),
+            "COMPLETE001".to_string(),
+        )
+        .brand("Premium Brand".to_string())
+        .long_description("A complete product with all features".to_string())
+        .add_variant(variant)
+        .reviews(reviews)
+        .hierarchical_categories(categories)
+        .created_by("product_manager".to_string())
+        .build();
 
         assert_eq!(product.name, "Complete Test Product");
         assert_eq!(product.variants.len(), 1);
         assert!(product.reviews.is_some());
         assert!(product.hierarchical_categories.is_some());
-        
+
         if let Some(variant) = product.variants.first() {
             assert_eq!(variant.sku, "SKU456");
             assert!(variant.packaging.is_some());
@@ -791,43 +817,45 @@ mod tests {
     #[test]
     fn test_builder_pattern_usage_examples() {
         // Example 1: Simple product creation
-        let simple_product = ProductBuilder::new("Basic T-Shirt".to_string(), "BASIC001".to_string())
-            .brand("BasicWear".to_string())
-            .display_on_site(true)
-            .build();
-        
+        let simple_product =
+            ProductBuilder::new("Basic T-Shirt".to_string(), "BASIC001".to_string())
+                .brand("BasicWear".to_string())
+                .display_on_site(true)
+                .build();
+
         assert_eq!(simple_product.name, "Basic T-Shirt");
         assert_eq!(simple_product.product_ref, "BASIC001");
         assert!(simple_product.id.is_some());
-        
+
         // Example 2: Product with multiple variants
         let variant1 = ProductVariantBuilder::new("SHIRT-S-RED".to_string())
             .abbreviated_color("RED".to_string())
             .abbreviated_size("S".to_string())
             .add_image_url("https://example.com/shirt-s-red.jpg".to_string())
             .build();
-            
+
         let variant2 = ProductVariantBuilder::new("SHIRT-M-BLUE".to_string())
             .abbreviated_color("BLUE".to_string())
             .abbreviated_size("M".to_string())
             .add_image_url("https://example.com/shirt-m-blue.jpg".to_string())
             .build();
-        
-        let multi_variant_product = ProductBuilder::new("Colorful Shirt".to_string(), "COLOR001".to_string())
-            .brand("FashionWear".to_string())
-            .add_variant(variant1)
-            .add_variant(variant2)
-            .add_list_category("clothing".to_string())
-            .add_list_category("shirts".to_string())
-            .build();
-            
+
+        let multi_variant_product =
+            ProductBuilder::new("Colorful Shirt".to_string(), "COLOR001".to_string())
+                .brand("FashionWear".to_string())
+                .add_variant(variant1)
+                .add_variant(variant2)
+                .add_list_category("clothing".to_string())
+                .add_list_category("shirts".to_string())
+                .build();
+
         assert_eq!(multi_variant_product.variants.len(), 2);
         assert_eq!(multi_variant_product.list_categories.len(), 2);
-        
+
         // Example 3: Using UUID generation for product ID
-        let product_with_uuid = ProductBuilder::new("UUID Product".to_string(), "UUID001".to_string())
-            .build();
-            
+        let product_with_uuid =
+            ProductBuilder::new("UUID Product".to_string(), "UUID001".to_string()).build();
+
         if let Some(id) = &product_with_uuid.id {
             // Validate UUID format (version 4 UUID is 36 characters with hyphens)
             assert_eq!(id.len(), 36);
@@ -841,7 +869,7 @@ mod tests {
         let avg1 = BayesianAverage::new(4.56789);
         assert_eq!(avg1.as_f32(), 4.6);
 
-        let avg2 = BayesianAverage::new(3.14159);
+    let avg2 = BayesianAverage::new(std::f32::consts::PI);
         assert_eq!(avg2.as_f32(), 3.1);
 
         let avg3 = BayesianAverage::new(2.95);
@@ -863,10 +891,10 @@ mod tests {
         };
 
         let json = serde_json::to_string(&reviews).expect("Failed to serialize");
-        
+
         // Verify that bayesian_avg is serialized as a string with one decimal place
         assert!(json.contains(r#""bayesian_avg":"4.6""#));
-        
+
         let deserialized: Reviews = serde_json::from_str(&json).expect("Failed to deserialize");
 
         // Check that the value is properly rounded
@@ -879,15 +907,17 @@ mod tests {
     fn test_json_deserialization_with_precision() {
         // Test deserialization from string value
         let json_string = r#"{"bayesian_avg": "4.56789", "count": 100, "rating": 5}"#;
-        let reviews_string: Reviews = serde_json::from_str(json_string).expect("Failed to deserialize string");
-        
+        let reviews_string: Reviews =
+            serde_json::from_str(json_string).expect("Failed to deserialize string");
+
         // Should be automatically rounded to one decimal place
         assert_eq!(reviews_string.bayesian_avg.as_f32(), 4.6);
-        
+
         // Test deserialization from properly formatted string
         let json_formatted = r#"{"bayesian_avg": "4.6", "count": 100, "rating": 5}"#;
-        let reviews_formatted: Reviews = serde_json::from_str(json_formatted).expect("Failed to deserialize formatted string");
-        
+        let reviews_formatted: Reviews =
+            serde_json::from_str(json_formatted).expect("Failed to deserialize formatted string");
+
         // Should maintain the single decimal place
         assert_eq!(reviews_formatted.bayesian_avg.as_f32(), 4.6);
     }
@@ -898,23 +928,26 @@ mod tests {
         let avg1 = BayesianAverage::new(4.56789);
         let json1 = serde_json::to_string(&avg1).expect("Failed to serialize");
         assert_eq!(json1, r#""4.6""#);
-        
-        let avg2 = BayesianAverage::new(3.14159);
+
+    let avg2 = BayesianAverage::new(std::f32::consts::PI);
         let json2 = serde_json::to_string(&avg2).expect("Failed to serialize");
         assert_eq!(json2, r#""3.1""#);
-        
+
         let avg3 = BayesianAverage::new(2.95);
         let json3 = serde_json::to_string(&avg3).expect("Failed to serialize");
         assert_eq!(json3, r#""3.0""#);
-        
+
         // Test deserialization from these strings
-        let deserialized1: BayesianAverage = serde_json::from_str(&json1).expect("Failed to deserialize");
+        let deserialized1: BayesianAverage =
+            serde_json::from_str(&json1).expect("Failed to deserialize");
         assert_eq!(deserialized1.as_f32(), 4.6);
-        
-        let deserialized2: BayesianAverage = serde_json::from_str(&json2).expect("Failed to deserialize");
+
+        let deserialized2: BayesianAverage =
+            serde_json::from_str(&json2).expect("Failed to deserialize");
         assert_eq!(deserialized2.as_f32(), 3.1);
-        
-        let deserialized3: BayesianAverage = serde_json::from_str(&json3).expect("Failed to deserialize");
+
+        let deserialized3: BayesianAverage =
+            serde_json::from_str(&json3).expect("Failed to deserialize");
         assert_eq!(deserialized3.as_f32(), 3.0);
     }
 }
@@ -931,7 +964,7 @@ pub struct Category {
     pub short_description: String,
     pub full_description: Option<String>,
     pub path: String,
-    pub ancestors: Vec<String>, // UUIDs of ancestor categories
+    pub ancestors: Vec<String>,    // UUIDs of ancestor categories
     pub parent_id: Option<String>, // UUID of parent category
     pub level: i32,
     pub children_count: i32,
@@ -944,21 +977,11 @@ pub struct Category {
 }
 
 /// SEO metadata for categories
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CategorySeo {
     pub meta_title: Option<String>,
     pub meta_description: Option<String>,
     pub keywords: Vec<String>,
-}
-
-impl Default for CategorySeo {
-    fn default() -> Self {
-        CategorySeo {
-            meta_title: None,
-            meta_description: None,
-            keywords: vec![],
-        }
-    }
 }
 
 /// Simplified category for tree cache
@@ -994,14 +1017,14 @@ impl Category {
     ) -> Self {
         let id = Uuid::new_v4().to_string();
         let now = Utc::now();
-        
+
         Self {
             id: Some(id),
             slug,
             name,
             short_description,
             full_description: None,
-            path: String::new(), // Will be calculated when saved
+            path: String::new(),   // Will be calculated when saved
             ancestors: Vec::new(), // Will be calculated when saved
             parent_id,
             level: 0, // Will be calculated when saved
@@ -1022,15 +1045,15 @@ impl Category {
     /// Generates the path string based on ancestor hierarchy using category names
     pub fn generate_path(&self, ancestors: &[Category]) -> String {
         let mut path_parts = Vec::new();
-        
+
         // Add ancestor names in order
         for ancestor in ancestors {
             path_parts.push(ancestor.name.clone());
         }
-        
+
         // Add current category name
         path_parts.push(self.name.clone());
-        
+
         path_parts.join(" > ")
     }
 
@@ -1044,7 +1067,7 @@ impl CategorySeo {
     /// Creates default SEO metadata for a category
     pub fn default_for_category(category_name: &str, description: &str) -> Self {
         Self {
-            meta_title: Some(format!("{} - Shop Now", category_name)),
+            meta_title: Some(format!("{category_name} - Shop Now")),
             meta_description: Some(description.to_string()),
             keywords: vec![category_name.to_lowercase()],
         }
@@ -1122,9 +1145,12 @@ mod category_tests {
     #[test]
     fn test_default_seo() {
         let seo = CategorySeo::default_for_category("Electronics", "Best electronic devices");
-        
+
         assert_eq!(seo.meta_title, Some("Electronics - Shop Now".to_string()));
-        assert_eq!(seo.meta_description, Some("Best electronic devices".to_string()));
+        assert_eq!(
+            seo.meta_description,
+            Some("Best electronic devices".to_string())
+        );
         assert_eq!(seo.keywords, vec!["electronics".to_string()]);
     }
 

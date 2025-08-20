@@ -1,24 +1,33 @@
 use std::{collections::HashMap, future::Future, pin::Pin, sync::Arc};
+
 use async_nats::{Client, Message};
 use log::{debug, error, warn};
 use prost::Message as ProstMessage;
+
 use crate::{
-    catalog_messages::{self, ProductCreateRequest, ProductCreateResponse, ProductGetRequest, ProductGetResponse, ProductGetBySlugRequest, ProductGetBySlugResponse, ProductUpdateRequest, ProductUpdateResponse, ProductDeleteRequest, ProductDeleteResponse, ProductSearchRequest, ProductSearchResponse, ProductExportRequest, ProductExportResponse, GetProductSlugsRequest, GetProductSlugsResponse},
-    persistence::product_dao::ProductDao,
+    catalog_messages::{
+        self, GetProductSlugsRequest, GetProductSlugsResponse, ProductCreateRequest,
+        ProductCreateResponse, ProductDeleteRequest, ProductDeleteResponse, ProductExportRequest,
+        ProductExportResponse, ProductGetBySlugRequest, ProductGetBySlugResponse,
+        ProductGetRequest, ProductGetResponse, ProductSearchRequest, ProductSearchResponse,
+        ProductUpdateRequest, ProductUpdateResponse,
+    },
     model::Product,
+    persistence::product_dao::ProductDao,
 };
 
-mod handlers_inner;
 pub mod category_service;
 pub mod category_handlers;
+mod handlers_inner;
 
 pub type NatsFn = Box<
     dyn Fn(
             Arc<dyn ProductDao + Send + Sync>,
             Client,
             Message,
-        ) -> Pin<Box<dyn Future<Output = Result<(), Box<dyn std::error::Error + Send + Sync>>> + Send>>
-        + Send
+        ) -> Pin<
+            Box<dyn Future<Output = Result<(), Box<dyn std::error::Error + Send + Sync>>> + Send>,
+        > + Send
         + Sync,
 >;
 
@@ -45,7 +54,7 @@ pub async fn create_product(
     msg: Message,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     debug!("Processing create_product request");
-    
+
     let request = ProductCreateRequest::decode(&*msg.payload);
     match request {
         Ok(request) => {
@@ -53,8 +62,9 @@ pub async fn create_product(
                 request,
                 None, // created_by - could be extracted from metadata
                 product_dao.as_ref(),
-            ).await;
-            
+            )
+            .await;
+
             match result {
                 Ok(product) => {
                     let response = ProductCreateResponse {
@@ -65,17 +75,17 @@ pub async fn create_product(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send response: {}", e);
+                            error!("Failed to send response: {e}");
                         }
                     }
                 }
                 Err(handlers_inner::HandlerError::InternalError(error_msg)) => {
-                    error!("Error creating product: {}", error_msg);
+                    error!("Error creating product: {error_msg}");
                     let response = ProductCreateResponse {
                         product: None,
                         status: Some(catalog_messages::Status {
@@ -84,19 +94,18 @@ pub async fn create_product(
                             details: vec![],
                         }),
                     };
-                    
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send error response: {}", e);
+                            error!("Failed to send error response: {e}");
                         }
                     }
                 }
             }
         }
         Err(err) => {
-            warn!("Invalid product create request format: {:?}", err);
+            warn!("Invalid product create request format: {err:?}");
             let response = ProductCreateResponse {
                 product: None,
                 status: Some(catalog_messages::Status {
@@ -105,17 +114,16 @@ pub async fn create_product(
                     details: vec![],
                 }),
             };
-            
             let response_bytes = response.encode_to_vec();
-            
+
             if let Some(reply) = msg.reply {
                 if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                    error!("Failed to send error response: {}", e);
+                    error!("Failed to send error response: {e}");
                 }
             }
         }
     }
-    
+
     Ok(())
 }
 
@@ -125,12 +133,12 @@ pub async fn get_product(
     msg: Message,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     debug!("Processing get_product request");
-    
+
     let request = ProductGetRequest::decode(&*msg.payload);
     match request {
         Ok(request) => {
             let result = handlers_inner::get_product(request.id, product_dao.as_ref()).await;
-            
+
             match result {
                 Ok(Some(product)) => {
                     let response = ProductGetResponse {
@@ -141,12 +149,12 @@ pub async fn get_product(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send response: {}", e);
+                            error!("Failed to send response: {e}");
                         }
                     }
                 }
@@ -159,17 +167,16 @@ pub async fn get_product(
                             details: vec![],
                         }),
                     };
-                    
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send response: {}", e);
+                            error!("Failed to send response: {e}");
                         }
                     }
                 }
                 Err(handlers_inner::HandlerError::InternalError(error_msg)) => {
-                    error!("Error getting product: {}", error_msg);
+                    error!("Error getting product: {error_msg}");
                     let response = ProductGetResponse {
                         product: None,
                         status: Some(catalog_messages::Status {
@@ -178,19 +185,18 @@ pub async fn get_product(
                             details: vec![],
                         }),
                     };
-                    
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send error response: {}", e);
+                            error!("Failed to send error response: {e}");
                         }
                     }
                 }
             }
         }
         Err(err) => {
-            warn!("Invalid product get request format: {:?}", err);
+            warn!("Invalid product get request format: {err:?}");
             let response = ProductGetResponse {
                 product: None,
                 status: Some(catalog_messages::Status {
@@ -199,17 +205,16 @@ pub async fn get_product(
                     details: vec![],
                 }),
             };
-            
             let response_bytes = response.encode_to_vec();
-            
+
             if let Some(reply) = msg.reply {
                 if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                    error!("Failed to send error response: {}", e);
+                    error!("Failed to send error response: {e}");
                 }
             }
         }
     }
-    
+
     Ok(())
 }
 
@@ -219,12 +224,13 @@ pub async fn get_product_by_slug(
     msg: Message,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     debug!("Processing get_product_by_slug request");
-    
+
     let request = ProductGetBySlugRequest::decode(&*msg.payload);
     match request {
         Ok(request) => {
-            let result = handlers_inner::get_product_by_slug(request.slug, product_dao.as_ref()).await;
-            
+            let result =
+                handlers_inner::get_product_by_slug(request.slug, product_dao.as_ref()).await;
+
             match result {
                 Ok(Some(product)) => {
                     let response = ProductGetBySlugResponse {
@@ -235,12 +241,12 @@ pub async fn get_product_by_slug(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send response: {}", e);
+                            error!("Failed to send response: {e}");
                         }
                     }
                 }
@@ -253,17 +259,17 @@ pub async fn get_product_by_slug(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send response: {}", e);
+                            error!("Failed to send response: {e}");
                         }
                     }
                 }
                 Err(handlers_inner::HandlerError::InternalError(error_msg)) => {
-                    error!("Error getting product by slug: {}", error_msg);
+                    error!("Error getting product by slug: {error_msg}");
                     let response = ProductGetBySlugResponse {
                         product: None,
                         status: Some(catalog_messages::Status {
@@ -272,19 +278,19 @@ pub async fn get_product_by_slug(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send error response: {}", e);
+                            error!("Failed to send error response: {e}");
                         }
                     }
                 }
             }
         }
         Err(err) => {
-            warn!("Invalid product get by slug request format: {:?}", err);
+            warn!("Invalid product get by slug request format: {err:?}");
             let response = ProductGetBySlugResponse {
                 product: None,
                 status: Some(catalog_messages::Status {
@@ -293,17 +299,17 @@ pub async fn get_product_by_slug(
                     details: vec![],
                 }),
             };
-            
+
             let response_bytes = response.encode_to_vec();
-            
+
             if let Some(reply) = msg.reply {
                 if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                    error!("Failed to send error response: {}", e);
+                    error!("Failed to send error response: {e}");
                 }
             }
         }
     }
-    
+
     Ok(())
 }
 
@@ -313,16 +319,14 @@ pub async fn update_product(
     msg: Message,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     debug!("Processing update_product request");
-    
+
     let request = ProductUpdateRequest::decode(&*msg.payload);
     match request {
         Ok(request) => {
-            let result = handlers_inner::update_product(
-                request.id.clone(),
-                request,
-                product_dao.as_ref(),
-            ).await;
-            
+            let result =
+                handlers_inner::update_product(request.id.clone(), request, product_dao.as_ref())
+                    .await;
+
             match result {
                 Ok(Some(product)) => {
                     let response = ProductUpdateResponse {
@@ -333,12 +337,12 @@ pub async fn update_product(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send response: {}", e);
+                            error!("Failed to send response: {e}");
                         }
                     }
                 }
@@ -351,17 +355,17 @@ pub async fn update_product(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send response: {}", e);
+                            error!("Failed to send response: {e}");
                         }
                     }
                 }
                 Err(handlers_inner::HandlerError::InternalError(error_msg)) => {
-                    error!("Error updating product: {}", error_msg);
+                    error!("Error updating product: {error_msg}");
                     let response = ProductUpdateResponse {
                         product: None,
                         status: Some(catalog_messages::Status {
@@ -370,19 +374,19 @@ pub async fn update_product(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send error response: {}", e);
+                            error!("Failed to send error response: {e}");
                         }
                     }
                 }
             }
         }
         Err(err) => {
-            warn!("Invalid product update request format: {:?}", err);
+            warn!("Invalid product update request format: {err:?}");
             let response = ProductUpdateResponse {
                 product: None,
                 status: Some(catalog_messages::Status {
@@ -391,17 +395,17 @@ pub async fn update_product(
                     details: vec![],
                 }),
             };
-            
+
             let response_bytes = response.encode_to_vec();
-            
+
             if let Some(reply) = msg.reply {
                 if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                    error!("Failed to send error response: {}", e);
+                    error!("Failed to send error response: {e}");
                 }
             }
         }
     }
-    
+
     Ok(())
 }
 
@@ -411,15 +415,12 @@ pub async fn delete_product(
     msg: Message,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     debug!("Processing delete_product request");
-    
+
     let request = ProductDeleteRequest::decode(&*msg.payload);
     match request {
         Ok(request) => {
-            let result = handlers_inner::delete_product(
-                request.id,
-                product_dao.as_ref(),
-            ).await;
-            
+            let result = handlers_inner::delete_product(request.id, product_dao.as_ref()).await;
+
             match result {
                 Ok(true) => {
                     let response = ProductDeleteResponse {
@@ -429,12 +430,12 @@ pub async fn delete_product(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send response: {}", e);
+                            error!("Failed to send response: {e}");
                         }
                     }
                 }
@@ -446,17 +447,17 @@ pub async fn delete_product(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send response: {}", e);
+                            error!("Failed to send response: {e}");
                         }
                     }
                 }
                 Err(handlers_inner::HandlerError::InternalError(error_msg)) => {
-                    error!("Error deleting product: {}", error_msg);
+                    error!("Error deleting product: {error_msg}");
                     let response = ProductDeleteResponse {
                         status: Some(catalog_messages::Status {
                             code: catalog_messages::Code::Internal.into(),
@@ -464,19 +465,19 @@ pub async fn delete_product(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send error response: {}", e);
+                            error!("Failed to send error response: {e}");
                         }
                     }
                 }
             }
         }
         Err(err) => {
-            warn!("Invalid product delete request format: {:?}", err);
+            warn!("Invalid product delete request format: {err:?}");
             let response = ProductDeleteResponse {
                 status: Some(catalog_messages::Status {
                     code: catalog_messages::Code::InvalidArgument.into(),
@@ -484,17 +485,17 @@ pub async fn delete_product(
                     details: vec![],
                 }),
             };
-            
+
             let response_bytes = response.encode_to_vec();
-            
+
             if let Some(reply) = msg.reply {
                 if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                    error!("Failed to send error response: {}", e);
+                    error!("Failed to send error response: {e}");
                 }
             }
         }
     }
-    
+
     Ok(())
 }
 
@@ -504,7 +505,7 @@ pub async fn search_products(
     msg: Message,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     debug!("Processing search_products request");
-    
+
     let request = ProductSearchRequest::decode(&*msg.payload);
     match request {
         Ok(request) => {
@@ -515,12 +516,16 @@ pub async fn search_products(
                 request.limit.map(|l| l as i64),
                 request.offset.map(|o| o as u64),
                 product_dao.as_ref(),
-            ).await;
-            
+            )
+            .await;
+
             match result {
                 Ok(products) => {
                     let response = ProductSearchResponse {
-                        products: products.iter().map(|p| map_model_product_to_proto_product(p.clone())).collect(),
+                        products: products
+                            .iter()
+                            .map(|p| map_model_product_to_proto_product(p.clone()))
+                            .collect(),
                         total_count: products.len() as i32,
                         status: Some(catalog_messages::Status {
                             code: catalog_messages::Code::Ok.into(),
@@ -528,17 +533,17 @@ pub async fn search_products(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send response: {}", e);
+                            error!("Failed to send response: {e}");
                         }
                     }
                 }
                 Err(handlers_inner::HandlerError::InternalError(error_msg)) => {
-                    error!("Error searching products: {}", error_msg);
+                    error!("Error searching products: {error_msg}");
                     let response = ProductSearchResponse {
                         products: vec![],
                         total_count: 0,
@@ -548,19 +553,19 @@ pub async fn search_products(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send error response: {}", e);
+                            error!("Failed to send error response: {e}");
                         }
                     }
                 }
             }
         }
         Err(err) => {
-            warn!("Invalid product search request format: {:?}", err);
+            warn!("Invalid product search request format: {err:?}");
             let response = ProductSearchResponse {
                 products: vec![],
                 total_count: 0,
@@ -570,17 +575,17 @@ pub async fn search_products(
                     details: vec![],
                 }),
             };
-            
+
             let response_bytes = response.encode_to_vec();
-            
+
             if let Some(reply) = msg.reply {
                 if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                    error!("Failed to send error response: {}", e);
+                    error!("Failed to send error response: {e}");
                 }
             }
         }
     }
-    
+
     Ok(())
 }
 
@@ -590,7 +595,7 @@ pub async fn export_products(
     msg: Message,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     debug!("Processing export_products request");
-    
+
     let request = ProductExportRequest::decode(&*msg.payload);
     match request {
         Ok(request) => {
@@ -598,12 +603,16 @@ pub async fn export_products(
                 request.batch_size.map(|b| b as i64),
                 request.offset.map(|o| o as u64),
                 product_dao.as_ref(),
-            ).await;
-            
+            )
+            .await;
+
             match result {
                 Ok(products) => {
                     let response = ProductExportResponse {
-                        products: products.iter().map(|p| map_model_product_to_proto_product(p.clone())).collect(),
+                        products: products
+                            .iter()
+                            .map(|p| map_model_product_to_proto_product(p.clone()))
+                            .collect(),
                         total_count: products.len() as i32,
                         status: Some(catalog_messages::Status {
                             code: catalog_messages::Code::Ok.into(),
@@ -611,17 +620,17 @@ pub async fn export_products(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send response: {}", e);
+                            error!("Failed to send response: {e}");
                         }
                     }
                 }
                 Err(handlers_inner::HandlerError::InternalError(error_msg)) => {
-                    error!("Error exporting products: {}", error_msg);
+                    error!("Error exporting products: {error_msg}");
                     let response = ProductExportResponse {
                         products: vec![],
                         total_count: 0,
@@ -631,19 +640,19 @@ pub async fn export_products(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send error response: {}", e);
+                            error!("Failed to send error response: {e}");
                         }
                     }
                 }
             }
         }
         Err(err) => {
-            warn!("Invalid product export request format: {:?}", err);
+            warn!("Invalid product export request format: {err:?}");
             let response = ProductExportResponse {
                 products: vec![],
                 total_count: 0,
@@ -653,17 +662,17 @@ pub async fn export_products(
                     details: vec![],
                 }),
             };
-            
+
             let response_bytes = response.encode_to_vec();
-            
+
             if let Some(reply) = msg.reply {
                 if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                    error!("Failed to send error response: {}", e);
+                    error!("Failed to send error response: {e}");
                 }
             }
         }
     }
-    
+
     Ok(())
 }
 
@@ -673,7 +682,7 @@ pub async fn get_product_slugs(
     msg: Message,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     debug!("Processing get_product_slugs request");
-    
+
     let request = GetProductSlugsRequest::decode(&*msg.payload);
     match request {
         Ok(request) => {
@@ -682,8 +691,9 @@ pub async fn get_product_slugs(
                 request.cursor,
                 request.include_inactive,
                 product_dao.as_ref(),
-            ).await;
-            
+            )
+            .await;
+
             match result {
                 Ok((slugs, next_cursor, has_more)) => {
                     let response = GetProductSlugsResponse {
@@ -697,17 +707,17 @@ pub async fn get_product_slugs(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send response: {}", e);
+                            error!("Failed to send response: {e}");
                         }
                     }
                 }
                 Err(err) => {
-                    error!("Error in get_product_slugs handler: {:?}", err);
+                    error!("Error in get_product_slugs handler: {err:?}");
                     let response = GetProductSlugsResponse {
                         slugs: vec![],
                         next_cursor: None,
@@ -719,19 +729,19 @@ pub async fn get_product_slugs(
                             details: vec![],
                         }),
                     };
-                    
+
                     let response_bytes = response.encode_to_vec();
-                    
+
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                            error!("Failed to send error response: {}", e);
+                            error!("Failed to send error response: {e}");
                         }
                     }
                 }
             }
         }
         Err(err) => {
-            warn!("Invalid get product slugs request format: {:?}", err);
+            warn!("Invalid get product slugs request format: {err:?}");
             let response = GetProductSlugsResponse {
                 slugs: vec![],
                 next_cursor: None,
@@ -743,17 +753,17 @@ pub async fn get_product_slugs(
                     details: vec![],
                 }),
             };
-            
+
             let response_bytes = response.encode_to_vec();
-            
+
             if let Some(reply) = msg.reply {
                 if let Err(e) = client.publish(reply, response_bytes.into()).await {
-                    error!("Failed to send error response: {}", e);
+                    error!("Failed to send error response: {e}");
                 }
             }
         }
     }
-    
+
     Ok(())
 }
 
@@ -778,10 +788,12 @@ fn map_model_product_to_proto_product(product: Product) -> catalog_messages::Pro
             count: r.count,
             rating: r.rating,
         }),
-        hierarchical_categories: product.hierarchical_categories.map(|hc| catalog_messages::HierarchicalCategories {
-            lvl0: hc.lvl0,
-            lvl1: hc.lvl1,
-            lvl2: hc.lvl2,
+        hierarchical_categories: product.hierarchical_categories.map(|hc| {
+            catalog_messages::HierarchicalCategories {
+                lvl0: hc.lvl0,
+                lvl1: hc.lvl1,
+                lvl2: hc.lvl2,
+            }
         }),
         list_categories: product.list_categories,
         created_at: product.created_at.map(|dt| prost_types::Timestamp {
@@ -797,24 +809,28 @@ fn map_model_product_to_proto_product(product: Product) -> catalog_messages::Pro
         defining_attributes: product.defining_attributes,
         descriptive_attributes: product.descriptive_attributes,
         default_variant: product.default_variant,
-        variants: product.variants.into_iter().map(|v| catalog_messages::ProductVariant {
-            sku: v.sku,
-            defining_attributes: v.defining_attributes.unwrap_or_default(),
-            abbreviated_color: v.abbreviated_color,
-            abbreviated_size: v.abbreviated_size,
-            height: v.height,
-            width: v.width,
-            length: v.length,
-            weight: v.weight,
-            weight_unit: v.weight_unit,
-            packaging: v.packaging.map(|p| catalog_messages::Packaging {
-                height: p.height,
-                width: p.width,
-                length: p.length,
-                weight: p.weight,
-                weight_unit: p.weight_unit,
-            }),
-            image_urls: v.image_urls,
-        }).collect(),
+        variants: product
+            .variants
+            .into_iter()
+            .map(|v| catalog_messages::ProductVariant {
+                sku: v.sku,
+                defining_attributes: v.defining_attributes.unwrap_or_default(),
+                abbreviated_color: v.abbreviated_color,
+                abbreviated_size: v.abbreviated_size,
+                height: v.height,
+                width: v.width,
+                length: v.length,
+                weight: v.weight,
+                weight_unit: v.weight_unit,
+                packaging: v.packaging.map(|p| catalog_messages::Packaging {
+                    height: p.height,
+                    width: p.width,
+                    length: p.length,
+                    weight: p.weight,
+                    weight_unit: p.weight_unit,
+                }),
+                image_urls: v.image_urls,
+            })
+            .collect(),
     }
 }

@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod product_slug_integration_tests {
-    use async_nats;
+    
     use prost::Message;
     use std::collections::HashMap;
-    use tokio;
+    
     use uuid::Uuid;
 
     // Include the generated protobuf messages
@@ -12,28 +12,32 @@ mod product_slug_integration_tests {
     }
 
     use catalog_messages::{
-        ProductCreateRequest, ProductCreateResponse, 
-        ProductGetBySlugRequest, ProductGetBySlugResponse,
-        ProductDeleteRequest, ProductDeleteResponse,
-        Code
+        Code, ProductCreateRequest, ProductCreateResponse, ProductDeleteRequest,
+        ProductDeleteResponse, ProductGetBySlugRequest, ProductGetBySlugResponse,
     };
 
     async fn setup_nats_client() -> async_nats::Client {
-        let url = std::env::var("NATS_TEST_URL")
-            .unwrap_or_else(|_| "nats://127.0.0.1:4222".to_string());
-        async_nats::connect(url).await.expect("Failed to connect to NATS")
+        let url =
+            std::env::var("NATS_TEST_URL").unwrap_or_else(|_| "nats://127.0.0.1:4222".to_string());
+        async_nats::connect(url)
+            .await
+            .expect("Failed to connect to NATS")
     }
 
-    async fn create_test_product(client: &async_nats::Client, name: &str, slug: &str) -> Result<String, Box<dyn std::error::Error>> {
+    async fn create_test_product(
+        client: &async_nats::Client,
+        name: &str,
+        slug: &str,
+    ) -> Result<String, Box<dyn std::error::Error>> {
         let product_request = ProductCreateRequest {
             name: name.to_string(),
-            long_description: Some(format!("Test description for {}", name)),
+            long_description: Some(format!("Test description for {name}")),
             brand: Some("TestBrand".to_string()),
             slug: Some(slug.to_string()),
             product_ref: format!("TEST-{}", Uuid::new_v4().to_string()[0..8].to_uppercase()),
             product_type: Some("simple".to_string()),
             seo_title: Some(name.to_string()),
-            seo_description: Some(format!("SEO description for {}", name)),
+            seo_description: Some(format!("SEO description for {name}")),
             seo_keywords: Some("test, product, integration".to_string()),
             display_on_site: true,
             tax_code: Some("txcd_99999999".to_string()),
@@ -53,7 +57,7 @@ mod product_slug_integration_tests {
             .await?;
 
         let create_response = ProductCreateResponse::decode(&*response.payload)?;
-        
+
         if let Some(status) = &create_response.status {
             if status.code == Code::Ok as i32 {
                 if let Some(product) = &create_response.product {
@@ -62,14 +66,21 @@ mod product_slug_integration_tests {
                     Err("No product in create response".into())
                 }
             } else {
-                Err(format!("Failed to create product: {} ({})", status.message, status.code).into())
+                Err(format!(
+                    "Failed to create product: {} ({})",
+                    status.message, status.code
+                )
+                .into())
             }
         } else {
             Err("No status in create response".into())
         }
     }
 
-    async fn cleanup_product(client: &async_nats::Client, product_id: &str) -> Result<(), Box<dyn std::error::Error>> {
+    async fn cleanup_product(
+        client: &async_nats::Client,
+        product_id: &str,
+    ) -> Result<(), Box<dyn std::error::Error>> {
         let delete_request = ProductDeleteRequest {
             id: product_id.to_string(),
         };
@@ -80,12 +91,16 @@ mod product_slug_integration_tests {
             .await?;
 
         let delete_response = ProductDeleteResponse::decode(&*response.payload)?;
-        
+
         if let Some(status) = &delete_response.status {
             if status.code == Code::Ok as i32 {
                 Ok(())
             } else {
-                Err(format!("Failed to delete product: {} ({})", status.message, status.code).into())
+                Err(format!(
+                    "Failed to delete product: {} ({})",
+                    status.message, status.code
+                )
+                .into())
             }
         } else {
             Err("No status in delete response".into())
@@ -95,10 +110,10 @@ mod product_slug_integration_tests {
     #[tokio::test]
     async fn test_get_product_by_slug_success() {
         let client = setup_nats_client().await;
-        
+
         // Create a test product
         let uuid_short = &Uuid::new_v4().to_string()[0..8];
-        let test_slug = format!("test-product-{}", uuid_short);
+    let test_slug = format!("test-product-{uuid_short}");
         let product_id = create_test_product(&client, "Test Product", &test_slug)
             .await
             .expect("Failed to create test product");
@@ -120,8 +135,13 @@ mod product_slug_integration_tests {
         // Verify the response
         assert!(get_response.status.is_some());
         let status = get_response.status.unwrap();
-        assert_eq!(status.code, Code::Ok as i32, "Expected OK status, got: {}", status.message);
-        
+        assert_eq!(
+            status.code,
+            Code::Ok as i32,
+            "Expected OK status, got: {}",
+            status.message
+        );
+
         assert!(get_response.product.is_some());
         let product = get_response.product.unwrap();
         assert_eq!(product.name, "Test Product");
@@ -137,10 +157,10 @@ mod product_slug_integration_tests {
     #[tokio::test]
     async fn test_get_product_by_slug_not_found() {
         let client = setup_nats_client().await;
-        
+
         // Test getting a product with a non-existent slug
         let uuid_short = &Uuid::new_v4().to_string()[0..8];
-        let non_existent_slug = format!("non-existent-{}", uuid_short);
+    let non_existent_slug = format!("non-existent-{uuid_short}");
         let get_request = ProductGetBySlugRequest {
             slug: non_existent_slug,
         };
@@ -157,14 +177,22 @@ mod product_slug_integration_tests {
         // Verify the response indicates not found
         assert!(get_response.status.is_some());
         let status = get_response.status.unwrap();
-        assert_eq!(status.code, Code::NotFound as i32, "Expected NotFound status, got: {}", status.message);
-        assert!(get_response.product.is_none(), "Expected no product in response");
+        assert_eq!(
+            status.code,
+            Code::NotFound as i32,
+            "Expected NotFound status, got: {}",
+            status.message
+        );
+        assert!(
+            get_response.product.is_none(),
+            "Expected no product in response"
+        );
     }
 
     #[tokio::test]
     async fn test_get_product_by_slug_empty_slug() {
         let client = setup_nats_client().await;
-        
+
         // Test getting a product with an empty slug
         let get_request = ProductGetBySlugRequest {
             slug: "".to_string(),
@@ -182,17 +210,24 @@ mod product_slug_integration_tests {
         // Verify the response indicates invalid request
         assert!(get_response.status.is_some());
         let status = get_response.status.unwrap();
-        assert_ne!(status.code, Code::Ok as i32, "Expected error status for empty slug");
-        assert!(get_response.product.is_none(), "Expected no product in response");
+        assert_ne!(
+            status.code,
+            Code::Ok as i32,
+            "Expected error status for empty slug"
+        );
+        assert!(
+            get_response.product.is_none(),
+            "Expected no product in response"
+        );
     }
 
     #[tokio::test]
     async fn test_get_product_by_slug_case_sensitivity() {
         let client = setup_nats_client().await;
-        
+
         // Create a test product with a specific slug
         let uuid_short = &Uuid::new_v4().to_string()[0..8];
-        let test_slug = format!("test-case-product-{}", uuid_short);
+    let test_slug = format!("test-case-product-{uuid_short}");
         let product_id = create_test_product(&client, "Test Case Product", &test_slug)
             .await
             .expect("Failed to create test product");
@@ -215,8 +250,15 @@ mod product_slug_integration_tests {
         // Verify the response - slugs should be case sensitive (not found)
         assert!(get_response.status.is_some());
         let status = get_response.status.unwrap();
-        assert_eq!(status.code, Code::NotFound as i32, "Expected NotFound status for case mismatch");
-        assert!(get_response.product.is_none(), "Expected no product in response for case mismatch");
+        assert_eq!(
+            status.code,
+            Code::NotFound as i32,
+            "Expected NotFound status for case mismatch"
+        );
+        assert!(
+            get_response.product.is_none(),
+            "Expected no product in response for case mismatch"
+        );
 
         // Test with exact case - should work
         let exact_case_request = ProductGetBySlugRequest {
@@ -235,8 +277,15 @@ mod product_slug_integration_tests {
         // Verify exact case works
         assert!(get_response.status.is_some());
         let status = get_response.status.unwrap();
-        assert_eq!(status.code, Code::Ok as i32, "Expected OK status for exact case match");
-        assert!(get_response.product.is_some(), "Expected product in response for exact case match");
+        assert_eq!(
+            status.code,
+            Code::Ok as i32,
+            "Expected OK status for exact case match"
+        );
+        assert!(
+            get_response.product.is_some(),
+            "Expected product in response for exact case match"
+        );
 
         // Cleanup
         cleanup_product(&client, &product_id)
@@ -247,10 +296,10 @@ mod product_slug_integration_tests {
     #[tokio::test]
     async fn test_get_product_by_slug_special_characters() {
         let client = setup_nats_client().await;
-        
+
         // Create a test product with special characters in slug
         let uuid_short = &Uuid::new_v4().to_string()[0..8];
-        let test_slug = format!("test-special-chars-{}-product", uuid_short);
+    let test_slug = format!("test-special-chars-{uuid_short}-product");
         let product_id = create_test_product(&client, "Test Special Chars Product", &test_slug)
             .await
             .expect("Failed to create test product");
@@ -272,8 +321,13 @@ mod product_slug_integration_tests {
         // Verify the response
         assert!(get_response.status.is_some());
         let status = get_response.status.unwrap();
-        assert_eq!(status.code, Code::Ok as i32, "Expected OK status, got: {}", status.message);
-        
+        assert_eq!(
+            status.code,
+            Code::Ok as i32,
+            "Expected OK status, got: {}",
+            status.message
+        );
+
         assert!(get_response.product.is_some());
         let product = get_response.product.unwrap();
         assert_eq!(product.slug, Some(test_slug));
@@ -287,10 +341,10 @@ mod product_slug_integration_tests {
     #[tokio::test]
     async fn test_get_product_by_slug_performance() {
         let client = setup_nats_client().await;
-        
+
         // Create a test product
         let uuid_short = &Uuid::new_v4().to_string()[0..8];
-        let test_slug = format!("perf-test-{}", uuid_short);
+    let test_slug = format!("perf-test-{uuid_short}");
         let product_id = create_test_product(&client, "Performance Test Product", &test_slug)
             .await
             .expect("Failed to create test product");
@@ -301,7 +355,7 @@ mod product_slug_integration_tests {
 
         for _ in 0..iterations {
             let start = std::time::Instant::now();
-            
+
             let get_request = ProductGetBySlugRequest {
                 slug: test_slug.clone(),
             };
@@ -314,7 +368,7 @@ mod product_slug_integration_tests {
 
             let get_response = ProductGetBySlugResponse::decode(&*response.payload)
                 .expect("Failed to decode response");
-            
+
             let duration = start.elapsed();
             response_times.push(duration.as_millis());
 
@@ -326,10 +380,15 @@ mod product_slug_integration_tests {
 
         // Calculate average response time
         let avg_response_time = response_times.iter().sum::<u128>() / iterations as u128;
-        println!("Average response time for get_product_by_slug: {}ms", avg_response_time);
-        
+        println!(
+            "Average response time for get_product_by_slug: {avg_response_time}ms",
+        );
+
         // Assert reasonable performance (under 100ms for local testing)
-        assert!(avg_response_time < 100, "Average response time {}ms exceeds 100ms threshold", avg_response_time);
+        assert!(
+            avg_response_time < 100,
+            "Average response time {avg_response_time}ms exceeds 100ms threshold",
+        );
 
         // Cleanup
         cleanup_product(&client, &product_id)

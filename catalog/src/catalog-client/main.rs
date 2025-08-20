@@ -1,29 +1,27 @@
-use clap::{Parser, Subcommand};
 use catalog_messages::{
-    ProductCreateRequest, ProductCreateResponse, ProductGetRequest, ProductGetResponse,
-    ProductGetBySlugRequest, ProductGetBySlugResponse,
-    ProductDeleteRequest, ProductDeleteResponse, ProductSearchRequest, ProductSearchResponse,
-    ProductExportRequest, ProductExportResponse,
-    GetProductSlugsRequest, GetProductSlugsResponse,
-    CreateCategoryRequest, CategoryResponse, GetCategoryRequest, GetCategoryBySlugRequest,
-    UpdateCategoryRequest, DeleteCategoryRequest, CategoryExportRequest, CategoryExportResponse,
-    CategoryImportRequest, CategoryImportResponse, CategoryTreeRequest, CategoryTreeResponse,
-    Status,
+    CategoryExportRequest, CategoryExportResponse, CategoryImportRequest, CategoryImportResponse,
+    CategoryResponse, CategoryTreeRequest, CategoryTreeResponse, CreateCategoryRequest,
+    DeleteCategoryRequest, GetCategoryBySlugRequest, GetCategoryRequest, GetProductSlugsRequest,
+    GetProductSlugsResponse, ProductCreateRequest, ProductCreateResponse, ProductDeleteRequest,
+    ProductDeleteResponse, ProductExportRequest, ProductExportResponse, ProductGetBySlugRequest,
+    ProductGetBySlugResponse, ProductGetRequest, ProductGetResponse, ProductSearchRequest,
+    ProductSearchResponse, Status, UpdateCategoryRequest,
 };
+use clap::{Parser, Subcommand};
 use log::debug;
 use prost::Message;
-use serde_json;
+use rust_catalog::Product;
+use rust_common::load_environment;
+ 
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
-use rust_catalog::Product;
-use rust_common::load_environment;
 
 pub mod catalog_messages {
     include!(concat!(env!("OUT_DIR"), "/catalog_messages.rs"));
 }
 
-// Helper function to convert Product to ProductCreateRequest  
+// Helper function to convert Product to ProductCreateRequest
 fn product_to_create_request(product: &Product) -> ProductCreateRequest {
     let pcr = ProductCreateRequest {
         name: product.name.clone(),
@@ -43,36 +41,42 @@ fn product_to_create_request(product: &Product) -> ProductCreateRequest {
             count: r.count,
             rating: r.rating,
         }),
-        hierarchical_categories: product.hierarchical_categories.as_ref().map(|hc| catalog_messages::HierarchicalCategories {
-            lvl0: hc.lvl0.clone(),
-            lvl1: hc.lvl1.clone(),
-            lvl2: hc.lvl2.clone(),
+        hierarchical_categories: product.hierarchical_categories.as_ref().map(|hc| {
+            catalog_messages::HierarchicalCategories {
+                lvl0: hc.lvl0.clone(),
+                lvl1: hc.lvl1.clone(),
+                lvl2: hc.lvl2.clone(),
+            }
         }),
         list_categories: product.list_categories.clone(),
         defining_attributes: product.defining_attributes.clone(),
         descriptive_attributes: product.descriptive_attributes.clone(),
         default_variant: product.default_variant.clone(),
-        variants: product.variants.iter().map(|v| catalog_messages::ProductVariant {
-            sku: v.sku.clone(),
-            defining_attributes: v.defining_attributes.clone().unwrap_or_default(),
-            abbreviated_color: v.abbreviated_color.clone(),
-            abbreviated_size: v.abbreviated_size.clone(),
-            height: v.height,
-            width: v.width,
-            length: v.length,
-            weight: v.weight,
-            weight_unit: v.weight_unit.clone(),
-            packaging: v.packaging.as_ref().map(|p| catalog_messages::Packaging {
-                height: p.height,
-                width: p.width,
-                length: p.length,
-                weight: p.weight,
-                weight_unit: p.weight_unit.clone(),
-            }),
-            image_urls: v.image_urls.clone(),
-        }).collect(),
+        variants: product
+            .variants
+            .iter()
+            .map(|v| catalog_messages::ProductVariant {
+                sku: v.sku.clone(),
+                defining_attributes: v.defining_attributes.clone().unwrap_or_default(),
+                abbreviated_color: v.abbreviated_color.clone(),
+                abbreviated_size: v.abbreviated_size.clone(),
+                height: v.height,
+                width: v.width,
+                length: v.length,
+                weight: v.weight,
+                weight_unit: v.weight_unit.clone(),
+                packaging: v.packaging.as_ref().map(|p| catalog_messages::Packaging {
+                    height: p.height,
+                    width: p.width,
+                    length: p.length,
+                    weight: p.weight,
+                    weight_unit: p.weight_unit.clone(),
+                }),
+                image_urls: v.image_urls.clone(),
+            })
+            .collect(),
     };
-    debug!("ProductCreateRequest: {:?}", pcr);
+    debug!("ProductCreateRequest: {pcr:?}");
     pcr
 }
 
@@ -178,7 +182,11 @@ enum Commands {
         rebuild: bool,
     },
     GetProductSlugs {
-        #[arg(long, help = "Number of slugs to retrieve per page", default_value = "100")]
+        #[arg(
+            long,
+            help = "Number of slugs to retrieve per page",
+            default_value = "100"
+        )]
         batch_size: Option<i32>,
         #[arg(long, help = "Cursor for pagination")]
         cursor: Option<String>,
@@ -190,30 +198,39 @@ enum Commands {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     pretty_env_logger::init();
-    
+
     // Load environment variables
     load_environment();
-    
+
     let cli = Cli::parse();
 
     // Get NATS URL from environment
-    let nats_url = std::env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
+    let nats_url =
+        std::env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
 
     // Connect to the nats server
     let client = async_nats::connect(&nats_url).await?;
 
     match &cli.command {
-        Some(Commands::ProductCreate { name, product_ref, brand }) => {
+        Some(Commands::ProductCreate {
+            name,
+            product_ref,
+            brand,
+        }) => {
             // Create a product
             let product_request = ProductCreateRequest {
                 name: name.clone(),
                 long_description: Some("Sample product description".to_string()),
                 brand: brand.clone(),
-                slug: Some(format!("{}-{}", name.to_lowercase().replace(" ", "-"), product_ref.to_lowercase())),
+                slug: Some(format!(
+                    "{}-{}",
+                    name.to_lowercase().replace(" ", "-"),
+                    product_ref.to_lowercase()
+                )),
                 product_ref: product_ref.clone(),
                 product_type: None,
                 seo_title: Some(name.clone()),
-                seo_description: Some(format!("SEO description for {}", name)),
+                seo_description: Some(format!("SEO description for {name}")),
                 seo_keywords: Some(format!("keywords, {}, product", name.to_lowercase())),
                 display_on_site: true,
                 tax_code: Some("txcd_99999999".to_string()),
@@ -228,61 +245,59 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             };
 
             let request_bytes = product_request.encode_to_vec();
-            
+
             println!("Sending create_product request...");
             let response = client
                 .request("catalog.create_product", request_bytes.into())
                 .await?;
 
             let create_response = ProductCreateResponse::decode(&*response.payload)?;
-            println!("Create response: {:?}", create_response);
+            println!("Create response: {create_response:?}");
         }
         Some(Commands::ProductGet { id }) => {
-            let get_request = ProductGetRequest {
-                id: id.clone(),
-            };
+            let get_request = ProductGetRequest { id: id.clone() };
 
             let request_bytes = get_request.encode_to_vec();
-            
-            println!("Sending get_product request for ID: {}", id);
+
+            println!("Sending get_product request for ID: {id}");
             let response = client
                 .request("catalog.get_product", request_bytes.into())
                 .await?;
 
             let get_response = ProductGetResponse::decode(&*response.payload)?;
-            println!("Get response: {:?}", get_response);
+            println!("Get response: {get_response:?}");
         }
         Some(Commands::ProductGetBySlug { slug }) => {
-            let get_request = ProductGetBySlugRequest {
-                slug: slug.clone(),
-            };
+            let get_request = ProductGetBySlugRequest { slug: slug.clone() };
 
             let request_bytes = get_request.encode_to_vec();
-            
-            println!("Sending get_product_by_slug request for slug: {}", slug);
+
+            println!("Sending get_product_by_slug request for slug: {slug}");
             let response = client
                 .request("catalog.get_product_by_slug", request_bytes.into())
                 .await?;
 
             let get_response = ProductGetBySlugResponse::decode(&*response.payload)?;
-            println!("Get by slug response: {:?}", get_response);
+            println!("Get by slug response: {get_response:?}");
         }
         Some(Commands::ProductDelete { id }) => {
-            let delete_request = ProductDeleteRequest {
-                id: id.clone(),
-            };
+            let delete_request = ProductDeleteRequest { id: id.clone() };
 
             let request_bytes = delete_request.encode_to_vec();
-            
-            println!("Sending delete_product request for ID: {}", id);
+
+            println!("Sending delete_product request for ID: {id}");
             let response = client
                 .request("catalog.delete_product", request_bytes.into())
                 .await?;
 
             let delete_response = ProductDeleteResponse::decode(&*response.payload)?;
-            println!("Delete response: {:?}", delete_response);
+            println!("Delete response: {delete_response:?}");
         }
-        Some(Commands::ProductSearch { query, category, brand }) => {
+        Some(Commands::ProductSearch {
+            query,
+            category,
+            brand,
+        }) => {
             let categories = if let Some(cat) = category {
                 vec![cat.clone()]
             } else {
@@ -298,122 +313,139 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             };
 
             let request_bytes = search_request.encode_to_vec();
-            
+
             println!("Sending search_products request...");
             let response = client
                 .request("catalog.search_products", request_bytes.into())
                 .await?;
 
             let search_response = ProductSearchResponse::decode(&*response.payload)?;
-            println!("Search response: {:?}", search_response);
+            println!("Search response: {search_response:?}");
         }
         Some(Commands::Import { file, dry_run }) => {
-            println!("Importing products from file: {:?}", file);
-            
+            println!("Importing products from file: {file:?}");
+
             // Read and parse the JSON file
             let file_content = fs::read_to_string(file)?;
-            
+
             // Try parsing as a single product first
-            let products: Vec<Product> = if let Ok(single_product) = serde_json::from_str::<Product>(&file_content) {
-                vec![single_product]
-            } else {
-                // Try parsing as an array of products
-                serde_json::from_str::<Vec<Product>>(&file_content)?
-            };
-            
+            let products: Vec<Product> =
+                if let Ok(single_product) = serde_json::from_str::<Product>(&file_content) {
+                    vec![single_product]
+                } else {
+                    // Try parsing as an array of products
+                    serde_json::from_str::<Vec<Product>>(&file_content)?
+                };
+
             println!("Found {} product(s) to import", products.len());
-            
+
             if *dry_run {
                 println!("DRY RUN: Would import the following products:");
                 for (i, product) in products.iter().enumerate() {
-                    println!("  {}. {} (ref: {})", i + 1, product.name, product.product_ref);
+                    println!(
+                        "  {}. {} (ref: {})",
+                        i + 1,
+                        product.name,
+                        product.product_ref
+                    );
                 }
                 return Ok(());
             }
-            
+
             let mut successful_imports = 0;
             let mut failed_imports = 0;
-            
+
             for (i, product) in products.iter().enumerate() {
-                println!("Importing product {} of {}: {} (ref: {})", 
-                    i + 1, products.len(), product.name, product.product_ref);
-                
+                println!(
+                    "Importing product {} of {}: {} (ref: {})",
+                    i + 1,
+                    products.len(),
+                    product.name,
+                    product.product_ref
+                );
+
                 let product_request = product_to_create_request(product);
                 let request_bytes = product_request.encode_to_vec();
-                
-                match client.request("catalog.create_product", request_bytes.into()).await {
-                    Ok(response) => {
-                        match ProductCreateResponse::decode(&*response.payload) {
-                            Ok(create_response) => {
-                                if let Some(status) = &create_response.status {
-                                    if status.code == catalog_messages::Code::Ok as i32 {
-                                        println!("  ✅ Successfully imported: {}", product.name);
-                                        successful_imports += 1;
-                                    } else {
-                                        println!("  ❌ Failed to import {}: {} ({})", 
-                                            product.name, status.message, status.code);
-                                        failed_imports += 1;
-                                    }
+
+                match client
+                    .request("catalog.create_product", request_bytes.into())
+                    .await
+                {
+                    Ok(response) => match ProductCreateResponse::decode(&*response.payload) {
+                        Ok(create_response) => {
+                            if let Some(status) = &create_response.status {
+                                if status.code == catalog_messages::Code::Ok as i32 {
+                                    println!("  ✅ Successfully imported: {}", product.name);
+                                    successful_imports += 1;
                                 } else {
-                                    println!("  ❌ Failed to import {}: No status in response", product.name);
+                                    println!(
+                                        "  ❌ Failed to import {}: {} ({})",
+                                        product.name, status.message, status.code
+                                    );
                                     failed_imports += 1;
                                 }
-                            }
-                            Err(e) => {
-                                println!("  ❌ Failed to decode response for {}: {}", product.name, e);
+                            } else {
+                                println!(
+                                    "  ❌ Failed to import {}: No status in response",
+                                    product.name
+                                );
                                 failed_imports += 1;
                             }
                         }
-                    }
+                        Err(e) => {
+                            println!("  ❌ Failed to decode response for {}: {}", product.name, e);
+                            failed_imports += 1;
+                        }
+                    },
                     Err(e) => {
                         println!("  ❌ Failed to send request for {}: {}", product.name, e);
                         failed_imports += 1;
                     }
                 }
-                
+
                 // Add a small delay to avoid overwhelming the service
                 tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
             }
-            
+
             println!("\nImport Summary:");
-            println!("  ✅ Successful: {}", successful_imports);
-            println!("  ❌ Failed: {}", failed_imports);
+            println!("  ✅ Successful: {successful_imports}");
+            println!("  ❌ Failed: {failed_imports}");
             println!("  📊 Total: {}", products.len());
         }
         Some(Commands::Export { file, batch_size }) => {
-            println!("Exporting all products to file: {:?}", file);
-            println!("Using batch size: {}", batch_size);
-            
+            println!("Exporting all products to file: {file:?}");
+            println!("Using batch size: {batch_size}");
+
             let mut all_products: Vec<Product> = Vec::new();
             let mut offset = 0i32;
             let mut total_exported = 0;
-            
+
             loop {
-                println!("Fetching batch starting at offset {}...", offset);
-                
+                println!("Fetching batch starting at offset {offset}...");
+
                 let export_request = ProductExportRequest {
                     batch_size: Some(*batch_size),
                     offset: Some(offset),
                 };
 
                 let request_bytes = export_request.encode_to_vec();
-                
+
                 let response = client
                     .request("catalog.export_products", request_bytes.into())
                     .await?;
 
                 let export_response = ProductExportResponse::decode(&*response.payload)?;
-                
+
                 match export_response.status {
                     Some(status) if status.code == catalog_messages::Code::Ok as i32 => {
                         let batch_count = export_response.products.len();
-                        println!("Received {} products in this batch", batch_count);
-                        
+                        println!("Received {batch_count} products in this batch");
+
                         if batch_count == 0 {
                             println!("No more products to export");
                             break;
                         }
-                        
+
                         // Convert proto products to domain products
                         for proto_product in export_response.products {
                             let product = Product {
@@ -435,51 +467,59 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                                     count: r.count,
                                     rating: r.rating,
                                 }),
-                                hierarchical_categories: proto_product.hierarchical_categories.map(|hc| rust_catalog::HierarchicalCategories {
-                                    lvl0: hc.lvl0,
-                                    lvl1: hc.lvl1,
-                                    lvl2: hc.lvl2,
-                                }),
+                                hierarchical_categories: proto_product.hierarchical_categories.map(
+                                    |hc| rust_catalog::HierarchicalCategories {
+                                        lvl0: hc.lvl0,
+                                        lvl1: hc.lvl1,
+                                        lvl2: hc.lvl2,
+                                    },
+                                ),
                                 list_categories: proto_product.list_categories,
                                 created_at: proto_product.created_at.map(|ts| {
                                     use chrono::{DateTime, Utc};
-                                    DateTime::<Utc>::from_timestamp(ts.seconds, ts.nanos as u32).unwrap()
+                                    DateTime::<Utc>::from_timestamp(ts.seconds, ts.nanos as u32)
+                                        .unwrap()
                                 }),
                                 updated_at: proto_product.updated_at.map(|ts| {
                                     use chrono::{DateTime, Utc};
-                                    DateTime::<Utc>::from_timestamp(ts.seconds, ts.nanos as u32).unwrap()
+                                    DateTime::<Utc>::from_timestamp(ts.seconds, ts.nanos as u32)
+                                        .unwrap()
                                 }),
                                 created_by: proto_product.created_by,
                                 updated_by: proto_product.updated_by,
                                 defining_attributes: proto_product.defining_attributes,
                                 descriptive_attributes: proto_product.descriptive_attributes,
                                 default_variant: proto_product.default_variant,
-                                variants: proto_product.variants.into_iter().map(|v| rust_catalog::ProductVariant {
-                                    sku: v.sku,
-                                    defining_attributes: Some(v.defining_attributes),
-                                    abbreviated_color: v.abbreviated_color,
-                                    abbreviated_size: v.abbreviated_size,
-                                    height: v.height,
-                                    width: v.width,
-                                    length: v.length,
-                                    weight: v.weight,
-                                    weight_unit: v.weight_unit,
-                                    packaging: v.packaging.map(|p| rust_catalog::Packaging {
-                                        height: p.height,
-                                        width: p.width,
-                                        length: p.length,
-                                        weight: p.weight,
-                                        weight_unit: p.weight_unit,
-                                    }),
-                                    image_urls: v.image_urls,
-                                }).collect(),
+                                variants: proto_product
+                                    .variants
+                                    .into_iter()
+                                    .map(|v| rust_catalog::ProductVariant {
+                                        sku: v.sku,
+                                        defining_attributes: Some(v.defining_attributes),
+                                        abbreviated_color: v.abbreviated_color,
+                                        abbreviated_size: v.abbreviated_size,
+                                        height: v.height,
+                                        width: v.width,
+                                        length: v.length,
+                                        weight: v.weight,
+                                        weight_unit: v.weight_unit,
+                                        packaging: v.packaging.map(|p| rust_catalog::Packaging {
+                                            height: p.height,
+                                            width: p.width,
+                                            length: p.length,
+                                            weight: p.weight,
+                                            weight_unit: p.weight_unit,
+                                        }),
+                                        image_urls: v.image_urls,
+                                    })
+                                    .collect(),
                             };
                             all_products.push(product);
                         }
-                        
+
                         total_exported += batch_count;
                         offset += *batch_size;
-                        
+
                         // If we got fewer than batch_size, we've reached the end
                         if (batch_count as i32) < *batch_size {
                             println!("Received fewer products than batch size, finished");
@@ -487,7 +527,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     Some(status) => {
-                        println!("❌ Failed to export products: {} ({})", status.message, status.code);
+                        println!(
+                            "❌ Failed to export products: {} ({})",
+                            status.message, status.code
+                        );
                         break;
                     }
                     None => {
@@ -495,24 +538,31 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         break;
                     }
                 }
-                
+
                 // Add a small delay to avoid overwhelming the service
                 tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
             }
-            
+
             // Write all products to file
             println!("Writing {} products to file...", all_products.len());
             let json_content = serde_json::to_string_pretty(&all_products)?;
             fs::write(file, json_content)?;
-            
+
             println!("✅ Export completed!");
-            println!("  📁 File: {:?}", file);
-            println!("  📦 Total products: {}", total_exported);
+            println!("  📁 File: {file:?}");
+            println!("  📦 Total products: {total_exported}");
         }
-        Some(Commands::CategoryCreate { name, slug, short_description, parent_id }) => {
+        Some(Commands::CategoryCreate {
+            name,
+            slug,
+            short_description,
+            parent_id,
+        }) => {
             let request = CreateCategoryRequest {
                 name: name.clone(),
-                slug: slug.clone().unwrap_or_else(|| name.to_lowercase().replace(" ", "-")),
+                slug: slug
+                    .clone()
+                    .unwrap_or_else(|| name.to_lowercase().replace(" ", "-")),
                 short_description: short_description.clone().unwrap_or_default(),
                 full_description: None,
                 parent_id: parent_id.clone(),
@@ -523,12 +573,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             };
 
             let request_bytes = request.encode_to_vec();
-            println!("Creating category '{}'...", name);
-            
+            println!("Creating category '{name}'...");
+
             let response = client
                 .request("catalog.create_category", request_bytes.into())
                 .await?;
-            
+
             let category_response = CategoryResponse::decode(&*response.payload)?;
             println!("✅ Category created!");
             println!("  🆔 ID: {}", category_response.id);
@@ -536,17 +586,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("  🔗 Slug: {}", category_response.slug);
         }
         Some(Commands::CategoryGet { id }) => {
-            let request = GetCategoryRequest {
-                id: id.clone(),
-            };
+            let request = GetCategoryRequest { id: id.clone() };
 
             let request_bytes = request.encode_to_vec();
-            println!("Getting category with ID: {}", id);
-            
+            println!("Getting category with ID: {id}");
+
             let response = client
                 .request("catalog.get_category", request_bytes.into())
                 .await?;
-            
+
             let category_response = CategoryResponse::decode(&*response.payload)?;
             println!("✅ Category found!");
             println!("  🆔 ID: {}", category_response.id);
@@ -557,17 +605,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("  👥 Children: {}", category_response.children_count);
         }
         Some(Commands::CategoryGetBySlug { slug }) => {
-            let request = GetCategoryBySlugRequest {
-                slug: slug.clone(),
-            };
+            let request = GetCategoryBySlugRequest { slug: slug.clone() };
 
             let request_bytes = request.encode_to_vec();
-            println!("Getting category with slug: {}", slug);
-            
+            println!("Getting category with slug: {slug}");
+
             let response = client
                 .request("catalog.get_category_by_slug", request_bytes.into())
                 .await?;
-            
+
             let category_response = CategoryResponse::decode(&*response.payload)?;
             println!("✅ Category found!");
             println!("  🆔 ID: {}", category_response.id);
@@ -575,7 +621,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("  🔗 Slug: {}", category_response.slug);
             println!("  📄 Description: {}", category_response.short_description);
         }
-        Some(Commands::CategoryUpdate { id, name, slug, short_description, is_active, display_order }) => {
+        Some(Commands::CategoryUpdate {
+            id,
+            name,
+            slug,
+            short_description,
+            is_active,
+            display_order,
+        }) => {
             let request = UpdateCategoryRequest {
                 id: id.clone(),
                 name: name.clone(),
@@ -588,12 +641,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             };
 
             let request_bytes = request.encode_to_vec();
-            println!("Updating category with ID: {}", id);
-            
+            println!("Updating category with ID: {id}");
+
             let response = client
                 .request("catalog.update_category", request_bytes.into())
                 .await?;
-            
+
             let category_response = CategoryResponse::decode(&*response.payload)?;
             println!("✅ Category updated!");
             println!("  🆔 ID: {}", category_response.id);
@@ -601,24 +654,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("  🔗 Slug: {}", category_response.slug);
         }
         Some(Commands::CategoryDelete { id }) => {
-            let request = DeleteCategoryRequest {
-                id: id.clone(),
-            };
+            let request = DeleteCategoryRequest { id: id.clone() };
 
             let request_bytes = request.encode_to_vec();
-            println!("Deleting category with ID: {}", id);
-            
+            println!("Deleting category with ID: {id}");
+
             let response = client
                 .request("catalog.delete_category", request_bytes.into())
                 .await?;
-            
+
             // Decode the status response
             let status = Status::decode(&*response.payload)?;
-            
+
             if status.code == catalog_messages::Code::Ok as i32 {
                 println!("✅ Category deleted successfully!");
             } else {
-                println!("❌ Failed to delete category: {} ({})", status.message, status.code);
+                println!(
+                    "❌ Failed to delete category: {} ({})",
+                    status.message, status.code
+                );
             }
         }
         Some(Commands::CategoryExport { file, batch_size }) => {
@@ -629,32 +683,39 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let request_bytes = request.encode_to_vec();
             println!("Exporting categories...");
-            
+
             let response = client
                 .request("catalog.export_categories", request_bytes.into())
                 .await?;
-            
+
             let export_response = CategoryExportResponse::decode(&*response.payload)?;
-            
+
             // Write categories to file as JSON (we'll skip serialization for now and just show count)
             println!("✅ Categories exported!");
-            println!("  📁 File: {:?}", file);
-            println!("  📦 Total categories: {}", export_response.categories.len());
-            
+            println!("  📁 File: {file:?}");
+            println!(
+                "  📦 Total categories: {}",
+                export_response.categories.len()
+            );
+
             // For now, just write a simple message to the file
-            let message = format!("Exported {} categories successfully", export_response.categories.len());
+            let message = format!(
+                "Exported {} categories successfully",
+                export_response.categories.len()
+            );
             fs::write(file, message)?;
         }
         Some(Commands::CategoryImport { file, dry_run }) => {
-            println!("Importing categories from file: {:?}", file);
-            
+            println!("Importing categories from file: {file:?}");
+
             // Read and parse the file
             let file_content = fs::read_to_string(file)?;
             let categories: Vec<serde_json::Value> = serde_json::from_str(&file_content)?;
-            
+
             // Convert JSON to CreateCategoryRequest objects
-            let category_requests: Vec<CreateCategoryRequest> = categories.into_iter().map(|cat| {
-                CreateCategoryRequest {
+            let category_requests: Vec<CreateCategoryRequest> = categories
+                .into_iter()
+                .map(|cat| CreateCategoryRequest {
                     name: cat["name"].as_str().unwrap_or("Unknown").to_string(),
                     slug: cat["slug"].as_str().unwrap_or("unknown").to_string(),
                     short_description: cat["short_description"].as_str().unwrap_or("").to_string(),
@@ -664,8 +725,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     seo: None,
                     is_active: Some(cat["is_active"].as_bool().unwrap_or(true)),
                     parent_slug: cat["parent_slug"].as_str().map(|s| s.to_string()),
-                }
-            }).collect();
+                })
+                .collect();
 
             let request = CategoryImportRequest {
                 categories: category_requests,
@@ -673,34 +734,37 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             };
 
             let request_bytes = request.encode_to_vec();
-            
+
             if *dry_run {
-                println!("🧪 Dry run mode - validating {} categories...", request.categories.len());
+                println!(
+                    "🧪 Dry run mode - validating {} categories...",
+                    request.categories.len()
+                );
             } else {
                 println!("📥 Importing {} categories...", request.categories.len());
             }
-            
+
             let response = client
                 .request("catalog.import_categories", request_bytes.into())
                 .await?;
-            
+
             let import_response = CategoryImportResponse::decode(&*response.payload)?;
-            
+
             println!("✅ Import completed!");
             println!("  📦 Total processed: {}", import_response.total_processed);
             println!("  ✅ Successful: {}", import_response.successful_imports);
             println!("  ❌ Failed: {}", import_response.failed_imports);
-            
+
             if !import_response.errors.is_empty() {
                 println!("  🚨 Errors:");
                 for error in import_response.errors {
-                    println!("    - {}", error);
+                    println!("    - {error}");
                 }
             }
         }
         Some(Commands::CategoryGetTree { rebuild }) => {
             println!("🌳 Retrieving category tree...");
-            
+
             let request = CategoryTreeRequest {
                 max_depth: None,
                 include_inactive: Some(false),
@@ -708,51 +772,61 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             };
 
             let request_bytes = request.encode_to_vec();
-            
+
             if *rebuild {
                 println!("🔄 Rebuilding tree cache from scratch...");
             }
-            
+
             let response = client
                 .request("catalog.get_category_tree", request_bytes.into())
                 .await?;
-            
+
             let tree_response = CategoryTreeResponse::decode(&*response.payload)?;
-            
+
             if let Some(status) = &tree_response.status {
                 if status.code == catalog_messages::Code::Ok as i32 {
                     println!("✅ Category tree retrieved successfully!");
                     println!("  🌳 Total root categories: {}", tree_response.tree.len());
-                    
+
                     // Display the tree structure
                     fn display_tree_node(node: &catalog_messages::CategoryTreeNode, depth: usize) {
                         let indent = "  ".repeat(depth);
                         println!("{}├─ {} ({})", indent, node.name, node.slug);
-                        println!("{}   📊 Level: {} | Products: {} | Path: {}", indent, node.level, node.product_count, node.path);
-                        
+                        println!(
+                            "{}   📊 Level: {} | Products: {} | Path: {}",
+                            indent, node.level, node.product_count, node.path
+                        );
+
                         for child in &node.children {
                             display_tree_node(child, depth + 1);
                         }
                     }
-                    
+
                     println!("📋 Category Tree Structure:");
                     for root_node in &tree_response.tree {
                         display_tree_node(root_node, 0);
                     }
-                    
+
                     if *rebuild {
                         println!("🎯 Tree cache rebuilt successfully!");
                     }
                 } else {
-                    println!("❌ Failed to retrieve category tree: {} ({})", status.message, status.code);
+                    println!(
+                        "❌ Failed to retrieve category tree: {} ({})",
+                        status.message, status.code
+                    );
                 }
             } else {
                 println!("❌ Invalid response from server");
             }
         }
-        Some(Commands::GetProductSlugs { batch_size, cursor, include_inactive }) => {
+        Some(Commands::GetProductSlugs {
+            batch_size,
+            cursor,
+            include_inactive,
+        }) => {
             println!("🔍 Retrieving product slugs...");
-            
+
             let request = GetProductSlugsRequest {
                 batch_size: *batch_size,
                 cursor: cursor.clone(),
@@ -760,43 +834,48 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             };
 
             let request_bytes = request.encode_to_vec();
-            
+
             println!("  📦 Batch size: {}", batch_size.unwrap_or(100));
             if let Some(c) = cursor {
-                println!("  🔍 Cursor: {}", c);
+                println!("  🔍 Cursor: {c}");
             }
-            println!("  🎛️ Include inactive: {}", include_inactive);
-            
+            println!("  🎛️ Include inactive: {include_inactive}");
+
             let response = client
                 .request("catalog.get_product_slugs", request_bytes.into())
                 .await?;
-            
+
             let slugs_response = GetProductSlugsResponse::decode(&*response.payload)?;
-            
+
             if let Some(status) = &slugs_response.status {
                 if status.code == catalog_messages::Code::Ok as i32 {
                     println!("✅ Product slugs retrieved successfully!");
                     println!("  📊 Retrieved {} slugs", slugs_response.slugs.len());
                     println!("  📈 Total in batch: {}", slugs_response.total_count);
                     println!("  🔄 Has more pages: {}", slugs_response.has_more);
-                    
+
                     if let Some(next_cursor) = &slugs_response.next_cursor {
-                        println!("  ➡️ Next cursor: {}", next_cursor);
+                        println!("  ➡️ Next cursor: {next_cursor}");
                     }
-                    
+
                     println!("📋 Product Slugs:");
                     for (index, slug) in slugs_response.slugs.iter().enumerate() {
-                        println!("  {}. {}", index + 1, slug);
+                        println!("  {}. {slug}", index + 1);
                     }
-                    
+
                     if slugs_response.has_more {
                         println!("\n💡 To get the next page, use:");
                         if let Some(next_cursor) = &slugs_response.next_cursor {
-                            println!("   cargo run --bin catalog-client get-product-slugs --cursor '{}'", next_cursor);
+                            println!(
+                                "   cargo run --bin catalog-client get-product-slugs --cursor '{next_cursor}'",
+                            );
                         }
                     }
                 } else {
-                    println!("❌ Failed to retrieve product slugs: {} ({})", status.message, status.code);
+                    println!(
+                        "❌ Failed to retrieve product slugs: {} ({})",
+                        status.message, status.code
+                    );
                 }
             } else {
                 println!("❌ Invalid response from server");

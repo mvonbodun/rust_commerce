@@ -1,16 +1,16 @@
-use std::sync::Arc;
-use async_nats::Message;
-use prost::Message as ProstMessage;
-use log::{debug, error};
 use crate::{
     catalog_messages::{
-        CreateCategoryRequest, CategoryResponse, GetCategoryRequest, GetCategoryBySlugRequest,
-        CategoryExportRequest, CategoryExportResponse, UpdateCategoryRequest, DeleteCategoryRequest,
-        CategoryImportRequest, CategoryImportResponse, CategoryTreeRequest, CategoryTreeResponse,
-        Status, Code,
+        CategoryExportRequest, CategoryExportResponse, CategoryImportRequest,
+        CategoryImportResponse, CategoryResponse, CategoryTreeRequest, CategoryTreeResponse, Code,
+        CreateCategoryRequest, DeleteCategoryRequest, GetCategoryBySlugRequest, GetCategoryRequest,
+        Status, UpdateCategoryRequest,
     },
     handlers::category_service::CategoryService,
 };
+use async_nats::Message;
+use log::{debug, error};
+use prost::Message as ProstMessage;
+use std::sync::Arc;
 
 /// Handle category creation requests
 pub async fn handle_create_category(
@@ -20,15 +20,15 @@ pub async fn handle_create_category(
     debug!("Handling create category request");
 
     let request = CreateCategoryRequest::decode(&*msg.payload)?;
-    debug!("Decoded request: {:?}", request);
+    debug!("Decoded request: {request:?}");
 
     match category_service.create_category(request).await {
         Ok(category_response) => {
-            debug!("Category created successfully: {:?}", category_response);
+            debug!("Category created successfully: {category_response:?}");
             Ok(category_response.encode_to_vec())
         }
         Err(e) => {
-            error!("Failed to create category: {}", e);
+            error!("Failed to create category: {e}");
             let error_response = CategoryResponse {
                 id: String::new(),
                 slug: String::new(),
@@ -60,11 +60,11 @@ pub async fn handle_get_category(
     debug!("Handling get category request");
 
     let request = GetCategoryRequest::decode(&*msg.payload)?;
-    debug!("Decoded request: {:?}", request);
+    debug!("Decoded request: {request:?}");
 
     match category_service.get_category(&request.id).await {
         Ok(Some(category_response)) => {
-            debug!("Category found: {:?}", category_response);
+            debug!("Category found: {category_response:?}");
             Ok(category_response.encode_to_vec())
         }
         Ok(None) => {
@@ -90,7 +90,7 @@ pub async fn handle_get_category(
             Ok(not_found_response.encode_to_vec())
         }
         Err(e) => {
-            error!("Failed to get category: {}", e);
+            error!("Failed to get category: {e}");
             let error_response = CategoryResponse {
                 id: String::new(),
                 slug: String::new(),
@@ -122,11 +122,11 @@ pub async fn handle_get_category_by_slug(
     debug!("Handling get category by slug request");
 
     let request = GetCategoryBySlugRequest::decode(&*msg.payload)?;
-    debug!("Decoded request: {:?}", request);
+    debug!("Decoded request: {request:?}");
 
     match category_service.get_category_by_slug(&request.slug).await {
         Ok(Some(category_response)) => {
-            debug!("Category found: {:?}", category_response);
+            debug!("Category found: {category_response:?}");
             Ok(category_response.encode_to_vec())
         }
         Ok(None) => {
@@ -152,7 +152,7 @@ pub async fn handle_get_category_by_slug(
             Ok(not_found_response.encode_to_vec())
         }
         Err(e) => {
-            error!("Failed to get category by slug: {}", e);
+            error!("Failed to get category by slug: {e}");
             let error_response = CategoryResponse {
                 id: String::new(),
                 slug: String::new(),
@@ -184,12 +184,21 @@ pub async fn handle_export_categories(
     debug!("Handling export categories request");
 
     let request = CategoryExportRequest::decode(&*msg.payload)?;
-    debug!("Decoded request: {:?}", request);
+    debug!("Decoded request: {request:?}");
 
-    match category_service.export_categories(request.batch_size.map(|b| b as i64), request.offset.map(|o| o as u64)).await {
+    match category_service
+        .export_categories(
+            request.batch_size.map(|b| b as i64),
+            request.offset.map(|o| o as u64),
+        )
+        .await
+    {
         Ok(categories) => {
-            debug!("Categories exported successfully, count: {}", categories.len());
-            
+            debug!(
+                "Categories exported successfully, count: {}",
+                categories.len()
+            );
+
             let response = CategoryExportResponse {
                 categories,
                 status: Some(Status {
@@ -198,21 +207,21 @@ pub async fn handle_export_categories(
                     details: vec![],
                 }),
             };
-            
+
             Ok(response.encode_to_vec())
         }
         Err(e) => {
-            error!("Failed to export categories: {}", e);
-            
+            error!("Failed to export categories: {e}");
+
             let error_response = CategoryExportResponse {
                 categories: vec![],
                 status: Some(Status {
                     code: Code::Internal as i32,
-                    message: format!("Failed to export categories: {}", e),
+                    message: format!("Failed to export categories: {e}"),
                     details: vec![],
                 }),
             };
-            
+
             Ok(error_response.encode_to_vec())
         }
     }
@@ -226,15 +235,15 @@ pub async fn handle_update_category(
     debug!("Handling update category request");
 
     let request = UpdateCategoryRequest::decode(&*msg.payload)?;
-    debug!("Decoded request: {:?}", request);
+    debug!("Decoded request: {request:?}");
 
     match category_service.update_category(request).await {
         Ok(category_response) => {
-            debug!("Category updated successfully: {:?}", category_response);
+            debug!("Category updated successfully: {category_response:?}");
             Ok(category_response.encode_to_vec())
         }
         Err(e) => {
-            error!("Failed to update category: {}", e);
+            error!("Failed to update category: {e}");
             let error_response = CategoryResponse {
                 id: String::new(),
                 slug: String::new(),
@@ -266,33 +275,37 @@ pub async fn handle_delete_category(
     debug!("Handling delete category request");
 
     let request = DeleteCategoryRequest::decode(&*msg.payload)?;
-    debug!("Decoded request: {:?}", request);
+    debug!("Decoded request: {request:?}");
 
     match category_service.delete_category(&request.id).await {
         Ok(success) => {
-            debug!("Category delete result: {}", success);
-            
+            debug!("Category delete result: {success}");
+
             let response = Status {
-                code: if success { Code::Ok as i32 } else { Code::NotFound as i32 },
-                message: if success { 
-                    "Category deleted successfully".to_string() 
-                } else { 
-                    "Category not found".to_string() 
+                code: if success {
+                    Code::Ok as i32
+                } else {
+                    Code::NotFound as i32
+                },
+                message: if success {
+                    "Category deleted successfully".to_string()
+                } else {
+                    "Category not found".to_string()
                 },
                 details: vec![],
             };
-            
+
             Ok(response.encode_to_vec())
         }
         Err(e) => {
-            error!("Failed to delete category: {}", e);
-            
+            error!("Failed to delete category: {e}");
+
             let error_response = Status {
                 code: Code::Internal as i32,
-                message: format!("Failed to delete category: {}", e),
+                message: format!("Failed to delete category: {e}"),
                 details: vec![],
             };
-            
+
             Ok(error_response.encode_to_vec())
         }
     }
@@ -306,12 +319,18 @@ pub async fn handle_import_categories(
     debug!("Handling import categories request");
 
     let request = CategoryImportRequest::decode(&*msg.payload)?;
-    debug!("Decoded request with {} categories", request.categories.len());
+    debug!(
+        "Decoded request with {} categories",
+        request.categories.len()
+    );
 
-    match category_service.import_categories(request.categories, request.dry_run).await {
+    match category_service
+        .import_categories(request.categories, request.dry_run)
+        .await
+    {
         Ok(import_result) => {
-            debug!("Categories import completed: {:?}", import_result);
-            
+            debug!("Categories import completed: {import_result:?}");
+
             let response = CategoryImportResponse {
                 successful_imports: import_result.successful_imports as i32,
                 failed_imports: import_result.failed_imports as i32,
@@ -323,24 +342,24 @@ pub async fn handle_import_categories(
                     details: vec![],
                 }),
             };
-            
+
             Ok(response.encode_to_vec())
         }
         Err(e) => {
-            error!("Failed to import categories: {}", e);
-            
+            error!("Failed to import categories: {e}");
+
             let error_response = CategoryImportResponse {
                 successful_imports: 0,
                 failed_imports: 0,
                 total_processed: 0,
-                errors: vec![format!("Import failed: {}", e)],
+                errors: vec![format!("Import failed: {e}")],
                 status: Some(Status {
                     code: Code::Internal as i32,
-                    message: format!("Failed to import categories: {}", e),
+                    message: format!("Failed to import categories: {e}"),
                     details: vec![],
                 }),
             };
-            
+
             Ok(error_response.encode_to_vec())
         }
     }
@@ -354,17 +373,25 @@ pub async fn handle_get_category_tree(
     debug!("Handling get category tree request");
 
     let request = CategoryTreeRequest::decode(&*msg.payload)?;
-    debug!("Decoded request: max_depth={:?}, include_inactive={:?}, rebuild_cache={:?}", 
-           request.max_depth, request.include_inactive, request.rebuild_cache);
+    debug!(
+        "Decoded request: max_depth={:?}, include_inactive={:?}, rebuild_cache={:?}",
+        request.max_depth, request.include_inactive, request.rebuild_cache
+    );
 
-    match category_service.get_category_tree(
-        request.max_depth, 
-        request.include_inactive, 
-        request.rebuild_cache
-    ).await {
+    match category_service
+        .get_category_tree(
+            request.max_depth,
+            request.include_inactive,
+            request.rebuild_cache,
+        )
+        .await
+    {
         Ok(tree_nodes) => {
-            debug!("Category tree retrieved successfully with {} root nodes", tree_nodes.len());
-            
+            debug!(
+                "Category tree retrieved successfully with {} root nodes",
+                tree_nodes.len()
+            );
+
             let response = CategoryTreeResponse {
                 tree: tree_nodes,
                 status: Some(Status {
@@ -373,21 +400,21 @@ pub async fn handle_get_category_tree(
                     details: vec![],
                 }),
             };
-            
+
             Ok(response.encode_to_vec())
         }
         Err(e) => {
-            error!("Failed to get category tree: {}", e);
-            
+            error!("Failed to get category tree: {e}");
+
             let error_response = CategoryTreeResponse {
                 tree: vec![],
                 status: Some(Status {
                     code: Code::Internal as i32,
-                    message: format!("Failed to get category tree: {}", e),
+                    message: format!("Failed to get category tree: {e}"),
                     details: vec![],
                 }),
             };
-            
+
             Ok(error_response.encode_to_vec())
         }
     }

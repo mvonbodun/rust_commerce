@@ -159,16 +159,16 @@ fn test_path_comparison_old_vs_new_format() {
     );
 
     let correct_path = jeans.generate_path(&[root, apparel]);
-    
+
     // This should NOT match the old buggy format
     let old_buggy_format = "/men./men/mens-apparel./men/mens-apparel/classic-jeans";
     assert_ne!(correct_path, old_buggy_format);
-    
+
     // This SHOULD match the new correct format
     let expected_format = "Men > Mens Apparel > Classic Jeans";
     assert_eq!(correct_path, expected_format);
-    
+
     println!("✅ Path format correction verified:");
-    println!("   Old buggy format: {}", old_buggy_format);
-    println!("   New correct format: {}", correct_path);
+    println!("   Old buggy format: {old_buggy_format}");
+    println!("   New correct format: {correct_path}");
 }

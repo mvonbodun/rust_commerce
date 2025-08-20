@@ -1,10 +1,22 @@
-use std::sync::Arc;
-use log::debug;
 use crate::{
+    catalog_messages::{CategoryResponse, CreateCategoryRequest, UpdateCategoryRequest},
     model::{Category, CategorySeo},
     persistence::category_dao::CategoryDao,
-    catalog_messages::{CreateCategoryRequest, CategoryResponse, UpdateCategoryRequest},
 };
+use log::debug;
+use std::sync::Arc;
+
+type BuildNodeFut<'a> = std::pin::Pin<
+    Box<
+        dyn std::future::Future<
+                Output = Result<
+                    Option<crate::catalog_messages::CategoryTreeNode>,
+                    Box<dyn std::error::Error + Send + Sync>,
+                >,
+            > + Send
+            + 'a,
+    >,
+>;
 
 pub struct CategoryService {
     category_dao: Arc<dyn CategoryDao + Send + Sync>,
@@ -24,18 +36,27 @@ impl CategoryService {
     }
 
     /// Create a new category (internal version with cache control)
-    async fn create_category_internal(&self, request: CreateCategoryRequest, invalidate_cache: bool) -> Result<CategoryResponse, Box<dyn std::error::Error + Send + Sync>> {
+    async fn create_category_internal(
+        &self,
+        request: CreateCategoryRequest,
+        invalidate_cache: bool,
+    ) -> Result<CategoryResponse, Box<dyn std::error::Error + Send + Sync>> {
         // Validate input
         if request.name.trim().is_empty() {
             return Err("Category name cannot be empty".into());
         }
-        
+
         if request.slug.trim().is_empty() {
             return Err("Category slug cannot be empty".into());
         }
 
         // Check if slug already exists
-        if let Some(_) = self.category_dao.get_category_by_slug(&request.slug).await? {
+        if (self
+            .category_dao
+            .get_category_by_slug(&request.slug)
+            .await?)
+            .is_some()
+        {
             return Err(format!("Category with slug '{}' already exists", request.slug).into());
         }
 
@@ -50,7 +71,7 @@ impl CategoryService {
 
         // Set optional fields
         category.full_description = request.full_description.clone();
-        
+
         // Set SEO data
         if let Some(seo) = request.seo {
             category.seo = CategorySeo {
@@ -59,7 +80,8 @@ impl CategoryService {
                 keywords: seo.keywords,
             };
         } else {
-            category.seo = CategorySeo::default_for_category(&request.name, &request.short_description);
+            category.seo =
+                CategorySeo::default_for_category(&request.name, &request.short_description);
         }
 
         // Create category with cache control
@@ -76,12 +98,18 @@ impl CategoryService {
     }
 
     /// Create a new category
-    pub async fn create_category(&self, request: CreateCategoryRequest) -> Result<CategoryResponse, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn create_category(
+        &self,
+        request: CreateCategoryRequest,
+    ) -> Result<CategoryResponse, Box<dyn std::error::Error + Send + Sync>> {
         self.create_category_internal(request, true).await
     }
 
     /// Get category by ID
-    pub async fn get_category(&self, id: &str) -> Result<Option<CategoryResponse>, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn get_category(
+        &self,
+        id: &str,
+    ) -> Result<Option<CategoryResponse>, Box<dyn std::error::Error + Send + Sync>> {
         match self.category_dao.get_category(id).await? {
             Some(category) => Ok(Some(self.category_to_response(category))),
             None => Ok(None),
@@ -89,7 +117,10 @@ impl CategoryService {
     }
 
     /// Get category by slug
-    pub async fn get_category_by_slug(&self, slug: &str) -> Result<Option<CategoryResponse>, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn get_category_by_slug(
+        &self,
+        slug: &str,
+    ) -> Result<Option<CategoryResponse>, Box<dyn std::error::Error + Send + Sync>> {
         match self.category_dao.get_category_by_slug(slug).await? {
             Some(category) => Ok(Some(self.category_to_response(category))),
             None => Ok(None),
@@ -97,20 +128,38 @@ impl CategoryService {
     }
 
     /// Export categories with pagination
-    pub async fn export_categories(&self, batch_size: Option<i64>, offset: Option<u64>) -> Result<Vec<CategoryResponse>, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn export_categories(
+        &self,
+        batch_size: Option<i64>,
+        offset: Option<u64>,
+    ) -> Result<Vec<CategoryResponse>, Box<dyn std::error::Error + Send + Sync>> {
         let categories = if let Some(offset) = offset {
-            self.category_dao.export_categories_batch(batch_size, Some(offset)).await?
+            self.category_dao
+                .export_categories_batch(batch_size, Some(offset))
+                .await?
         } else {
             self.category_dao.export_all_categories(batch_size).await?
         };
 
-        Ok(categories.into_iter().map(|cat| self.category_to_response(cat)).collect())
+        Ok(categories
+            .into_iter()
+            .map(|cat| self.category_to_response(cat))
+            .collect())
     }
 
     /// Get the category tree structure
-    pub async fn get_category_tree(&self, max_depth: Option<i32>, include_inactive: Option<bool>, rebuild_cache: Option<bool>) -> Result<Vec<crate::catalog_messages::CategoryTreeNode>, Box<dyn std::error::Error + Send + Sync>> {
-        debug!("Getting category tree - max_depth: {:?}, include_inactive: {:?}, rebuild_cache: {:?}", 
-               max_depth, include_inactive, rebuild_cache);
+    pub async fn get_category_tree(
+        &self,
+        max_depth: Option<i32>,
+        include_inactive: Option<bool>,
+        rebuild_cache: Option<bool>,
+    ) -> Result<
+        Vec<crate::catalog_messages::CategoryTreeNode>,
+        Box<dyn std::error::Error + Send + Sync>,
+    > {
+        debug!(
+            "Getting category tree - max_depth: {max_depth:?}, include_inactive: {include_inactive:?}, rebuild_cache: {rebuild_cache:?}"
+        );
 
         // If rebuild_cache is requested, rebuild the cache first
         if rebuild_cache.unwrap_or(false) {
@@ -136,10 +185,23 @@ impl CategoryService {
         // We need to identify root categories and build the tree structure
         for (category_id, cache_node) in &tree_cache.tree {
             // Check if this is a root category by checking if any category has this as a child
-            let is_root = !tree_cache.tree.values().any(|node| node.children.contains_key(category_id));
-            
+            let is_root = !tree_cache
+                .tree
+                .values()
+                .any(|node| node.children.contains_key(category_id));
+
             if is_root {
-                if let Some(node) = self.build_tree_node_from_cache(&tree_cache, category_id, cache_node, 0, max_depth, include_inactive).await? {
+                if let Some(node) = self
+                    .build_tree_node_from_cache(
+                        &tree_cache,
+                        category_id,
+                        cache_node,
+                        0,
+                        max_depth,
+                        include_inactive,
+                    )
+                    .await?
+                {
                     tree_nodes.push(node);
                 }
             }
@@ -153,14 +215,14 @@ impl CategoryService {
 
     /// Helper method to build a CategoryTreeNode recursively from cache
     fn build_tree_node_from_cache<'a>(
-        &'a self, 
-        tree_cache: &'a crate::model::CategoryTreeCache, 
+        &'a self,
+        _tree_cache: &'a crate::model::CategoryTreeCache,
         category_id: &'a str,
         cache_node: &'a crate::model::CategoryTreeNode,
         current_depth: i32,
         max_depth: i32,
-        include_inactive: bool
-    ) -> std::pin::Pin<Box<dyn std::future::Future<Output = Result<Option<crate::catalog_messages::CategoryTreeNode>, Box<dyn std::error::Error + Send + Sync>>> + Send + 'a>> {
+        include_inactive: bool,
+    ) -> BuildNodeFut<'a> {
         Box::pin(async move {
             if max_depth >= 0 && current_depth >= max_depth {
                 return Ok(None);
@@ -173,11 +235,22 @@ impl CategoryService {
                     return Ok(None);
                 }
 
+        
                 let mut children = Vec::new();
-                
+
                 // Recursively build child nodes
                 for (child_id, child_cache_node) in &cache_node.children {
-                    if let Some(child_node) = self.build_tree_node_from_cache(tree_cache, child_id, child_cache_node, current_depth + 1, max_depth, include_inactive).await? {
+                    if let Some(child_node) = self
+                        .build_tree_node_from_cache(
+                            _tree_cache,
+                            child_id,
+                            child_cache_node,
+                            current_depth + 1,
+                            max_depth,
+                            include_inactive,
+                        )
+                        .await?
+                    {
                         children.push(child_node);
                     }
                 }
@@ -197,13 +270,16 @@ impl CategoryService {
 
                 return Ok(Some(tree_node));
             }
-            
+
             Ok(None)
         })
     }
 
     /// Update an existing category
-    pub async fn update_category(&self, request: UpdateCategoryRequest) -> Result<CategoryResponse, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn update_category(
+        &self,
+        request: UpdateCategoryRequest,
+    ) -> Result<CategoryResponse, Box<dyn std::error::Error + Send + Sync>> {
         debug!("Updating category with ID: {}", request.id);
 
         // Validate required fields
@@ -212,33 +288,38 @@ impl CategoryService {
         }
 
         // Check if category exists
-        let existing_category = self.category_dao.get_category(&request.id).await?
+        let existing_category = self
+            .category_dao
+            .get_category(&request.id)
+            .await?
             .ok_or("Category not found")?;
 
         // Create updated category from request
         let mut updated_category = existing_category.clone();
-        
+
         if let Some(name) = request.name {
             if !name.is_empty() {
                 updated_category.name = name;
             }
         }
-        
+
         if let Some(short_description) = request.short_description {
             if !short_description.is_empty() {
                 updated_category.short_description = short_description;
             }
         }
-        
+
         if let Some(full_desc) = request.full_description {
             updated_category.full_description = Some(full_desc);
         }
-        
+
         // Handle slug update (regenerate if name changed or explicit slug provided)
         if let Some(new_slug) = request.slug {
             if !new_slug.is_empty() {
                 // Check if slug is already taken by another category
-                if let Some(existing_with_slug) = self.category_dao.get_category_by_slug(&new_slug).await? {
+                if let Some(existing_with_slug) =
+                    self.category_dao.get_category_by_slug(&new_slug).await?
+                {
                     if existing_with_slug.id != Some(request.id.clone()) {
                         return Err("Slug already exists".into());
                     }
@@ -246,15 +327,15 @@ impl CategoryService {
                 updated_category.slug = new_slug;
             }
         }
-        
+
         if let Some(is_active) = request.is_active {
             updated_category.is_active = is_active;
         }
-        
+
         if let Some(display_order) = request.display_order {
             updated_category.display_order = display_order;
         }
-        
+
         // Handle SEO update
         if let Some(seo_request) = request.seo {
             updated_category.seo.meta_title = seo_request.meta_title;
@@ -263,22 +344,32 @@ impl CategoryService {
         }
 
         // Update the category
-        match self.category_dao.update_category(&request.id, updated_category).await? {
+        match self
+            .category_dao
+            .update_category(&request.id, updated_category)
+            .await?
+        {
             Some(category) => Ok(self.category_to_response(category)),
             None => Err("Failed to update category".into()),
         }
     }
 
     /// Delete a category
-    pub async fn delete_category(&self, id: &str) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
-        debug!("Deleting category with ID: {}", id);
+    pub async fn delete_category(
+        &self,
+        id: &str,
+    ) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
+    debug!("Deleting category with ID: {id}");
 
         if id.is_empty() {
             return Err("Category ID is required".into());
         }
 
         // Check if category exists
-        let _existing = self.category_dao.get_category(id).await?
+        let _existing = self
+            .category_dao
+            .get_category(id)
+            .await?
             .ok_or("Category not found")?;
 
         // Check if category has children
@@ -289,19 +380,27 @@ impl CategoryService {
 
         // TODO: Check if category has products assigned
         // This would require integration with product service
-        
+
         self.category_dao.delete_category(id).await
     }
 
     /// Import multiple categories with hierarchical slug support and efficient batch processing
-    pub async fn import_categories(&self, category_requests: Vec<CreateCategoryRequest>, dry_run: bool) -> Result<ImportResult, Box<dyn std::error::Error + Send + Sync>> {
-        debug!("Importing {} categories with hierarchical processing, dry_run: {}", category_requests.len(), dry_run);
-        
+    pub async fn import_categories(
+        &self,
+        category_requests: Vec<CreateCategoryRequest>,
+        dry_run: bool,
+    ) -> Result<ImportResult, Box<dyn std::error::Error + Send + Sync>> {
+        debug!(
+            "Importing {} categories with hierarchical processing, dry_run: {}",
+            category_requests.len(),
+            dry_run
+        );
+
         // Step 1: Pre-validate all requests and build dependency graph
         let mut validated_requests = Vec::new();
         let mut slug_to_request = std::collections::HashMap::new();
         let mut errors = Vec::new();
-        
+
         for (index, request) in category_requests.into_iter().enumerate() {
             match self.validate_category_request_basic(&request).await {
                 Ok(_) => {
@@ -314,7 +413,7 @@ impl CategoryService {
                 }
             }
         }
-        
+
         if !errors.is_empty() && !dry_run {
             return Ok(ImportResult {
                 successful_imports: 0,
@@ -323,18 +422,19 @@ impl CategoryService {
                 errors,
             });
         }
-        
+
         // Step 2: Sort categories by dependency (parents before children)
         let sorted_requests = self.sort_categories_by_dependency(validated_requests)?;
-        
+
         // Step 3: Create UUID mapping for efficient parent resolution
-        let mut slug_to_uuid: std::collections::HashMap<String, String> = std::collections::HashMap::new();
-        
+        let mut slug_to_uuid: std::collections::HashMap<String, String> =
+            std::collections::HashMap::new();
+
         // Step 4: Process categories in dependency order
         let mut successful_imports = 0;
         let mut failed_imports = 0;
         let total_processed = sorted_requests.len();
-        
+
         for (index, mut request) in sorted_requests.into_iter().enumerate() {
             // Resolve parent_id from parent_slug if needed
             if let Some(parent_slug) = &request.parent_slug {
@@ -354,7 +454,10 @@ impl CategoryService {
                             }
                             None => {
                                 failed_imports += 1;
-                                let error_msg = format!("Parent category with slug '{}' not found for category '{}'", parent_slug, request.name);
+                                let error_msg = format!(
+                                    "Parent category with slug '{}' not found for category '{}'",
+                                    parent_slug, request.name
+                                );
                                 errors.push(error_msg);
                                 continue;
                             }
@@ -362,18 +465,24 @@ impl CategoryService {
                     }
                 }
             }
-            
+
             if !dry_run {
                 match self.create_category_internal(request.clone(), false).await {
                     Ok(response) => {
                         successful_imports += 1;
                         // Store the UUID for this category for future parent lookups
                         slug_to_uuid.insert(request.slug.clone(), response.id);
-                        debug!("Successfully imported category {}/{}: {}", index + 1, total_processed, request.name);
+                        debug!(
+                            "Successfully imported category {}/{}: {}",
+                            index + 1,
+                            total_processed,
+                            request.name
+                        );
                     }
                     Err(e) => {
                         failed_imports += 1;
-                        let error_msg = format!("Failed to create category '{}': {}", request.name, e);
+                        let error_msg =
+                            format!("Failed to create category '{}': {}", request.name, e);
                         errors.push(error_msg);
                     }
                 }
@@ -382,14 +491,21 @@ impl CategoryService {
                 // For dry run, generate a mock UUID
                 let mock_uuid = uuid::Uuid::new_v4().to_string();
                 slug_to_uuid.insert(request.slug.clone(), mock_uuid);
-                debug!("Validated category {}/{}: {} (dry run)", index + 1, total_processed, request.name);
+                debug!(
+                    "Validated category {}/{}: {} (dry run)",
+                    index + 1,
+                    total_processed,
+                    request.name
+                );
             }
         }
 
         // Invalidate tree cache once at the end for non-dry-run imports
         if !dry_run && successful_imports > 0 {
             if let Err(e) = self.category_dao.invalidate_tree_cache().await {
-                debug!("Warning: Failed to invalidate tree cache after import: {}", e);
+                debug!(
+                    "Warning: Failed to invalidate tree cache after import: {e}",
+                );
             }
         }
 
@@ -400,21 +516,24 @@ impl CategoryService {
             errors,
         })
     }
-    
+
     /// Sort categories by dependency order (parents before children)
-    fn sort_categories_by_dependency(&self, categories: Vec<CreateCategoryRequest>) -> Result<Vec<CreateCategoryRequest>, Box<dyn std::error::Error + Send + Sync>> {
+    fn sort_categories_by_dependency(
+        &self,
+        categories: Vec<CreateCategoryRequest>,
+    ) -> Result<Vec<CreateCategoryRequest>, Box<dyn std::error::Error + Send + Sync>> {
         let mut sorted = Vec::new();
         let mut remaining = categories;
         let mut processed_slugs = std::collections::HashSet::new();
-        
+
         // Keep processing until all categories are sorted or we detect circular dependencies
         let max_iterations = remaining.len() * 2; // Safety limit
         let mut iteration = 0;
-        
+
         while !remaining.is_empty() && iteration < max_iterations {
             let mut progress_made = false;
             let mut next_remaining = Vec::new();
-            
+
             // Check which categories can be processed in this iteration
             for category in remaining.into_iter() {
                 let can_process = match &category.parent_slug {
@@ -424,7 +543,7 @@ impl CategoryService {
                         processed_slugs.contains(parent_slug)
                     }
                 };
-                
+
                 if can_process {
                     processed_slugs.insert(category.slug.clone());
                     sorted.push(category);
@@ -433,24 +552,27 @@ impl CategoryService {
                     next_remaining.push(category);
                 }
             }
-            
+
             if !progress_made {
                 return Err("Circular dependency detected in category hierarchy".into());
             }
-            
+
             remaining = next_remaining;
             iteration += 1;
         }
-        
+
         if !remaining.is_empty() {
             return Err("Unable to resolve all category dependencies".into());
         }
-        
+
         Ok(sorted)
     }
 
     /// Basic validation without database checks (for batch processing)
-    async fn validate_category_request_basic(&self, request: &CreateCategoryRequest) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    async fn validate_category_request_basic(
+        &self,
+        request: &CreateCategoryRequest,
+    ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         // Basic validation
         if request.name.is_empty() {
             return Err("Category name cannot be empty".into());
@@ -459,21 +581,34 @@ impl CategoryService {
         if request.slug.is_empty() {
             return Err("Category slug cannot be empty".into());
         }
-        
+
         // Validate hierarchical slug format
         if !request.slug.starts_with('/') {
-            return Err(format!("Category slug '{}' must start with '/' for hierarchical structure", request.slug).into());
+            return Err(format!(
+                "Category slug '{}' must start with '/' for hierarchical structure",
+                request.slug
+            )
+            .into());
         }
-        
+
         // Validate parent_slug format if present
         if let Some(parent_slug) = &request.parent_slug {
             if !parent_slug.starts_with('/') {
-                return Err(format!("Parent slug '{}' must start with '/' for hierarchical structure", parent_slug).into());
+                return Err(format!(
+                    "Parent slug '{parent_slug}' must start with '/' for hierarchical structure",
+                )
+                .into());
             }
-            
+
             // Ensure child slug contains parent slug as prefix
-            if !request.slug.starts_with(&format!("{}/", parent_slug)) && request.slug != *parent_slug {
-                return Err(format!("Child slug '{}' must be a path under parent slug '{}'", request.slug, parent_slug).into());
+        if !request.slug.starts_with(&format!("{parent_slug}/"))
+                && request.slug != *parent_slug
+            {
+                return Err(format!(
+            "Child slug '{}' must be a path under parent slug '{parent_slug}'",
+            request.slug
+                )
+                .into());
             }
         }
 

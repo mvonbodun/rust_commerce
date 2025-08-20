@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod category_tests {
-    use rust_catalog::model::{Category, CategorySeo};
     use chrono::Utc;
+    use rust_catalog::model::{Category, CategorySeo};
     use uuid::Uuid;
 
     #[test]
@@ -91,7 +91,7 @@ mod category_tests {
     #[test]
     fn test_category_seo_defaults() {
         let seo = CategorySeo::default();
-        
+
         assert!(seo.meta_title.is_none());
         assert!(seo.meta_description.is_none());
         assert!(seo.keywords.is_empty());
@@ -101,7 +101,7 @@ mod category_tests {
     fn test_category_hierarchy_validation() {
         // Test that a category cannot be its own parent
         let category_id = Uuid::new_v4().to_string();
-        
+
         let invalid_category = Category {
             id: Some(category_id.clone()),
             slug: "invalid".to_string(),

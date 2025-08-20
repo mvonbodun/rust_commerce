@@ -4,24 +4,31 @@ mod persistence;
 
 use bson::doc;
 use handlers::{
-    create_product, delete_product, get_product, get_product_by_slug, search_products, export_products, update_product, get_product_slugs, Router,
+    category_handlers::{
+        handle_create_category, handle_delete_category, handle_export_categories,
+        handle_get_category, handle_get_category_by_slug, handle_get_category_tree,
+        handle_import_categories, handle_update_category,
+    },
     category_service::CategoryService,
-    category_handlers::{handle_create_category, handle_get_category, handle_get_category_by_slug, handle_export_categories, handle_update_category, handle_delete_category, handle_import_categories, handle_get_category_tree},
+    create_product, delete_product, export_products, get_product, get_product_by_slug,
+    get_product_slugs, search_products, update_product, Router,
 };
-use persistence::{
-    product_dao::ProductDaoImpl,
-    category_dao::CategoryDaoImpl,
+use persistence::{category_dao::CategoryDaoImpl, product_dao::ProductDaoImpl};
+use std::{
+    env,
+    error::Error,
+    io::{self, Write},
+    sync::Arc,
 };
-use std::{env, error::Error, sync::Arc, io::{self, Write}};
 
-use rust_common::{
-    load_environment, mask_sensitive_url, OperationTimer, HealthMonitor,
-    setup_signal_handlers, validate_catalog_dependencies
-};
 use log::{debug, error, info};
+use rust_common::{
+    load_environment, mask_sensitive_url, setup_signal_handlers, validate_catalog_dependencies,
+    HealthMonitor, OperationTimer,
+};
 
 use futures::StreamExt;
-use model::{Product, Category, CategoryTreeCache};
+use model::{Category, CategoryTreeCache, Product};
 use mongodb::{Client, Collection, IndexModel};
 
 pub mod catalog_messages {
@@ -39,27 +46,36 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     // Early boot diagnostic
     println!("BOOT: entering main");
     let _ = io::stdout().flush();
-    
+
     // Load environment configuration FIRST, before initializing logger
     load_environment();
-    
+
     // Initialize logger after loading environment (so RUST_LOG from .env is used)
     pretty_env_logger::init();
-    
+
     // Phase 1.1: Environment & Configuration Logging
-    info!("🚀 Starting Rust Commerce Catalog Service v{}", env!("CARGO_PKG_VERSION"));
+    info!(
+        "🚀 Starting Rust Commerce Catalog Service v{}",
+        env!("CARGO_PKG_VERSION")
+    );
     info!("📋 Environment configuration:");
-    info!("  RUST_ENV: {}", env::var("RUST_ENV").unwrap_or_else(|_| "development".to_string()));
-    info!("  RUST_LOG: {}", env::var("RUST_LOG").unwrap_or_else(|_| "info".to_string()));
+    info!(
+        "  RUST_ENV: {}",
+        env::var("RUST_ENV").unwrap_or_else(|_| "development".to_string())
+    );
+    info!(
+        "  RUST_LOG: {}",
+        env::var("RUST_LOG").unwrap_or_else(|_| "info".to_string())
+    );
 
     // Get MongoDB URL
     let uri = env::var("MONGODB_URL").expect("MONGODB_URL must be set");
     info!("  MONGODB_URL: {}", mask_sensitive_url(&uri));
-    
+
     // Get NATS URL
     let nats_url = env::var("NATS_URL").unwrap_or_else(|_| "nats://localhost:4222".to_string());
-    info!("  NATS_URL: {}", &nats_url);
-    
+    info!("  NATS_URL: {nats_url}");
+
     // Phase 1.2: MongoDB Connection Logging
     info!("🔗 Connecting to MongoDB...");
     let client = match Client::with_uri_str(&uri).await {
@@ -68,23 +84,23 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             // Test the connection
             match client.list_database_names().await {
                 Ok(databases) => {
-                    debug!("📋 Available databases: {:?}", databases);
+                    debug!("📋 Available databases: {databases:?}");
                     client
                 }
                 Err(e) => {
-                    error!("❌ Failed to list databases: {}", e);
+                    error!("❌ Failed to list databases: {e}");
                     return Err(e.into());
                 }
             }
         }
         Err(e) => {
-            error!("❌ Failed to connect to MongoDB: {}", e);
+            error!("❌ Failed to connect to MongoDB: {e}");
             return Err(e.into());
         }
     };
     let database = client.database("db_catalog");
     info!("📊 Using database: db_catalog");
-    
+
     // Phase 1.3: Product Collection & Index Setup Logging
     info!("📦 Setting up products collection...");
     let products_coll: Collection<Product> = database.collection("products");
@@ -109,11 +125,14 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     info!("🔍 Creating {} product indexes...", indexes.len());
     match products_coll.create_indexes(indexes).await {
         Ok(result) => {
-            info!("✅ Created {} product indexes successfully", result.index_names.len());
+            info!(
+                "✅ Created {} product indexes successfully",
+                result.index_names.len()
+            );
             debug!("Product indexes: product_ref (unique), slug (unique)");
         }
         Err(e) => {
-            error!("❌ Failed to create product indexes: {}", e);
+            error!("❌ Failed to create product indexes: {e}");
             return Err(e.into());
         }
     }
@@ -121,8 +140,9 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     // Category collection setup
     info!("📁 Setting up categories collection...");
     let categories_coll: Collection<Category> = database.collection("categories");
-    let category_cache_coll: Collection<CategoryTreeCache> = database.collection("category_tree_cache");
-    
+    let category_cache_coll: Collection<CategoryTreeCache> =
+        database.collection("category_tree_cache");
+
     // Create category indexes
     let category_indexes = vec![
         IndexModel::builder()
@@ -133,18 +153,10 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                     .build(),
             )
             .build(),
-        IndexModel::builder()
-            .keys(doc! { "path": 1 })
-            .build(),
-        IndexModel::builder()
-            .keys(doc! { "parent_id": 1 })
-            .build(),
-        IndexModel::builder()
-            .keys(doc! { "ancestors": 1 })
-            .build(),
-        IndexModel::builder()
-            .keys(doc! { "level": 1 })
-            .build(),
+        IndexModel::builder().keys(doc! { "path": 1 }).build(),
+        IndexModel::builder().keys(doc! { "parent_id": 1 }).build(),
+        IndexModel::builder().keys(doc! { "ancestors": 1 }).build(),
+        IndexModel::builder().keys(doc! { "level": 1 }).build(),
         IndexModel::builder()
             .keys(doc! { "is_active": 1, "display_order": 1 })
             .build(),
@@ -152,11 +164,14 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     info!("🔍 Creating {} category indexes...", category_indexes.len());
     match categories_coll.create_indexes(category_indexes).await {
         Ok(result) => {
-            info!("✅ Created {} category indexes successfully", result.index_names.len());
+            info!(
+                "✅ Created {} category indexes successfully",
+                result.index_names.len()
+            );
             debug!("Category indexes: slug (unique), path, parent_id, ancestors, level, is_active+display_order");
         }
         Err(e) => {
-            error!("❌ Failed to create category indexes: {}", e);
+            error!("❌ Failed to create category indexes: {e}");
             return Err(e.into());
         }
     }
@@ -172,7 +187,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let category_service = Arc::new(CategoryService::new(category_dao));
     debug!("✅ Category Service initialized");
 
-    let app_state = AppState { 
+    let app_state = AppState {
         product_dao,
         category_service,
     };
@@ -214,21 +229,21 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             "get_product_slugs".to_owned(),
             Box::new(|d, c, m| Box::pin(get_product_slugs(d, c, m))),
         );
-    
+
     let route_count = 8; // Product routes (categories handled separately)
-    info!("✅ Configured {} product routes", route_count);
+    info!("✅ Configured {route_count} product routes");
     debug!("Product routes: create_product, get_product, get_product_by_slug, update_product, delete_product, search_products, export_products, get_product_slugs");
     debug!("Category routes handled separately: create_category, get_category, get_category_by_slug, export_categories, update_category, delete_category, import_categories, get_category_tree");
 
     // Phase 1.4: NATS Connection Logging
-    info!("🔗 Connecting to NATS server: {}", nats_url);
+    info!("🔗 Connecting to NATS server: {nats_url}");
     let nats_client = match async_nats::connect(&nats_url).await {
         Ok(client) => {
             info!("✅ Successfully connected to NATS");
             client
         }
         Err(e) => {
-            error!("❌ Failed to connect to NATS: {}", e);
+            error!("❌ Failed to connect to NATS: {e}");
             return Err(e.into());
         }
     };
@@ -242,13 +257,16 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     // Phase 3.1: Queue Subscription Logging
     info!("📡 Subscribing to NATS queue: catalog.*");
-    let requests = match nats_client.queue_subscribe("catalog.*", "queue".to_owned()).await {
+    let requests = match nats_client
+        .queue_subscribe("catalog.*", "queue".to_owned())
+        .await
+    {
         Ok(subscription) => {
             info!("✅ Successfully subscribed to catalog.* queue");
             subscription
         }
         Err(e) => {
-            error!("❌ Failed to subscribe to NATS queue: {}", e);
+            error!("❌ Failed to subscribe to NATS queue: {e}");
             return Err(e.into());
         }
     };
@@ -262,7 +280,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     info!("🚀 Catalog service is ready and listening for requests");
     info!("📊 Service startup completed successfully");
-    
+
     // Phase 3.2: Request Processing Logging
     requests
         .for_each_concurrent(25, |request| {
@@ -279,10 +297,13 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                 }
 
                 let operation = subject_parts[1].to_string();
-                debug!("📨 Processing catalog operation: {} from subject: {}", operation, request.subject);
-                
+                debug!(
+                    "📨 Processing catalog operation: {} from subject: {}",
+                    operation, request.subject
+                );
+
                 // Phase 5: Use OperationTimer for performance monitoring
-                let _timer = OperationTimer::new(&format!("catalog.{}", operation));
+                let _timer = OperationTimer::new(&format!("catalog.{operation}"));
 
                 // Handle category operations separately
                 let result = match operation.as_str() {
@@ -291,7 +312,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                         match response {
                             Ok(response_bytes) => {
                                 if let Some(reply) = request.reply {
-                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                    let _ =
+                                        client_clone.publish(reply, response_bytes.into()).await;
                                 }
                                 Ok(())
                             }
@@ -303,7 +325,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                         match response {
                             Ok(response_bytes) => {
                                 if let Some(reply) = request.reply {
-                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                    let _ =
+                                        client_clone.publish(reply, response_bytes.into()).await;
                                 }
                                 Ok(())
                             }
@@ -315,7 +338,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                         match response {
                             Ok(response_bytes) => {
                                 if let Some(reply) = request.reply {
-                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                    let _ =
+                                        client_clone.publish(reply, response_bytes.into()).await;
                                 }
                                 Ok(())
                             }
@@ -327,7 +351,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                         match response {
                             Ok(response_bytes) => {
                                 if let Some(reply) = request.reply {
-                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                    let _ =
+                                        client_clone.publish(reply, response_bytes.into()).await;
                                 }
                                 Ok(())
                             }
@@ -339,7 +364,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                         match response {
                             Ok(response_bytes) => {
                                 if let Some(reply) = request.reply {
-                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                    let _ =
+                                        client_clone.publish(reply, response_bytes.into()).await;
                                 }
                                 Ok(())
                             }
@@ -351,7 +377,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                         match response {
                             Ok(response_bytes) => {
                                 if let Some(reply) = request.reply {
-                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                    let _ =
+                                        client_clone.publish(reply, response_bytes.into()).await;
                                 }
                                 Ok(())
                             }
@@ -363,7 +390,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                         match response {
                             Ok(response_bytes) => {
                                 if let Some(reply) = request.reply {
-                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                    let _ =
+                                        client_clone.publish(reply, response_bytes.into()).await;
                                 }
                                 Ok(())
                             }
@@ -375,7 +403,8 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                         match response {
                             Ok(response_bytes) => {
                                 if let Some(reply) = request.reply {
-                                    let _ = client_clone.publish(reply, response_bytes.into()).await;
+                                    let _ =
+                                        client_clone.publish(reply, response_bytes.into()).await;
                                 }
                                 Ok(())
                             }
@@ -387,7 +416,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                         if let Some(handler) = routes.get(&operation) {
                             handler(pd, client_clone, request).await
                         } else {
-                            error!("No handler found for operation: {}", operation);
+                            error!("No handler found for operation: {operation}");
                             Ok(())
                         }
                     }
@@ -399,7 +428,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
                     }
                     Err(e) => {
                         _timer.log_elapsed("error");
-                        error!("❌ Error details: {:?}", e);
+                        error!("❌ Error details: {e:?}");
                     }
                 }
             }
