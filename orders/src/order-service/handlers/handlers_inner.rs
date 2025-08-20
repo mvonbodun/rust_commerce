@@ -56,7 +56,9 @@ pub async fn get_order(
         Ok(None) => Ok(None),
         Err(e) => {
             error!("Error getting order: {e}");
-            Err(HandlerError::InternalError(format!("Failed to get order: {e}")))
+            Err(HandlerError::InternalError(format!(
+                "Failed to get order: {e}"
+            )))
         }
     }
 }

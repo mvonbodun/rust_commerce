@@ -199,8 +199,8 @@ pub async fn get_order(client: Client, orders_dao: Arc<OrdersDaoImpl>, order_get
                         .await
                         .unwrap();
                 }
-        Err(_) => {
-            error!("Error getting order {}", request.id.clone());
+                Err(_) => {
+                    error!("Error getting order {}", request.id.clone());
                     let order_get_response = OrderGetResponse {
                         order: None,
                         status: Some(order_messages::Status {
@@ -219,12 +219,12 @@ pub async fn get_order(client: Client, orders_dao: Arc<OrdersDaoImpl>, order_get
             }
         }
         Err(err) => {
-        error!("Error decoding message: {err:?}");
+            error!("Error decoding message: {err:?}");
             let order_get_response = OrderGetResponse {
                 order: None,
                 status: Some(order_messages::Status {
                     code: order_messages::Code::InvalidArgument.into(),
-            message: format!("Invalid OrderGetRequest format {err:?}"),
+                    message: format!("Invalid OrderGetRequest format {err:?}"),
                     details: vec![],
                 }),
             };
@@ -268,14 +268,14 @@ pub async fn delete_order(
                         .await
                         .unwrap();
                 }
-        Err(e) => {
+                Err(e) => {
                     match e {
                         handlers_inner::HandlerError::InternalError(msg) => {
-                error!("Internal error deleting order: {msg:?}");
+                            error!("Internal error deleting order: {msg:?}");
                             let odresp = order_messages::OrderDeleteResponse {
                                 status: Some(order_messages::Status {
                                     code: order_messages::Code::Internal.into(),
-                    message: format!("Internal error deleting order {msg:?}"),
+                                    message: format!("Internal error deleting order {msg:?}"),
                                     details: vec![],
                                 }),
                             };
@@ -291,11 +291,11 @@ pub async fn delete_order(
             }
         }
         Err(err) => {
-        error!("Invalid OrderDeleteRequest format: {err:?}");
+            error!("Invalid OrderDeleteRequest format: {err:?}");
             let odresp = order_messages::OrderDeleteResponse {
                 status: Some(order_messages::Status {
                     code: order_messages::Code::InvalidArgument.into(),
-            message: format!("Invalid OrderDeleteRequest format {err:?}"),
+                    message: format!("Invalid OrderDeleteRequest format {err:?}"),
                     details: vec![],
                 }),
             };
