@@ -22,4 +22,6 @@ Thumbs.db
 
 # Other
 Cargo.lock
+/logs/*
+/agent_guidance_docs/*
 

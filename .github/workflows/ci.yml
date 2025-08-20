@@ -257,23 +257,23 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
-          cd catalog
-          flyctl deploy --remote-only --yes
+          cd scripts
+          flyctl deploy .. -c catalog/fly.toml --remote-only --yes
       - name: Deploy Inventory service
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
-          cd inventory
-          flyctl deploy --remote-only --yes
+          cd scripts
+          flyctl deploy .. -c inventory/fly.toml --remote-only --yes
       - name: Deploy Orders service
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
-          cd orders
-          flyctl deploy --remote-only --yes
+          cd scripts
+          flyctl deploy .. -c orders/fly.toml --remote-only --yes
       - name: Deploy Price service
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
-          cd price
-          flyctl deploy --remote-only --yes
+          cd scripts
+          flyctl deploy .. -c price/fly.toml --remote-only --yes
