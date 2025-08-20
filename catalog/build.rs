@@ -1,5 +1,7 @@
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    prost_build::compile_protos(
+    let mut config = prost_build::Config::new();
+    config.type_attribute(".", "#[allow(dead_code)]");
+    config.compile_protos(
         &[
             "proto/catalog.proto",
             "proto/category.proto",
