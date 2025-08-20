@@ -167,30 +167,64 @@ jobs:
         run: cargo build --workspace --all-targets
       - name: Start catalog-service
         run: |
-          nohup cargo run -p rust-catalog --bin catalog-service >/tmp/catalog.log 2>&1 &
+          RUST_LOG=debug nohup cargo run -p rust-catalog --bin catalog-service >/tmp/catalog.log 2>&1 &
           echo $! > /tmp/catalog.pid
       - name: Start inventory-service
         run: |
-          nohup cargo run -p rust-inventory --bin inventory-service >/tmp/inventory.log 2>&1 &
+          RUST_LOG=debug nohup cargo run -p rust-inventory --bin inventory-service >/tmp/inventory.log 2>&1 &
           echo $! > /tmp/inventory.pid
       - name: Start order-service
         run: |
-          nohup cargo run -p rust-orders --bin order-service >/tmp/orders.log 2>&1 &
+          RUST_LOG=debug nohup cargo run -p rust-orders --bin order-service >/tmp/orders.log 2>&1 &
           echo $! > /tmp/orders.pid
       - name: Start price-service
         run: |
-          nohup cargo run -p rust-price --bin price-service >/tmp/price.log 2>&1 &
+          RUST_LOG=debug nohup cargo run -p rust-price --bin price-service >/tmp/price.log 2>&1 &
           echo $! > /tmp/price.pid
       - name: Wait for services to be ready
         run: |
-          sleep 10
+          echo "Waiting for services to start and register with NATS..."
+          sleep 15
+          
+          # Check if services are still running
+          for service in catalog inventory orders price; do
+            if [ -f /tmp/${service}.pid ]; then
+              pid=$(cat /tmp/${service}.pid)
+              if ! kill -0 $pid 2>/dev/null; then
+                echo "ERROR: ${service}-service process is not running"
+                echo "=== ${service} service log ==="
+                cat /tmp/${service}.log
+                echo "=========================="
+                exit 1
+              else
+                echo "${service}-service is running (PID: $pid)"
+              fi
+            fi
+          done
+          
+          echo "All services appear to be running. Service logs:"
+          for service in catalog inventory orders price; do
+            echo "=== ${service} service startup log ==="
+            head -20 /tmp/${service}.log
+            echo "=========================="
+          done
       - name: Run integration tests
         run: cargo test --workspace --tests -- --nocapture
       - name: Upload service logs on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: service-logs
+          name: service-logs-failure
+          path: |
+            /tmp/catalog.log
+            /tmp/inventory.log
+            /tmp/orders.log
+            /tmp/price.log
+      - name: Upload service logs for debugging
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: service-logs-debug
           path: |
             /tmp/catalog.log
             /tmp/inventory.log
