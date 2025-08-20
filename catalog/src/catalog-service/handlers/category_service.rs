@@ -235,7 +235,6 @@ impl CategoryService {
                     return Ok(None);
                 }
 
-        
                 let mut children = Vec::new();
 
                 // Recursively build child nodes
@@ -359,7 +358,7 @@ impl CategoryService {
         &self,
         id: &str,
     ) -> Result<bool, Box<dyn std::error::Error + Send + Sync>> {
-    debug!("Deleting category with ID: {id}");
+        debug!("Deleting category with ID: {id}");
 
         if id.is_empty() {
             return Err("Category ID is required".into());
@@ -503,9 +502,7 @@ impl CategoryService {
         // Invalidate tree cache once at the end for non-dry-run imports
         if !dry_run && successful_imports > 0 {
             if let Err(e) = self.category_dao.invalidate_tree_cache().await {
-                debug!(
-                    "Warning: Failed to invalidate tree cache after import: {e}",
-                );
+                debug!("Warning: Failed to invalidate tree cache after import: {e}",);
             }
         }
 
@@ -601,12 +598,11 @@ impl CategoryService {
             }
 
             // Ensure child slug contains parent slug as prefix
-        if !request.slug.starts_with(&format!("{parent_slug}/"))
-                && request.slug != *parent_slug
+            if !request.slug.starts_with(&format!("{parent_slug}/")) && request.slug != *parent_slug
             {
                 return Err(format!(
-            "Child slug '{}' must be a path under parent slug '{parent_slug}'",
-            request.slug
+                    "Child slug '{}' must be a path under parent slug '{parent_slug}'",
+                    request.slug
                 )
                 .into());
             }

@@ -193,7 +193,7 @@ impl ProductDao for ProductDaoImpl {
         include_inactive: bool,
     ) -> Result<(Vec<String>, Option<String>, bool), Box<dyn Error + Send + Sync>> {
         // Validate and clamp batch_size
-    let batch_size = batch_size.clamp(10, 1000);
+        let batch_size = batch_size.clamp(10, 1000);
 
         // Build the query filter
         let mut query = doc! {};

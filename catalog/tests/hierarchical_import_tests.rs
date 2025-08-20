@@ -35,7 +35,10 @@ fn test_hierarchical_slug_validation() {
     ];
 
     for slug in valid_slugs {
-    assert!(slug.starts_with('/'), "Valid slug '{slug}' should start with '/'");
+        assert!(
+            slug.starts_with('/'),
+            "Valid slug '{slug}' should start with '/'"
+        );
         assert!(
             !slug.ends_with('/') || slug == "/",
             "Valid slug '{slug}' should not end with '/' unless root"

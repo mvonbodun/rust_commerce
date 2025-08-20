@@ -12,7 +12,7 @@ use log::debug;
 use prost::Message;
 use rust_catalog::Product;
 use rust_common::load_environment;
- 
+
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;

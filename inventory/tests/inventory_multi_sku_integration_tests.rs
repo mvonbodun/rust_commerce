@@ -262,7 +262,7 @@ mod inventory_multi_sku_integration_tests {
         let client = setup_nats_client().await;
 
         // Test with more than 100 SKUs
-        let skus: Vec<String> = (0..101).map(|i| format!("SKU-{}", i)).collect();
+    let skus: Vec<String> = (0..101).map(|i| format!("SKU-{i}")).collect();
 
         let request = InventoryGetAllLocationsBySkuRequest { skus };
 
@@ -289,7 +289,7 @@ mod inventory_multi_sku_integration_tests {
         // Create inventory items for performance test
         let mut test_skus = Vec::new();
         for i in 0..10 {
-            let sku = format!("PERF-SKU-{}", i);
+            let sku = format!("PERF-SKU-{i}");
             create_test_inventory_item(&client, &sku, "DC - Dallas, TX", 100, 20)
                 .await
                 .expect("Failed to create test inventory item");

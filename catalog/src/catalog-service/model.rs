@@ -711,7 +711,7 @@ mod tests {
             Some("Test Product - Best Quality".to_string())
         );
         assert_eq!(product.tax_code, Some("TAX001".to_string()));
-    assert!(product.display_on_site);
+        assert!(product.display_on_site);
         assert!(product.created_at.is_some());
         assert!(product.updated_at.is_some());
         assert_eq!(product.created_by, Some("test_user".to_string()));
@@ -869,7 +869,7 @@ mod tests {
         let avg1 = BayesianAverage::new(4.56789);
         assert_eq!(avg1.as_f32(), 4.6);
 
-    let avg2 = BayesianAverage::new(std::f32::consts::PI);
+        let avg2 = BayesianAverage::new(std::f32::consts::PI);
         assert_eq!(avg2.as_f32(), 3.1);
 
         let avg3 = BayesianAverage::new(2.95);
@@ -929,7 +929,7 @@ mod tests {
         let json1 = serde_json::to_string(&avg1).expect("Failed to serialize");
         assert_eq!(json1, r#""4.6""#);
 
-    let avg2 = BayesianAverage::new(std::f32::consts::PI);
+        let avg2 = BayesianAverage::new(std::f32::consts::PI);
         let json2 = serde_json::to_string(&avg2).expect("Failed to serialize");
         assert_eq!(json2, r#""3.1""#);
 

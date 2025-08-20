@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod product_slug_integration_tests {
-    
+
     use prost::Message;
     use std::collections::HashMap;
-    
+
     use uuid::Uuid;
 
     // Include the generated protobuf messages
@@ -113,7 +113,7 @@ mod product_slug_integration_tests {
 
         // Create a test product
         let uuid_short = &Uuid::new_v4().to_string()[0..8];
-    let test_slug = format!("test-product-{uuid_short}");
+        let test_slug = format!("test-product-{uuid_short}");
         let product_id = create_test_product(&client, "Test Product", &test_slug)
             .await
             .expect("Failed to create test product");
@@ -160,7 +160,7 @@ mod product_slug_integration_tests {
 
         // Test getting a product with a non-existent slug
         let uuid_short = &Uuid::new_v4().to_string()[0..8];
-    let non_existent_slug = format!("non-existent-{uuid_short}");
+        let non_existent_slug = format!("non-existent-{uuid_short}");
         let get_request = ProductGetBySlugRequest {
             slug: non_existent_slug,
         };
@@ -227,7 +227,7 @@ mod product_slug_integration_tests {
 
         // Create a test product with a specific slug
         let uuid_short = &Uuid::new_v4().to_string()[0..8];
-    let test_slug = format!("test-case-product-{uuid_short}");
+        let test_slug = format!("test-case-product-{uuid_short}");
         let product_id = create_test_product(&client, "Test Case Product", &test_slug)
             .await
             .expect("Failed to create test product");
@@ -299,7 +299,7 @@ mod product_slug_integration_tests {
 
         // Create a test product with special characters in slug
         let uuid_short = &Uuid::new_v4().to_string()[0..8];
-    let test_slug = format!("test-special-chars-{uuid_short}-product");
+        let test_slug = format!("test-special-chars-{uuid_short}-product");
         let product_id = create_test_product(&client, "Test Special Chars Product", &test_slug)
             .await
             .expect("Failed to create test product");
@@ -344,7 +344,7 @@ mod product_slug_integration_tests {
 
         // Create a test product
         let uuid_short = &Uuid::new_v4().to_string()[0..8];
-    let test_slug = format!("perf-test-{uuid_short}");
+        let test_slug = format!("perf-test-{uuid_short}");
         let product_id = create_test_product(&client, "Performance Test Product", &test_slug)
             .await
             .expect("Failed to create test product");
@@ -380,9 +380,7 @@ mod product_slug_integration_tests {
 
         // Calculate average response time
         let avg_response_time = response_times.iter().sum::<u128>() / iterations as u128;
-        println!(
-            "Average response time for get_product_by_slug: {avg_response_time}ms",
-        );
+        println!("Average response time for get_product_by_slug: {avg_response_time}ms",);
 
         // Assert reasonable performance (under 100ms for local testing)
         assert!(

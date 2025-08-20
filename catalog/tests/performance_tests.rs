@@ -92,7 +92,10 @@ mod performance_tests {
         }
 
         let creation_duration = start.elapsed();
-    println!("Created {} categories in {creation_duration:?}", categories.len());
+        println!(
+            "Created {} categories in {creation_duration:?}",
+            categories.len()
+        );
 
         // Expected: 10 + (10 * 100) + (10 * 100 * 10) = 10 + 1,000 + 10,000 = 11,010 categories
         assert_eq!(categories.len(), 11_010);
@@ -107,7 +110,7 @@ mod performance_tests {
         }
 
         let traversal_duration = traversal_start.elapsed();
-    println!("Traversed hierarchy in {traversal_duration:?}");
+        println!("Traversed hierarchy in {traversal_duration:?}");
 
         assert_eq!(level_counts.get(&0), Some(&10)); // 10 root categories
         assert_eq!(level_counts.get(&1), Some(&1000)); // 1,000 child categories
@@ -120,7 +123,7 @@ mod performance_tests {
         let found_category = categories.iter().find(|cat| cat.path == search_path);
 
         let search_duration = search_start.elapsed();
-    println!("Found category by path in {search_duration:?}");
+        println!("Found category by path in {search_duration:?}");
 
         assert!(found_category.is_some());
         assert_eq!(found_category.unwrap().level, 2);
@@ -146,20 +149,20 @@ mod performance_tests {
         let start = Instant::now();
 
         // Test generating many paths
-    let paths: Vec<String> = (0..10000)
+        let paths: Vec<String> = (0..10000)
             .map(|i| {
                 let level = i % 3;
                 match level {
-            0 => format!("category-{i}"),
-            1 => format!("parent-{} .category-{i}", i / 10),
-            2 => format!("grandparent-{} .parent-{} .category-{i}", i / 100, i / 10),
+                    0 => format!("category-{i}"),
+                    1 => format!("parent-{} .category-{i}", i / 10),
+                    2 => format!("grandparent-{} .parent-{} .category-{i}", i / 100, i / 10),
                     _ => unreachable!(),
                 }
             })
             .collect();
 
         let duration = start.elapsed();
-    println!("Generated {} paths in {duration:?}", paths.len());
+        println!("Generated {} paths in {duration:?}", paths.len());
 
         assert_eq!(paths.len(), 10000);
         assert!(
@@ -190,7 +193,10 @@ mod performance_tests {
         }
 
         let duration = start.elapsed();
-    println!("Built {} ancestor arrays in {duration:?}", ancestors_arrays.len());
+        println!(
+            "Built {} ancestor arrays in {duration:?}",
+            ancestors_arrays.len()
+        );
 
         assert_eq!(ancestors_arrays.len(), 1000);
         assert_eq!(ancestors_arrays[0].len(), 0); // Root category has no ancestors

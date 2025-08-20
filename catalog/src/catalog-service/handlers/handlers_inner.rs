@@ -71,7 +71,7 @@ pub async fn create_product(
             count: proto_reviews.count,
             rating: proto_reviews.rating,
         };
-    debug!("Mapped reviews: {reviews:?}");
+        debug!("Mapped reviews: {reviews:?}");
         product_builder.reviews(reviews);
     }
 
@@ -221,13 +221,11 @@ pub async fn update_product(
         list_categories: product.list_categories,
         created_at: product.created_at.map(|ts| {
             use chrono::{DateTime, Utc};
-            DateTime::<Utc>::from_timestamp(ts.seconds, ts.nanos as u32)
-                .unwrap_or_else(Utc::now)
+            DateTime::<Utc>::from_timestamp(ts.seconds, ts.nanos as u32).unwrap_or_else(Utc::now)
         }),
         updated_at: product.updated_at.map(|ts| {
             use chrono::{DateTime, Utc};
-            DateTime::<Utc>::from_timestamp(ts.seconds, ts.nanos as u32)
-                .unwrap_or_else(Utc::now)
+            DateTime::<Utc>::from_timestamp(ts.seconds, ts.nanos as u32).unwrap_or_else(Utc::now)
         }),
         created_by: product.created_by,
         updated_by: product.updated_by,

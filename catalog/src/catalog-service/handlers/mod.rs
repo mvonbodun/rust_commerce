@@ -16,8 +16,8 @@ use crate::{
     persistence::product_dao::ProductDao,
 };
 
-pub mod category_service;
 pub mod category_handlers;
+pub mod category_service;
 mod handlers_inner;
 
 pub type NatsFn = Box<
