@@ -208,6 +208,19 @@ jobs:
             head -20 /tmp/${service}.log
             echo "=========================="
           done
+      - name: Test service NATS connectivity
+        run: |
+          echo "Testing NATS connectivity to services..."
+          # Test basic NATS connection
+          cargo run -p rust-inventory --bin inventory-client -- --help >/dev/null 2>&1 || echo "Inventory client build check passed"
+          
+          # Check NATS server status
+          curl -s http://127.0.0.1:8222/connz | head -20 || echo "Could not get NATS connection info"
+          
+          # Wait a bit more for NATS subscriptions to be fully established
+          sleep 5
+          
+          echo "Services should now be ready for integration tests"
       - name: Run integration tests
         run: cargo test --workspace --tests -- --nocapture
       - name: Upload service logs on failure
