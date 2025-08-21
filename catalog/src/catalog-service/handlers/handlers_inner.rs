@@ -1,7 +1,7 @@
 use crate::catalog_messages::{ProductCreateRequest, ProductUpdateRequest};
-use crate::domain::{ProductName, ProductRef};
-use crate::model::{
-    HierarchicalCategories, Packaging, Product, ProductBuilder, ProductVariant, Reviews,
+use crate::domain::{
+    HierarchicalCategories, Packaging, Product, ProductBuilder, ProductName, ProductRef,
+    ProductVariant, Reviews,
 };
 use crate::persistence::product_dao::ProductDao;
 use log::{debug, error};

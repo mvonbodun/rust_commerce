@@ -1,6 +1,6 @@
 use crate::{
     catalog_messages::{CategoryResponse, CreateCategoryRequest, UpdateCategoryRequest},
-    model::{Category, CategorySeo},
+    domain::{Category, CategorySeo},
     persistence::category_dao::CategoryDao,
 };
 use log::debug;
@@ -216,9 +216,9 @@ impl CategoryService {
     /// Helper method to build a CategoryTreeNode recursively from cache
     fn build_tree_node_from_cache<'a>(
         &'a self,
-        _tree_cache: &'a crate::model::CategoryTreeCache,
+        _tree_cache: &'a crate::domain::CategoryTreeCache,
         category_id: &'a str,
-        cache_node: &'a crate::model::CategoryTreeNode,
+        cache_node: &'a crate::domain::CategoryTreeNode,
         current_depth: i32,
         max_depth: i32,
         include_inactive: bool,

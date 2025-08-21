@@ -1,6 +1,6 @@
-// Include only the model module for shared use
-#[path = "catalog-service/model.rs"]
-pub mod model;
+// Include the domain module for shared use
+#[path = "catalog-service/domain/mod.rs"]
+pub mod domain;
 
-// Re-export the models at the crate level for easier importing
-pub use model::*;
+// Re-export the domain types at the crate level for easier importing
+pub use domain::*;

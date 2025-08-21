@@ -1,6 +1,5 @@
 mod domain;
 mod handlers;
-mod model;
 mod persistence;
 
 use bson::doc;
@@ -29,7 +28,7 @@ use rust_common::{
 };
 
 use futures::StreamExt;
-use model::{Category, CategoryTreeCache, Product};
+use domain::{Category, CategoryTreeCache, Product};
 use mongodb::{Client, Collection, IndexModel};
 
 // Import common module for generated proto code

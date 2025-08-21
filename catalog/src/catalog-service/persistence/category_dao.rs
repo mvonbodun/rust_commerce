@@ -1,4 +1,4 @@
-use crate::model::{Category, CategoryTreeCache, CategoryTreeNode};
+use crate::domain::{Category, CategoryTreeCache, CategoryTreeNode};
 use async_trait::async_trait;
 use chrono::Utc;
 use futures::TryStreamExt;

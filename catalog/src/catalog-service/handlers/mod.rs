@@ -12,7 +12,7 @@ use crate::{
         ProductGetRequest, ProductGetResponse, ProductSearchRequest, ProductSearchResponse,
         ProductUpdateRequest, ProductUpdateResponse,
     },
-    model::Product,
+    domain::Product,
     persistence::product_dao::ProductDao,
 };
 

@@ -1,4 +1,4 @@
-use crate::model::{Product, ProductSlug};
+use crate::domain::{Product, ProductSlug};
 use async_trait::async_trait;
 use base64::{engine::general_purpose, Engine as _};
 use futures::TryStreamExt;
