@@ -22,8 +22,18 @@ message GetCategoryRequest {
     string id = 1;
 }
 
+message GetCategoryResponse {
+    optional CategoryResponse category = 1;
+    common.Status status = 2;
+}
+
 message GetCategoryBySlugRequest {
     string slug = 1;
+}
+
+message GetCategoryBySlugResponse {
+    optional CategoryResponse category = 1;
+    common.Status status = 2;
 }
 
 message UpdateCategoryRequest {

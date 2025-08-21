@@ -2,8 +2,8 @@ use crate::{
     catalog_messages::{
         CategoryExportRequest, CategoryExportResponse, CategoryImportRequest,
         CategoryImportResponse, CategoryResponse, CategoryTreeRequest, CategoryTreeResponse, Code,
-        CreateCategoryRequest, DeleteCategoryRequest, GetCategoryBySlugRequest, GetCategoryRequest,
-        Status, UpdateCategoryRequest,
+        CreateCategoryRequest, DeleteCategoryRequest, GetCategoryBySlugRequest, GetCategoryBySlugResponse,
+        GetCategoryRequest, GetCategoryResponse, Status, UpdateCategoryRequest,
     },
     handlers::category_service::CategoryService,
 };
@@ -63,53 +63,41 @@ pub async fn handle_get_category(
     debug!("Decoded request: {request:?}");
 
     match category_service.get_category(&request.id).await {
-        Ok(Some(category_response)) => {
-            debug!("Category found: {category_response:?}");
-            Ok(category_response.encode_to_vec())
+        Ok(Some(category)) => {
+            debug!("Category found: {category:?}");
+            let response = GetCategoryResponse {
+                category: Some(category),
+                status: Some(Status {
+                    code: Code::Ok as i32,
+                    message: "Category retrieved successfully".to_string(),
+                    details: vec![],
+                }),
+            };
+            Ok(response.encode_to_vec())
         }
         Ok(None) => {
             debug!("Category not found: {}", request.id);
-            let not_found_response = CategoryResponse {
-                id: String::new(),
-                slug: String::new(),
-                name: String::new(),
-                short_description: String::new(),
-                full_description: None,
-                path: String::new(),
-                ancestors: vec![],
-                parent_id: None,
-                level: 0,
-                children_count: 0,
-                product_count: 0,
-                is_active: false,
-                display_order: 0,
-                seo: None,
-                created_at: None,
-                updated_at: None,
+            let response = GetCategoryResponse {
+                category: None,
+                status: Some(Status {
+                    code: Code::NotFound as i32,
+                    message: format!("Category with ID '{}' not found", request.id),
+                    details: vec![],
+                }),
             };
-            Ok(not_found_response.encode_to_vec())
+            Ok(response.encode_to_vec())
         }
         Err(e) => {
             error!("Failed to get category: {e}");
-            let error_response = CategoryResponse {
-                id: String::new(),
-                slug: String::new(),
-                name: String::new(),
-                short_description: String::new(),
-                full_description: None,
-                path: String::new(),
-                ancestors: vec![],
-                parent_id: None,
-                level: 0,
-                children_count: 0,
-                product_count: 0,
-                is_active: false,
-                display_order: 0,
-                seo: None,
-                created_at: None,
-                updated_at: None,
+            let response = GetCategoryResponse {
+                category: None,
+                status: Some(Status {
+                    code: Code::Internal as i32,
+                    message: "Internal server error".to_string(),
+                    details: vec![],
+                }),
             };
-            Ok(error_response.encode_to_vec())
+            Ok(response.encode_to_vec())
         }
     }
 }
@@ -125,53 +113,41 @@ pub async fn handle_get_category_by_slug(
     debug!("Decoded request: {request:?}");
 
     match category_service.get_category_by_slug(&request.slug).await {
-        Ok(Some(category_response)) => {
-            debug!("Category found: {category_response:?}");
-            Ok(category_response.encode_to_vec())
+        Ok(Some(category)) => {
+            debug!("Category found: {category:?}");
+            let response = GetCategoryBySlugResponse {
+                category: Some(category),
+                status: Some(Status {
+                    code: Code::Ok as i32,
+                    message: "Category retrieved successfully".to_string(),
+                    details: vec![],
+                }),
+            };
+            Ok(response.encode_to_vec())
         }
         Ok(None) => {
             debug!("Category not found: {}", request.slug);
-            let not_found_response = CategoryResponse {
-                id: String::new(),
-                slug: String::new(),
-                name: String::new(),
-                short_description: String::new(),
-                full_description: None,
-                path: String::new(),
-                ancestors: vec![],
-                parent_id: None,
-                level: 0,
-                children_count: 0,
-                product_count: 0,
-                is_active: false,
-                display_order: 0,
-                seo: None,
-                created_at: None,
-                updated_at: None,
+            let response = GetCategoryBySlugResponse {
+                category: None,
+                status: Some(Status {
+                    code: Code::NotFound as i32,
+                    message: format!("Category with slug '{}' not found", request.slug),
+                    details: vec![],
+                }),
             };
-            Ok(not_found_response.encode_to_vec())
+            Ok(response.encode_to_vec())
         }
         Err(e) => {
             error!("Failed to get category by slug: {e}");
-            let error_response = CategoryResponse {
-                id: String::new(),
-                slug: String::new(),
-                name: String::new(),
-                short_description: String::new(),
-                full_description: None,
-                path: String::new(),
-                ancestors: vec![],
-                parent_id: None,
-                level: 0,
-                children_count: 0,
-                product_count: 0,
-                is_active: false,
-                display_order: 0,
-                seo: None,
-                created_at: None,
-                updated_at: None,
+            let response = GetCategoryBySlugResponse {
+                category: None,
+                status: Some(Status {
+                    code: Code::Internal as i32,
+                    message: "Internal server error".to_string(),
+                    details: vec![],
+                }),
             };
-            Ok(error_response.encode_to_vec())
+            Ok(response.encode_to_vec())
         }
     }
 }

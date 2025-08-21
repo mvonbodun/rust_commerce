@@ -155,6 +155,27 @@ pub async fn get_product(
     let request = ProductGetRequest::decode(&*msg.payload);
     match request {
         Ok(request) => {
+            // Validate that ID is not empty
+            debug!("get_product request ID: '{}'", request.id);
+            if request.id.trim().is_empty() {
+                warn!("Validation error: Product ID cannot be empty");
+                let response = ProductGetResponse {
+                    product: None,
+                    status: Some(catalog_messages::Status {
+                        code: catalog_messages::Code::InvalidArgument.into(),
+                        message: "Product ID cannot be empty".to_string(),
+                        details: vec![],
+                    }),
+                };
+                let response_bytes = response.encode_to_vec();
+                if let Some(reply) = msg.reply {
+                    if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                        error!("Failed to send error response: {e}");
+                    }
+                }
+                return Ok(());
+            }
+            
             let result = handlers_inner::get_product(request.id, product_dao.as_ref()).await;
 
             match result {

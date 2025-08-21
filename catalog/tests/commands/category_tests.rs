@@ -95,9 +95,14 @@ async fn test_category_get_existing() {
         .await
         .expect("Request should succeed");
     
-    let category = CategoryResponse::decode(&*response.payload)
+    let get_response = GetCategoryResponse::decode(&*response.payload)
         .expect("Response should decode");
     
+    assert!(get_response.status.is_some());
+    assert_eq!(get_response.status.unwrap().code, Code::Ok as i32);
+    assert!(get_response.category.is_some());
+    
+    let category = get_response.category.unwrap();
     assert_eq!(category.id, category_id);
     assert_eq!(category.name, builder.name);
 }
@@ -114,14 +119,14 @@ async fn test_category_get_non_existent() {
         .request("catalog.get_category", request.encode_to_vec())
         .await;
     
-    // Should fail for non-existent category
-    assert!(response.is_err() || {
-        if let Ok(msg) = response {
-            CategoryResponse::decode(&*msg.payload).is_err()
-        } else {
-            false
-        }
-    });
+    // Should return NotFound status for non-existent category
+    let msg = response.expect("Should get response");
+    let get_response = GetCategoryResponse::decode(&*msg.payload)
+        .expect("Should decode response");
+    
+    assert!(get_response.category.is_none());
+    assert!(get_response.status.is_some());
+    assert_eq!(get_response.status.unwrap().code, Code::NotFound as i32);
 }
 
 // ============================================================================
@@ -148,9 +153,14 @@ async fn test_category_get_by_slug_existing() {
         .await
         .expect("Request should succeed");
     
-    let category = CategoryResponse::decode(&*response.payload)
+    let get_response = GetCategoryBySlugResponse::decode(&*response.payload)
         .expect("Response should decode");
     
+    assert!(get_response.status.is_some());
+    assert_eq!(get_response.status.unwrap().code, Code::Ok as i32);
+    assert!(get_response.category.is_some());
+    
+    let category = get_response.category.unwrap();
     assert_eq!(category.id, category_id);
     assert_eq!(category.slug, slug);
 }
