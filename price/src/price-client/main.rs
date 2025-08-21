@@ -17,8 +17,16 @@ use std::fs;
 use std::path::PathBuf;
 use std::str::FromStr;
 
+// Import common module for generated proto code
+mod common {
+    pub use shared_proto::common::*;
+}
+
 pub mod offer_messages {
     include!(concat!(env!("OUT_DIR"), "/offer_messages.rs"));
+
+    // Re-export common types for backward compatibility
+    pub use super::common::{Code, Status};
 }
 
 // Structs for JSON import (handles string dates and prices)

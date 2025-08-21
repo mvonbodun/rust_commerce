@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package offer_messages;
 
-import "status.proto";
+import "common/status.proto";
 import "google/protobuf/timestamp.proto";
 
 message OfferCreateRequest {
@@ -16,7 +16,7 @@ message OfferCreateRequest {
 
 message OfferCreateResponse {
   optional Offer offer = 1;
-  Status status = 2;
+  common.Status status = 2;
 }
 
 message OfferGetRequest {
@@ -25,7 +25,7 @@ message OfferGetRequest {
 
 message OfferGetResponse {
   optional Offer offer = 1;
-  Status status = 2;
+  common.Status status = 2;
 }
 
 message OfferDeleteRequest {
@@ -33,7 +33,7 @@ message OfferDeleteRequest {
 }
 
 message OfferDeleteResponse {
-  Status status = 1;
+  common.Status status = 1;
 }
 
 message Offer {
@@ -78,7 +78,7 @@ message SkuOfferResult {
 
 message GetBestOfferPricesResponse {
     repeated SkuOfferResult sku_results = 1;
-    Status status = 2;
+    common.Status status = 2;
 }
 
 service OfferService {

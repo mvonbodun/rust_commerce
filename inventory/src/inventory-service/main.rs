@@ -19,8 +19,16 @@ use futures::StreamExt;
 use model::InventoryItem;
 use mongodb::{Client, Collection, IndexModel};
 
+// Import common module for generated proto code
+mod common {
+    pub use shared_proto::common::*;
+}
+
 pub mod inventory_messages {
     include!(concat!(env!("OUT_DIR"), "/inventory_messages.rs"));
+
+    // Re-export common types for backward compatibility
+    pub use super::common::{Code, Status};
 }
 
 #[tokio::main]

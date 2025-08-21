@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package inventory_messages;
 
-import "status.proto";
+import "common/status.proto";
 import "google/protobuf/timestamp.proto";
 
 message InventoryCreateRequest {
@@ -15,7 +15,7 @@ message InventoryCreateRequest {
 
 message InventoryCreateResponse {
   optional InventoryItem item = 1;
-  Status status = 2;
+  common.Status status = 2;
 }
 
 message InventoryGetRequest {
@@ -24,7 +24,7 @@ message InventoryGetRequest {
 
 message InventoryGetResponse {
   optional InventoryItem item = 1;
-  Status status = 2;
+  common.Status status = 2;
 }
 
 message InventoryUpdateStockRequest {
@@ -35,7 +35,7 @@ message InventoryUpdateStockRequest {
 
 message InventoryUpdateStockResponse {
   optional InventoryItem item = 1;
-  Status status = 2;
+  common.Status status = 2;
 }
 
 message InventoryDeleteRequest {
@@ -43,7 +43,7 @@ message InventoryDeleteRequest {
 }
 
 message InventoryDeleteResponse {
-  Status status = 1;
+  common.Status status = 1;
 }
 
 message InventoryGetAllLocationsBySkuRequest {
@@ -53,7 +53,7 @@ message InventoryGetAllLocationsBySkuRequest {
 message InventoryGetAllLocationsBySkuResponse {
     repeated SkuInventorySummary sku_summaries = 1;
     repeated string not_found_skus = 2;
-    Status status = 3;
+    common.Status status = 3;
 }
 
 message SkuInventorySummary {

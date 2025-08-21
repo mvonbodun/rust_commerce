@@ -1,8 +1,16 @@
 // Library exports for the inventory service
 
+// Import common module for generated proto code
+mod common {
+    pub use shared_proto::common::*;
+}
+
 // Include generated protobuf code
 pub mod inventory_messages {
     include!(concat!(env!("OUT_DIR"), "/inventory_messages.rs"));
+
+    // Re-export common types for backward compatibility
+    pub use super::common::{Code, Status};
 }
 
 // Model types

@@ -14,8 +14,16 @@ use serde::Deserialize;
 use std::fs;
 use std::path::PathBuf;
 
+// Import common module for generated proto code
+mod common {
+    pub use shared_proto::common::*;
+}
+
 pub mod inventory_messages {
     include!(concat!(env!("OUT_DIR"), "/inventory_messages.rs"));
+
+    // Re-export common types for backward compatibility
+    pub use super::common::{Code, Status};
 }
 
 // Structs for JSON import (handles string dates)

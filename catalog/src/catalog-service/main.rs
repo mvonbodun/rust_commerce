@@ -31,8 +31,16 @@ use futures::StreamExt;
 use model::{Category, CategoryTreeCache, Product};
 use mongodb::{Client, Collection, IndexModel};
 
+// Import common module for generated proto code
+mod common {
+    pub use shared_proto::common::*;
+}
+
 pub mod catalog_messages {
     include!(concat!(env!("OUT_DIR"), "/catalog_messages.rs"));
+
+    // Re-export common types for backward compatibility
+    pub use super::common::{Code, Status};
 }
 
 #[derive(Clone)]

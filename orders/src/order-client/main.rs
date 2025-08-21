@@ -7,8 +7,16 @@ use prost::Message;
 
 use rust_common::env_config;
 
+// Import common module for generated proto code
+mod common {
+    pub use shared_proto::common::*;
+}
+
 pub mod order_messages {
     include!(concat!(env!("OUT_DIR"), "/order_messages.rs"));
+
+    // Re-export common types for backward compatibility
+    pub use super::common::{Code, Status};
 }
 
 #[derive(Parser)]

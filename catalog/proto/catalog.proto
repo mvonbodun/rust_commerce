@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package catalog_messages;
 
-import "status.proto";
+import "common/status.proto";
 import "category.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -30,7 +30,7 @@ message ProductCreateRequest {
 
 message ProductCreateResponse {
     optional Product product = 1;
-    Status status = 2;
+    common.Status status = 2;
 }
 
 message ProductGetRequest {
@@ -39,7 +39,7 @@ message ProductGetRequest {
 
 message ProductGetResponse {
     optional Product product = 1;
-    Status status = 2;
+    common.Status status = 2;
 }
 
 message ProductGetBySlugRequest {
@@ -48,7 +48,7 @@ message ProductGetBySlugRequest {
 
 message ProductGetBySlugResponse {
     optional Product product = 1;
-    Status status = 2;
+    common.Status status = 2;
 }
 
 message ProductUpdateRequest {
@@ -58,7 +58,7 @@ message ProductUpdateRequest {
 
 message ProductUpdateResponse {
     optional Product product = 1;
-    Status status = 2;
+    common.Status status = 2;
 }
 
 message ProductDeleteRequest {
@@ -66,7 +66,7 @@ message ProductDeleteRequest {
 }
 
 message ProductDeleteResponse {
-    Status status = 1;
+    common.Status status = 1;
 }
 
 message ProductSearchRequest {
@@ -80,7 +80,7 @@ message ProductSearchRequest {
 message ProductSearchResponse {
     repeated Product products = 1;
     int32 total_count = 2;
-    Status status = 3;
+    common.Status status = 3;
 }
 
 message ProductExportRequest {
@@ -91,7 +91,7 @@ message ProductExportRequest {
 message ProductExportResponse {
     repeated Product products = 1;
     int32 total_count = 2;
-    Status status = 3;
+    common.Status status = 3;
 }
 
 message GetProductSlugsRequest {
@@ -105,7 +105,7 @@ message GetProductSlugsResponse {
     optional string next_cursor = 2;   // Cursor for next page (null if last page)
     int32 total_count = 3;             // Total number of products (optional, expensive)
     bool has_more = 4;                 // Whether more results exist
-    Status status = 5;                 // Operation status
+    common.Status status = 5;                 // Operation status
 }
 
 message Product {
@@ -185,13 +185,13 @@ service CatalogService {
     rpc GetCategory(GetCategoryRequest) returns (CategoryResponse);
     rpc GetCategoryBySlug(GetCategoryBySlugRequest) returns (CategoryResponse);
     rpc UpdateCategory(UpdateCategoryRequest) returns (CategoryResponse);
-    rpc DeleteCategory(DeleteCategoryRequest) returns (Status);
+    rpc DeleteCategory(DeleteCategoryRequest) returns (common.Status);
     rpc GetCategoryTree(CategoryTreeRequest) returns (CategoryTreeResponse);
     rpc GetCategoryPath(GetCategoryPathRequest) returns (CategoryPathResponse);
     rpc GetChildren(GetChildrenRequest) returns (GetChildrenResponse);
     rpc GetDescendants(GetDescendantsRequest) returns (GetDescendantsResponse);
-    rpc MoveCategory(MoveCategoryRequest) returns (Status);
+    rpc MoveCategory(MoveCategoryRequest) returns (common.Status);
     rpc ExportCategories(CategoryExportRequest) returns (CategoryExportResponse);
     rpc ImportCategories(CategoryImportRequest) returns (CategoryImportResponse);
-    rpc ReorderChildren(ReorderChildrenRequest) returns (Status);
+    rpc ReorderChildren(ReorderChildrenRequest) returns (common.Status);
 }

@@ -6,9 +6,17 @@ mod product_slug_integration_tests {
 
     use uuid::Uuid;
 
+    // Import common module for generated proto code
+    mod common {
+        pub use shared_proto::common::*;
+    }
+
     // Include the generated protobuf messages
     pub mod catalog_messages {
         include!(concat!(env!("OUT_DIR"), "/catalog_messages.rs"));
+
+        // Re-export common types for backward compatibility
+        pub use super::common::Code;
     }
 
     use catalog_messages::{

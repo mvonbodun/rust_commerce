@@ -19,8 +19,16 @@ use mongodb::{Client, Collection, IndexModel};
 
 use futures::StreamExt;
 
+// Import common module for generated proto code
+mod common {
+    pub use shared_proto::common::*;
+}
+
 pub mod order_messages {
     include!(concat!(env!("OUT_DIR"), "/order_messages.rs"));
+
+    // Re-export common types for backward compatibility
+    pub use super::common::{Code, Status};
 }
 
 #[derive(Clone)]

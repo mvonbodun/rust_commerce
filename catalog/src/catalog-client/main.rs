@@ -17,8 +17,16 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
+// Import common module for generated proto code
+mod common {
+    pub use shared_proto::common::*;
+}
+
 pub mod catalog_messages {
     include!(concat!(env!("OUT_DIR"), "/catalog_messages.rs"));
+
+    // Re-export common types for backward compatibility
+    pub use super::common::{Code, Status};
 }
 
 // Helper function to convert Product to ProductCreateRequest
