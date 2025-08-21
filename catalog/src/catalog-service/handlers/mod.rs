@@ -84,6 +84,24 @@ pub async fn create_product(
                         }
                     }
                 }
+                Err(handlers_inner::HandlerError::ValidationError(error_msg)) => {
+                    warn!("Validation error creating product: {error_msg}");
+                    let response = ProductCreateResponse {
+                        product: None,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::InvalidArgument.into(),
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
+                        }
+                    }
+                }
                 Err(handlers_inner::HandlerError::InternalError(error_msg)) => {
                     error!("Error creating product: {error_msg}");
                     let response = ProductCreateResponse {
@@ -172,6 +190,23 @@ pub async fn get_product(
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
                             error!("Failed to send response: {e}");
+                        }
+                    }
+                }
+                Err(handlers_inner::HandlerError::ValidationError(error_msg)) => {
+                    warn!("Validation error getting product: {error_msg}");
+                    let response = ProductGetResponse {
+                        product: None,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::InvalidArgument.into(),
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
                         }
                     }
                 }
@@ -265,6 +300,23 @@ pub async fn get_product_by_slug(
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
                             error!("Failed to send response: {e}");
+                        }
+                    }
+                }
+                Err(handlers_inner::HandlerError::ValidationError(error_msg)) => {
+                    warn!("Validation error getting product by slug: {error_msg}");
+                    let response = ProductGetBySlugResponse {
+                        product: None,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::InvalidArgument.into(),
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
                         }
                     }
                 }
@@ -364,6 +416,23 @@ pub async fn update_product(
                         }
                     }
                 }
+                Err(handlers_inner::HandlerError::ValidationError(error_msg)) => {
+                    warn!("Validation error updating product: {error_msg}");
+                    let response = ProductUpdateResponse {
+                        product: None,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::InvalidArgument.into(),
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
+                        }
+                    }
+                }
                 Err(handlers_inner::HandlerError::InternalError(error_msg)) => {
                     error!("Error updating product: {error_msg}");
                     let response = ProductUpdateResponse {
@@ -456,6 +525,22 @@ pub async fn delete_product(
                         }
                     }
                 }
+                Err(handlers_inner::HandlerError::ValidationError(error_msg)) => {
+                    warn!("Validation error deleting product: {error_msg}");
+                    let response = ProductDeleteResponse {
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::InvalidArgument.into(),
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
+                        }
+                    }
+                }
                 Err(handlers_inner::HandlerError::InternalError(error_msg)) => {
                     error!("Error deleting product: {error_msg}");
                     let response = ProductDeleteResponse {
@@ -539,6 +624,24 @@ pub async fn search_products(
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
                             error!("Failed to send response: {e}");
+                        }
+                    }
+                }
+                Err(handlers_inner::HandlerError::ValidationError(error_msg)) => {
+                    warn!("Validation error searching products: {error_msg}");
+                    let response = ProductSearchResponse {
+                        products: vec![],
+                        total_count: 0,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::InvalidArgument.into(),
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
                         }
                     }
                 }
@@ -626,6 +729,24 @@ pub async fn export_products(
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
                             error!("Failed to send response: {e}");
+                        }
+                    }
+                }
+                Err(handlers_inner::HandlerError::ValidationError(error_msg)) => {
+                    warn!("Validation error exporting products: {error_msg}");
+                    let response = ProductExportResponse {
+                        products: vec![],
+                        total_count: 0,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::InvalidArgument.into(),
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
                         }
                     }
                 }

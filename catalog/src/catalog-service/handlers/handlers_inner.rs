@@ -1,4 +1,5 @@
 use crate::catalog_messages::{ProductCreateRequest, ProductUpdateRequest};
+use crate::domain::{ProductName, ProductRef};
 use crate::model::{
     HierarchicalCategories, Packaging, Product, ProductBuilder, ProductVariant, Reviews,
 };
@@ -8,6 +9,7 @@ use log::{debug, error};
 #[derive(Debug)]
 pub enum HandlerError {
     InternalError(String),
+    ValidationError(String),
 }
 
 impl HandlerError {
@@ -21,7 +23,18 @@ pub async fn create_product(
 ) -> Result<Product, HandlerError> {
     debug!("Before call to create_product handler_inner");
 
-    let mut product_builder = ProductBuilder::new(request.name, request.product_ref);
+    // Validate product name
+    let product_name = ProductName::parse(request.name)
+        .map_err(|e| HandlerError::ValidationError(format!("Invalid product name: {}", e)))?;
+    
+    // Validate product reference
+    let product_ref = ProductRef::parse(request.product_ref)
+        .map_err(|e| HandlerError::ValidationError(format!("Invalid product reference: {}", e)))?;
+
+    let mut product_builder = ProductBuilder::new(
+        product_name.to_string(),
+        product_ref.to_string(),
+    );
 
     if let Some(brand) = request.brand {
         product_builder.brand(brand);
