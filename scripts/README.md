@@ -1,8 +1,55 @@
-# Fly.io Deployment Scripts
+# Rust Commerce Scripts
 
-This directory contains scripts to automate the deployment and management of Rust Commerce microservices on Fly.io.
+This directory contains utility scripts for development, testing, and deployment of Rust Commerce microservices.
 
-## Scripts Overview
+## Database Cleanup Scripts
+
+### cleanup-test-dbs.sh
+Interactive bash script to clean up test databases from MongoDB. This script:
+- Connects to MongoDB (uses `MONGODB_URL` environment variable or defaults to localhost)
+- Finds all databases starting with `test_`
+- Prompts for confirmation before deletion
+- Deletes all test databases
+- Shows remaining databases
+
+**Usage:**
+```bash
+# Using default MongoDB URL (localhost)
+./scripts/cleanup-test-dbs.sh
+
+# Using custom MongoDB URL
+MONGODB_URL="mongodb://user:pass@host:27017" ./scripts/cleanup-test-dbs.sh
+```
+
+### cleanup-test-dbs-auto.sh
+Non-interactive version that automatically deletes all test databases without prompting.
+Perfect for CI/CD pipelines or automated cleanup.
+
+**Usage:**
+```bash
+# Automatically clean all test databases
+./scripts/cleanup-test-dbs-auto.sh
+
+# Use in CI/CD or after running tests
+cargo test && ./scripts/cleanup-test-dbs-auto.sh
+```
+
+### cleanup_test_dbs.rs
+Rust version of the cleanup script. Can be compiled and run as a standalone binary.
+
+**Compile and run:**
+```bash
+# Compile the script
+rustc scripts/cleanup_test_dbs.rs -o scripts/cleanup_test_dbs
+
+# Run it
+./scripts/cleanup_test_dbs
+
+# Or with custom MongoDB URL
+MONGODB_URL="mongodb://user:pass@host:27017" ./scripts/cleanup_test_dbs
+```
+
+## Fly.io Deployment Scripts
 
 ### 1. `fly-setup.sh` - Individual Service Setup
 Sets up a single microservice on Fly.io with app creation, secrets configuration, and deployment.
