@@ -10,7 +10,7 @@ use std::collections::HashMap;
 
 #[tokio::test]
 async fn test_product_create_with_all_fields() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
     let builder = fixtures::product::ProductBuilder::default();
 
     let request = ProductCreateRequest {
@@ -53,7 +53,7 @@ async fn test_product_create_with_all_fields() {
 
 #[tokio::test]
 async fn test_product_create_with_minimal_fields() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
     let builder = fixtures::product::ProductBuilder::minimal();
 
     let request = ProductCreateRequest {
@@ -91,7 +91,7 @@ async fn test_product_create_with_minimal_fields() {
 
 #[tokio::test]
 async fn test_product_create_fails_with_missing_name() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     let request = ProductCreateRequest {
         name: "".to_string(), // Empty name should fail
@@ -128,7 +128,7 @@ async fn test_product_create_fails_with_missing_name() {
 
 #[tokio::test]
 async fn test_product_create_fails_with_missing_product_ref() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     let request = ProductCreateRequest {
         name: "Test Product".to_string(),
@@ -165,7 +165,7 @@ async fn test_product_create_fails_with_missing_product_ref() {
 
 #[tokio::test]
 async fn test_product_create_with_sql_injection_attempt() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     for sql_injection in fixtures::invalid::sql_injection_strings() {
         let request = ProductCreateRequest {
@@ -213,7 +213,7 @@ async fn test_product_create_with_sql_injection_attempt() {
 
 #[tokio::test]
 async fn test_product_get_existing_product() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create a product first
     let builder = fixtures::product::ProductBuilder::default();
@@ -238,7 +238,7 @@ async fn test_product_get_existing_product() {
 
 #[tokio::test]
 async fn test_product_get_non_existent_product() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     let response = get_product(&app, "non-existent-id")
         .await
@@ -249,7 +249,7 @@ async fn test_product_get_non_existent_product() {
 
 #[tokio::test]
 async fn test_product_get_with_empty_id() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     let response = get_product(&app, "").await.expect("Should get response");
 
@@ -258,7 +258,7 @@ async fn test_product_get_with_empty_id() {
 
 #[tokio::test]
 async fn test_product_get_with_invalid_id_format() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Test various invalid ID formats
     let invalid_ids = vec![
@@ -289,7 +289,7 @@ async fn test_product_get_with_invalid_id_format() {
 
 #[tokio::test]
 async fn test_product_get_by_slug_existing() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create a product with a specific slug
     let slug = fixtures::valid_slug();
@@ -316,7 +316,7 @@ async fn test_product_get_by_slug_existing() {
 
 #[tokio::test]
 async fn test_product_get_by_slug_non_existent() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     let response = get_product_by_slug(&app, "non-existent-slug")
         .await
@@ -329,7 +329,7 @@ async fn test_product_get_by_slug_non_existent() {
 
 #[tokio::test]
 async fn test_product_get_by_slug_with_special_characters() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Test slugs with special characters
     let special_slugs = vec![
@@ -360,7 +360,7 @@ async fn test_product_get_by_slug_with_special_characters() {
 
 #[tokio::test]
 async fn test_product_get_by_slug_sql_injection() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     for sql_injection in fixtures::invalid::sql_injection_strings() {
         let response = get_product_by_slug(&app, &sql_injection)
@@ -379,7 +379,7 @@ async fn test_product_get_by_slug_sql_injection() {
 
 #[tokio::test]
 async fn test_product_delete_existing() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create a product
     let builder = fixtures::product::ProductBuilder::default();
@@ -405,7 +405,7 @@ async fn test_product_delete_existing() {
 
 #[tokio::test]
 async fn test_product_delete_non_existent() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     let response = delete_product(&app, "non-existent-id")
         .await
@@ -419,7 +419,7 @@ async fn test_product_delete_non_existent() {
 
 #[tokio::test]
 async fn test_product_delete_idempotent() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create and delete a product
     let builder = fixtures::product::ProductBuilder::default();
@@ -449,7 +449,7 @@ async fn test_product_delete_idempotent() {
 
 #[tokio::test]
 async fn test_product_search_by_name() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create products with specific names
     let search_term = "SpecialSearchProduct";
@@ -489,7 +489,7 @@ async fn test_product_search_by_name() {
 
 #[tokio::test]
 async fn test_product_search_empty_query() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create some products
     for _ in 0..3 {
@@ -511,7 +511,7 @@ async fn test_product_search_empty_query() {
 
 #[tokio::test]
 async fn test_product_search_sql_injection() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     for sql_injection in fixtures::invalid::sql_injection_strings() {
         let response = search_products(&app, Some(sql_injection), None, None)
@@ -527,7 +527,7 @@ async fn test_product_search_sql_injection() {
 
 #[tokio::test]
 async fn test_product_search_with_xss_attempt() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     for xss_string in fixtures::invalid::xss_strings() {
         let response = search_products(&app, Some(xss_string.clone()), None, None)
@@ -597,7 +597,7 @@ async fn test_product_export_empty_catalog() {
 
 #[tokio::test]
 async fn test_product_export_with_products() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create some products to export
     let mut product_ids = vec![];
@@ -637,7 +637,7 @@ async fn test_product_export_with_products() {
 
 #[tokio::test]
 async fn test_product_export_with_pagination() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create multiple products
     for i in 0..5 {
