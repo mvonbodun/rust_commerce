@@ -1,7 +1,7 @@
-use crate::helpers::catalog_messages::*;
+use crate::helpers::{self, catalog_messages::*};
 use crate::helpers::*;
 use prost::Message;
-use rust_common::test_helpers::{fixtures, TestApp};
+use rust_common::test_helpers::{fixtures};
 
 // ============================================================================
 // CATEGORY CREATE TESTS
@@ -9,7 +9,7 @@ use rust_common::test_helpers::{fixtures, TestApp};
 
 #[tokio::test]
 async fn test_category_create_root_category() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
     let builder = fixtures::category::CategoryBuilder::root();
 
     let request = CreateCategoryRequest {
@@ -39,7 +39,7 @@ async fn test_category_create_root_category() {
 
 #[tokio::test]
 async fn test_category_create_child_category() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create parent category first
     let parent_builder = fixtures::category::CategoryBuilder::root();
@@ -78,7 +78,7 @@ async fn test_category_create_child_category() {
 
 #[tokio::test]
 async fn test_category_get_existing() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create a category
     let builder = fixtures::category::CategoryBuilder::default();
@@ -109,7 +109,7 @@ async fn test_category_get_existing() {
 
 #[tokio::test]
 async fn test_category_get_non_existent() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     let request = GetCategoryRequest {
         id: "non-existent-id".to_string(),
@@ -134,7 +134,7 @@ async fn test_category_get_non_existent() {
 
 #[tokio::test]
 async fn test_category_get_by_slug_existing() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     let slug = fixtures::valid_slug();
     let mut builder = fixtures::category::CategoryBuilder::default();
@@ -169,7 +169,7 @@ async fn test_category_get_by_slug_existing() {
 
 #[tokio::test]
 async fn test_category_update_name_and_description() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create a category
     let builder = fixtures::category::CategoryBuilder::default();
@@ -205,7 +205,7 @@ async fn test_category_update_name_and_description() {
 
 #[tokio::test]
 async fn test_category_delete_existing() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create a category
     let builder = fixtures::category::CategoryBuilder::default();
@@ -251,7 +251,7 @@ async fn test_category_delete_existing() {
 
 #[tokio::test]
 async fn test_category_tree_with_hierarchy() {
-    let app = TestApp::spawn().await;
+    let app = helpers::spawn_app::spawn_app().await;
 
     // Create a hierarchy: Root -> Child1, Child2
     let root = fixtures::category::CategoryBuilder::root();

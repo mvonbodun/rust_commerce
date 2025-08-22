@@ -1,8 +1,8 @@
 // Catalog-specific test helpers
-pub mod once_cell_app;
+// pub mod once_cell_app;
 pub mod spawn_app;
-pub mod test_service;
-pub mod test_setup;
+// pub mod test_service;
+// pub mod test_setup;
 
 use catalog_messages::{
     CategoryResponse, Code, CreateCategoryRequest, ProductCreateRequest, ProductCreateResponse,

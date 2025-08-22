@@ -2,29 +2,29 @@
 // So we can't use it directly in tests. Tests should spawn the service via command line.
 use log::{debug, info};
 use rust_catalog::startup::{Application, Settings};
-use rust_common::{load_environment, mask_sensitive_url};
+use rust_common::{load_environment, mask_sensitive_url, test_helpers::{TestApp, TestConfig}};
 // use std::process::{Command};
 use uuid::Uuid;
 
-pub struct TestApp {
-    pub nats_url: String,
-    pub nats_client: async_nats::Client,
-    pub db_name: String,
-}
+// pub struct TestApp {
+//     pub nats_url: String,
+//     pub nats_client: async_nats::Client,
+//     pub db_name: String,
+// }
 
-impl TestApp {
-    /// Execute a NATS request and return the response
-    pub async fn request(
-        &self,
-        subject: &str,
-        payload: Vec<u8>,
-    ) -> Result<async_nats::Message, Box<dyn std::error::Error + Send + Sync>> {
-        Ok(self
-            .nats_client
-            .request(subject.to_string(), payload.into())
-            .await?)
-    }
-}
+// impl TestApp {
+//     /// Execute a NATS request and return the response
+//     pub async fn request(
+//         &self,
+//         subject: &str,
+//         payload: Vec<u8>,
+//     ) -> Result<async_nats::Message, Box<dyn std::error::Error + Send + Sync>> {
+//         Ok(self
+//             .nats_client
+//             .request(subject.to_string(), payload.into())
+//             .await?)
+//     }
+// }
 
 pub async fn spawn_app() -> TestApp {
     // Generate a unique test database name
@@ -56,6 +56,7 @@ pub async fn spawn_app() -> TestApp {
 
     // Create the Settings
     let mut settings: Settings = Settings::from_env();
+    let mongodb_url = settings.mongodb_url.clone();
     // Use the specialized db_name generated for testing
     settings.database_name = db_name.clone();
     info!(
@@ -105,16 +106,17 @@ pub async fn spawn_app() -> TestApp {
     // tokio::time::sleep(std::time::Duration::from_secs(5)).await;
 
     // Create a NATS client for the test app
-    let nats_client = async_nats::connect(&nats_url)
-        .await
-        .expect("Failed to connect to NATS");
+    // let nats_client = async_nats::connect(&nats_url)
+    //     .await
+    //     .expect("Failed to connect to NATS");
 
     // Create a TestApp for making requests
-    let test_app = TestApp {
-        nats_url: nats_url.clone(),
-        nats_client,
-        db_name: db_name.clone(),
-    };
+    let test_app = TestApp::new_with_config(TestConfig {
+        nats_url,
+        mongodb_url: mongodb_url.clone(),
+        test_db_name: db_name.clone(),
+    })
+    .await;
 
     // // Connect to MongoDB for cleanup
     // let mongodb_client = Client::with_uri_str(
