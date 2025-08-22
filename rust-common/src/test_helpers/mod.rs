@@ -51,15 +51,13 @@ pub trait ResponseAssertions {
 pub mod validators {
     /// Check if a string contains SQL injection attempts
     pub fn contains_sql_injection(input: &str) -> bool {
-        let patterns = vec![
-            "DROP TABLE",
+        let patterns = ["DROP TABLE",
             "DELETE FROM",
             "INSERT INTO",
             "UPDATE SET",
             "OR 1=1",
             "'; --",
-            "\" OR \"",
-        ];
+            "\" OR \""];
 
         let input_upper = input.to_uppercase();
         patterns.iter().any(|pattern| input_upper.contains(pattern))
@@ -67,15 +65,13 @@ pub mod validators {
 
     /// Check if a string contains XSS attempts
     pub fn contains_xss(input: &str) -> bool {
-        let patterns = vec![
-            "<script",
+        let patterns = ["<script",
             "</script>",
             "javascript:",
             "onclick=",
             "onerror=",
             "<iframe",
-            "alert(",
-        ];
+            "alert("];
 
         let input_lower = input.to_lowercase();
         patterns.iter().any(|pattern| input_lower.contains(pattern))
@@ -105,21 +101,18 @@ pub mod assertions {
         assert_eq!(
             status_field,
             Some(expected_code),
-            "Expected error code {}",
-            expected_code
+            "Expected error code {expected_code}"
         );
     }
 
     pub fn assert_not_empty(value: &str, field_name: &str) {
-        assert!(!value.is_empty(), "{} should not be empty", field_name);
+        assert!(!value.is_empty(), "{field_name} should not be empty");
     }
 
     pub fn assert_uuid_format(value: &str, field_name: &str) {
         assert!(
             Uuid::parse_str(value).is_ok(),
-            "{} should be a valid UUID, got: {}",
-            field_name,
-            value
+            "{field_name} should be a valid UUID, got: {value}"
         );
     }
 }

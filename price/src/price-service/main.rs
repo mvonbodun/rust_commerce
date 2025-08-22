@@ -1,6 +1,7 @@
 mod handlers;
 mod model;
 mod persistence;
+mod validation;
 
 use handlers::{
     create_offer, delete_offer, get_best_offer_price, get_best_offer_prices, get_offer, Router,
@@ -10,9 +11,9 @@ use std::{env, error::Error, sync::Arc};
 
 use log::{debug, error, info};
 use rust_common::{
-    load_environment, mask_sensitive_url, setup_signal_handlers, validate_price_dependencies,
-    HealthMonitor, OperationTimer,
+    load_environment, mask_sensitive_url, setup_signal_handlers, HealthMonitor, OperationTimer,
 };
+use validation::validate_price_dependencies;
 
 use bson::doc;
 use futures::StreamExt;

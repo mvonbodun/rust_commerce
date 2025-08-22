@@ -100,7 +100,7 @@ mod tests {
 
         for reference in references {
             let result = ProductRef::parse(reference);
-            assert!(result.is_ok(), "Reference '{}' should be valid", reference);
+            assert!(result.is_ok(), "Reference '{reference}' should be valid");
             assert_eq!(result.unwrap().as_ref(), reference);
         }
     }
@@ -119,8 +119,7 @@ mod tests {
         for reference in references {
             assert!(
                 ProductRef::parse(reference).is_err(),
-                "Reference '{}' should be rejected",
-                reference
+                "Reference '{reference}' should be rejected"
             );
         }
     }
@@ -132,8 +131,7 @@ mod tests {
         for reference in references {
             assert!(
                 ProductRef::parse(reference).is_err(),
-                "Reference '{}' should be rejected",
-                reference
+                "Reference '{reference}' should be rejected"
             );
         }
     }

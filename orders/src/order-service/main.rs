@@ -2,6 +2,7 @@ pub mod model;
 
 mod handlers;
 mod persistence;
+mod validation;
 
 use handlers::{create_order, delete_order, get_order, Router};
 use log::{debug, error, info};
@@ -9,9 +10,9 @@ use persistence::orders_dao::{OrdersDao, OrdersDaoImpl};
 use std::{env, error::Error, sync::Arc};
 
 use rust_common::{
-    load_environment, mask_sensitive_url, setup_signal_handlers, validate_orders_dependencies,
-    HealthMonitor, OperationTimer,
+    load_environment, mask_sensitive_url, setup_signal_handlers, HealthMonitor, OperationTimer,
 };
+use validation::validate_orders_dependencies;
 
 use bson::doc;
 use model::Order;

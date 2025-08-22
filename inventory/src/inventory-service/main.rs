@@ -1,6 +1,7 @@
 mod handlers;
 mod model;
 mod persistence;
+mod validation;
 
 use handlers::{
     create_item, delete_item, get_all_locations_by_sku, get_item, update_stock, Router,
@@ -10,9 +11,9 @@ use std::{env, error::Error, sync::Arc};
 
 use log::{debug, error, info};
 use rust_common::{
-    load_environment, mask_sensitive_url, setup_signal_handlers, validate_inventory_dependencies,
-    HealthMonitor, OperationTimer,
+    load_environment, mask_sensitive_url, setup_signal_handlers, HealthMonitor, OperationTimer,
 };
+use validation::validate_inventory_dependencies;
 
 use bson::doc;
 use futures::StreamExt;

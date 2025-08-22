@@ -1,14 +1,14 @@
+mod validation;
+
 use log::info;
 use rust_catalog::startup::{Application, Settings};
-use rust_common::{
-    load_environment, mask_sensitive_url, setup_signal_handlers, validate_catalog_dependencies,
-    HealthMonitor,
-};
+use rust_common::{load_environment, mask_sensitive_url, setup_signal_handlers, HealthMonitor};
 use std::{
     env,
     error::Error,
     io::{self, Write},
 };
+use validation::validate_catalog_dependencies;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
@@ -30,7 +30,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     info!("📋 Environment configuration:");
     info!(
         "  RUST_ENV: {}",
-        env::var("RUST_ENV").unwrap_or_else(|_| "development".to_string())
+        env::var("RUST_ENV").unwrap_or_else(|_| "local".to_string())
     );
     info!(
         "  RUST_LOG: {}",

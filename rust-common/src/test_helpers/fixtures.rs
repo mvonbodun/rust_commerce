@@ -1,7 +1,7 @@
 use uuid::Uuid;
 
 /// Test data generators for creating valid and invalid test data
-
+///
 /// Generate random string of specified length
 pub fn random_string(length: usize) -> String {
     use rand::Rng;
