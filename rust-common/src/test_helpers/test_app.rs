@@ -1,7 +1,8 @@
 use async_nats::Client;
+use log::info;
 use mongodb::Database;
 
-use super::{cleanup_test_db, generate_test_db_name, TestConfig};
+use super::{cleanup_test_db, TestConfig};
 
 /// TestApp manages the lifecycle of a test environment
 pub struct TestApp {
@@ -10,17 +11,17 @@ pub struct TestApp {
     pub mongodb_db: Database,
     pub test_db_name: String,
     #[allow(dead_code)]
-    config: TestConfig,
+    pub config: TestConfig,
 }
 
 impl TestApp {
-    /// Spawn a new test application instance
-    pub async fn spawn() -> Self {
-        Self::spawn_with_config(TestConfig::default()).await
+    // Create a new test application instance
+    pub async fn new() -> Self {
+        Self::new_with_config(TestConfig::default()).await
     }
 
-    /// Spawn with custom configuration
-    pub async fn spawn_with_config(config: TestConfig) -> Self {
+    /// Create a new test application instance with the given configuration
+    pub async fn new_with_config(config: TestConfig) -> Self {
         // Connect to NATS
         let nats_client = async_nats::connect(&config.nats_url)
             .await
@@ -32,14 +33,14 @@ impl TestApp {
             .expect("Failed to connect to MongoDB for testing");
 
         // Create unique test database
-        let test_db_name = generate_test_db_name();
-        let mongodb_db = mongodb_client.database(&test_db_name);
+        info!("🧪 Using test database: {}", &config.test_db_name);
+        let mongodb_db = mongodb_client.database(&config.test_db_name);
 
         Self {
             nats_client,
             mongodb_client,
             mongodb_db,
-            test_db_name,
+            test_db_name: config.test_db_name.clone(),
             config,
         }
     }
@@ -116,6 +117,12 @@ impl TestApp {
             .collection::<bson::Document>(collection)
             .delete_many(bson::doc! {})
             .await
+    }
+
+    /// Explicitly cleanup the test database (useful if Drop isn't working)
+    pub async fn cleanup(&self) -> Result<(), mongodb::error::Error> {
+        eprintln!("🧹 Explicitly cleaning up test database: {}", self.test_db_name);
+        cleanup_test_db(&self.mongodb_client, &self.test_db_name).await
     }
 }
 

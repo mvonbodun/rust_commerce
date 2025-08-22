@@ -11,7 +11,7 @@ use uuid::Uuid;
 pub struct TestConfig {
     pub nats_url: String,
     pub mongodb_url: String,
-    pub test_db_prefix: String,
+    pub test_db_name: String,
 }
 
 impl Default for TestConfig {
@@ -22,7 +22,7 @@ impl Default for TestConfig {
             mongodb_url: std::env::var("MONGODB_TEST_URL").unwrap_or_else(|_| {
                 "mongodb://admin:password123@localhost:27017/?authSource=admin".to_string()
             }),
-            test_db_prefix: "test_".to_string(),
+            test_db_name: generate_test_db_name(),
         }
     }
 }
