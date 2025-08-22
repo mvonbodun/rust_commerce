@@ -31,11 +31,11 @@ impl ProductService {
 
         // Validate product name
         let product_name = ProductName::parse(request.name)
-            .map_err(|e| HandlerError::ValidationError(format!("Invalid product name: {}", e)))?;
+            .map_err(|e| HandlerError::ValidationError(format!("Invalid product name: {e}")))?;
 
         // Validate product reference
         let product_ref = ProductRef::parse(request.product_ref).map_err(|e| {
-            HandlerError::ValidationError(format!("Invalid product reference: {}", e))
+            HandlerError::ValidationError(format!("Invalid product reference: {e}"))
         })?;
 
         let mut product_builder =

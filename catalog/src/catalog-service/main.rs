@@ -1,7 +1,5 @@
 use log::info;
-use rust_catalog::{
-    startup::{Application, Settings},
-};
+use rust_catalog::startup::{Application, Settings};
 use rust_common::{
     load_environment, mask_sensitive_url, setup_signal_handlers, validate_catalog_dependencies,
     HealthMonitor,

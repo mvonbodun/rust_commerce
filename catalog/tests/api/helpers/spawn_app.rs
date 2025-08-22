@@ -20,11 +20,11 @@ impl TestCatalogApp {
             "test_catalog_{}",
             Uuid::new_v4().to_string().replace("-", "_")
         );
-        info!("🧪 Starting test with database: {}", db_name);
+        info!("🧪 Starting test with database: {db_name}");
 
         // Kill any existing catalog service
         Command::new("pkill")
-            .args(&["-f", "catalog-service"])
+            .args(["-f", "catalog-service"])
             .output()
             .ok();
 
@@ -33,7 +33,7 @@ impl TestCatalogApp {
 
         // Start a new catalog service with the test database
         let catalog_process = Command::new("cargo")
-            .args(&["run", "--bin", "catalog-service"])
+            .args(["run", "--bin", "catalog-service"])
             .env("CATALOG_DB_NAME", &db_name)
             .env(
                 "MONGODB_URL",
@@ -49,10 +49,7 @@ impl TestCatalogApp {
             .expect("Failed to start catalog service");
 
         // Give the service time to start - it takes time to compile and start
-        info!(
-            "⏳ Waiting for catalog service to start with database: {}",
-            db_name
-        );
+        info!("⏳ Waiting for catalog service to start with database: {db_name}");
         tokio::time::sleep(std::time::Duration::from_secs(5)).await;
 
         // Create a TestApp for making requests
@@ -72,7 +69,7 @@ impl TestCatalogApp {
         // The catalog-service will create its own collections and indexes when it starts
         // with the CATALOG_DB_NAME environment variable pointing to our test database
 
-        info!("✅ Test database {} is ready", db_name);
+        info!("✅ Test database {db_name} is ready");
 
         Self {
             app,
@@ -103,16 +100,16 @@ impl Drop for TestCatalogApp {
         let db_name = self.db_name.clone();
         tokio::spawn(async move {
             if let Err(e) = client.database(&db_name).drop().await {
-                eprintln!("Failed to drop test database {}: {}", db_name, e);
+                eprintln!("Failed to drop test database {db_name}: {e}");
             } else {
-                info!("✅ Dropped test database: {}", db_name);
+                info!("✅ Dropped test database: {db_name}");
             }
         });
 
         // Restart the main catalog service for other tests
         info!("🔄 Restarting main catalog service with db_catalog");
         Command::new("cargo")
-            .args(&["run", "--bin", "catalog-service"])
+            .args(["run", "--bin", "catalog-service"])
             .env("CATALOG_DB_NAME", "db_catalog")
             .spawn()
             .ok();

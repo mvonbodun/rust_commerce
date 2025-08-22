@@ -13,7 +13,7 @@ impl TestCatalogService {
     pub async fn start(db_name: String) -> Self {
         // Kill any existing catalog service
         Command::new("pkill")
-            .args(&["-f", "catalog-service"])
+            .args(["-f", "catalog-service"])
             .output()
             .ok();
 
@@ -22,7 +22,7 @@ impl TestCatalogService {
 
         // Start the catalog service with test database
         let process = Command::new("cargo")
-            .args(&["run", "--bin", "catalog-service"])
+            .args(["run", "--bin", "catalog-service"])
             .env("CATALOG_DB_NAME", &db_name)
             .env("RUST_LOG", "info")
             .spawn()

@@ -454,10 +454,10 @@ async fn test_product_search_by_name() {
     // Create products with specific names
     let search_term = "SpecialSearchProduct";
     let mut builder1 = fixtures::product::ProductBuilder::default();
-    builder1.name = format!("{} One", search_term);
+    builder1.name = format!("{search_term} One");
 
     let mut builder2 = fixtures::product::ProductBuilder::default();
-    builder2.name = format!("{} Two", search_term);
+    builder2.name = format!("{search_term} Two");
 
     let mut builder3 = fixtures::product::ProductBuilder::default();
     builder3.name = "Different Product".to_string();
@@ -556,7 +556,7 @@ async fn test_product_export_empty_catalog() {
 
     // Get the shared test app
     let (app, db_name, client) = get_test_app().await;
-    eprintln!("Test: export_empty_catalog - using database: {}", db_name);
+    eprintln!("Test: export_empty_catalog - using database: {db_name}");
 
     // Clean up any existing products to ensure empty catalog
     cleanup_products(&client, &db_name).await;
@@ -603,7 +603,7 @@ async fn test_product_export_with_products() {
     let mut product_ids = vec![];
     for i in 0..3 {
         let mut builder = fixtures::product::ProductBuilder::default();
-        builder.name = format!("Export Test Product {}", i);
+        builder.name = format!("Export Test Product {i}");
         let id = create_test_product(&app, builder)
             .await
             .expect("Should create product");
@@ -642,7 +642,7 @@ async fn test_product_export_with_pagination() {
     // Create multiple products
     for i in 0..5 {
         let mut builder = fixtures::product::ProductBuilder::default();
-        builder.name = format!("Paginated Product {}", i);
+        builder.name = format!("Paginated Product {i}");
         create_test_product(&app, builder)
             .await
             .expect("Should create product");

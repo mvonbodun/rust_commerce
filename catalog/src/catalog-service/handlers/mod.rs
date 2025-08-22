@@ -24,6 +24,12 @@ pub struct Router {
     pub route_map: HashMap<String, RouteHandler>,
 }
 
+impl Default for Router {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Router {
     pub fn new() -> Self {
         Self {

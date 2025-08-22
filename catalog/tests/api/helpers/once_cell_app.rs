@@ -36,11 +36,11 @@ pub async fn init_test_app() -> (TestApp, String, Client) {
         "test_catalog_{}",
         Uuid::new_v4().to_string().replace("-", "_")
     );
-    eprintln!("📦 Using test database: {}", db_name);
+    eprintln!("📦 Using test database: {db_name}");
 
     // Kill any existing catalog service
     Command::new("pkill")
-        .args(&["-f", "catalog-service"])
+        .args(["-f", "catalog-service"])
         .output()
         .ok();
 
@@ -49,7 +49,7 @@ pub async fn init_test_app() -> (TestApp, String, Client) {
 
     // Start a new catalog service with the test database
     let catalog_process = Command::new("cargo")
-        .args(&["run", "--bin", "catalog-service"])
+        .args(["run", "--bin", "catalog-service"])
         .env("CATALOG_DB_NAME", &db_name)
         .env(
             "MONGODB_URL",
@@ -87,10 +87,7 @@ pub async fn init_test_app() -> (TestApp, String, Client) {
         catalog_process: Some(catalog_process),
     });
 
-    eprintln!(
-        "✅ Global test environment ready with database: {}",
-        db_name
-    );
+    eprintln!("✅ Global test environment ready with database: {db_name}");
 
     (app, db_name, mongodb_client)
 }
@@ -146,9 +143,9 @@ impl Drop for GlobalTestApp {
             let rt = tokio::runtime::Runtime::new().unwrap();
             rt.block_on(async {
                 if let Err(e) = client.database(&db_name).drop().await {
-                    eprintln!("Failed to drop test database {}: {}", db_name, e);
+                    eprintln!("Failed to drop test database {db_name}: {e}");
                 } else {
-                    eprintln!("✅ Dropped test database: {}", db_name);
+                    eprintln!("✅ Dropped test database: {db_name}");
                 }
             });
         });

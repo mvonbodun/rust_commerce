@@ -22,8 +22,7 @@ impl ProductName {
         let graphemes = s.graphemes(true).count();
         if graphemes > 256 {
             return Err(format!(
-                "Product name is too long. Maximum 256 characters, got {}",
-                graphemes
+                "Product name is too long. Maximum 256 characters, got {graphemes}"
             ));
         }
 

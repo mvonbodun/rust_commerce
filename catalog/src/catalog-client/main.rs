@@ -1,11 +1,11 @@
 use catalog_messages::{
     CategoryExportRequest, CategoryExportResponse, CategoryImportRequest, CategoryImportResponse,
     CategoryResponse, CategoryTreeRequest, CategoryTreeResponse, CreateCategoryRequest,
-    DeleteCategoryRequest, GetCategoryBySlugRequest, GetCategoryRequest, GetProductSlugsRequest,
-    GetProductSlugsResponse, ProductCreateRequest, ProductCreateResponse, ProductDeleteRequest,
-    ProductDeleteResponse, ProductExportRequest, ProductExportResponse, ProductGetBySlugRequest,
-    ProductGetBySlugResponse, ProductGetRequest, ProductGetResponse, ProductSearchRequest,
-    ProductSearchResponse, Status, UpdateCategoryRequest,
+    DeleteCategoryRequest, GetCategoryBySlugRequest, GetCategoryBySlugResponse, GetCategoryRequest,
+    GetCategoryResponse, GetProductSlugsRequest, GetProductSlugsResponse, ProductCreateRequest,
+    ProductCreateResponse, ProductDeleteRequest, ProductDeleteResponse, ProductExportRequest,
+    ProductExportResponse, ProductGetBySlugRequest, ProductGetBySlugResponse, ProductGetRequest,
+    ProductGetResponse, ProductSearchRequest, ProductSearchResponse, UpdateCategoryRequest,
 };
 use clap::{Parser, Subcommand};
 use log::debug;
@@ -603,14 +603,26 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .request("catalog.get_category", request_bytes.into())
                 .await?;
 
-            let category_response = CategoryResponse::decode(&*response.payload)?;
-            println!("✅ Category found!");
-            println!("  🆔 ID: {}", category_response.id);
-            println!("  📝 Name: {}", category_response.name);
-            println!("  🔗 Slug: {}", category_response.slug);
-            println!("  📄 Description: {}", category_response.short_description);
-            println!("  🔢 Level: {}", category_response.level);
-            println!("  👥 Children: {}", category_response.children_count);
+            let get_response = GetCategoryResponse::decode(&*response.payload)?;
+
+            if let Some(ref status) = get_response.status {
+                if status.code != catalog_messages::Code::Ok as i32 {
+                    println!("❌ Error: {}", status.message);
+                    return Ok(());
+                }
+            }
+
+            if let Some(category) = get_response.category {
+                println!("✅ Category found!");
+                println!("  🆔 ID: {}", category.id);
+                println!("  📝 Name: {}", category.name);
+                println!("  🔗 Slug: {}", category.slug);
+                println!("  📄 Description: {}", category.short_description);
+                println!("  🔢 Level: {}", category.level);
+                println!("  👥 Children: {}", category.children_count);
+            } else {
+                println!("❌ Category not found");
+            }
         }
         Some(Commands::CategoryGetBySlug { slug }) => {
             let request = GetCategoryBySlugRequest { slug: slug.clone() };
@@ -622,12 +634,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .request("catalog.get_category_by_slug", request_bytes.into())
                 .await?;
 
-            let category_response = CategoryResponse::decode(&*response.payload)?;
-            println!("✅ Category found!");
-            println!("  🆔 ID: {}", category_response.id);
-            println!("  📝 Name: {}", category_response.name);
-            println!("  🔗 Slug: {}", category_response.slug);
-            println!("  📄 Description: {}", category_response.short_description);
+            let get_response = GetCategoryBySlugResponse::decode(&*response.payload)?;
+
+            if let Some(ref status) = get_response.status {
+                if status.code != catalog_messages::Code::Ok as i32 {
+                    println!("❌ Error: {}", status.message);
+                    return Ok(());
+                }
+            }
+
+            if let Some(category) = get_response.category {
+                println!("✅ Category found!");
+                println!("  🆔 ID: {}", category.id);
+                println!("  📝 Name: {}", category.name);
+                println!("  🔗 Slug: {}", category.slug);
+                println!("  📄 Description: {}", category.short_description);
+            } else {
+                println!("❌ Category not found");
+            }
         }
         Some(Commands::CategoryUpdate {
             id,
@@ -671,17 +695,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .request("catalog.delete_category", request_bytes.into())
                 .await?;
 
-            // Decode the status response
-            let status = Status::decode(&*response.payload)?;
+            // The handler sends a CategoryResponse, not a Status
+            let _category_response = CategoryResponse::decode(&*response.payload)?;
 
-            if status.code == catalog_messages::Code::Ok as i32 {
-                println!("✅ Category deleted successfully!");
-            } else {
-                println!(
-                    "❌ Failed to delete category: {} ({})",
-                    status.message, status.code
-                );
-            }
+            // Since delete always returns an empty CategoryResponse on success,
+            // we just check if decoding was successful
+            println!("✅ Category deleted successfully!");
         }
         Some(Commands::CategoryExport { file, batch_size }) => {
             let request = CategoryExportRequest {

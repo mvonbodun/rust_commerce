@@ -22,15 +22,13 @@ impl ProductRef {
         let graphemes = s.graphemes(true).count();
         if graphemes > 100 {
             return Err(format!(
-                "Product reference is too long. Maximum 100 characters, got {}",
-                graphemes
+                "Product reference is too long. Maximum 100 characters, got {graphemes}"
             ));
         }
 
         if graphemes < 3 {
             return Err(format!(
-                "Product reference is too short. Minimum 3 characters, got {}",
-                graphemes
+                "Product reference is too short. Minimum 3 characters, got {graphemes}"
             ));
         }
 
