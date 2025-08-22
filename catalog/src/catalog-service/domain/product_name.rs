@@ -7,17 +7,17 @@ impl ProductName {
     /// Parse a string slice into a ProductName type
     pub fn parse(s: impl Into<String>) -> Result<ProductName, String> {
         let s = s.into();
-        
+
         // Check if empty
         if s.trim().is_empty() {
             return Err("Product name cannot be empty".to_string());
         }
-        
+
         // Check if whitespace only
         if s.chars().all(|c| c.is_whitespace()) {
             return Err("Product name cannot be only whitespace".to_string());
         }
-        
+
         // Check length (using graphemes for proper Unicode handling)
         let graphemes = s.graphemes(true).count();
         if graphemes > 256 {
@@ -26,13 +26,13 @@ impl ProductName {
                 graphemes
             ));
         }
-        
+
         // Check for forbidden characters that might cause issues
         let forbidden_characters = ['/', '\\', '\0', '\n', '\r', '\t'];
         if s.chars().any(|c| forbidden_characters.contains(&c)) {
             return Err("Product name contains forbidden characters".to_string());
         }
-        
+
         Ok(Self(s))
     }
 }
@@ -95,7 +95,7 @@ mod tests {
             "Product\rName",
             "Product\tName",
         ];
-        
+
         for name in names {
             assert!(
                 ProductName::parse(name).is_err(),

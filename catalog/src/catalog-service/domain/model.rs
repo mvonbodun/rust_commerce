@@ -333,14 +333,17 @@ impl ProductBuilder {
     pub fn build(&mut self) -> Product {
         // Generate slug from name if not provided
         let slug = self.slug.clone().or_else(|| {
-            Some(self.name.to_lowercase()
-                .replace(" ", "-")
-                .replace("_", "-")
-                .chars()
-                .filter(|c| c.is_alphanumeric() || *c == '-')
-                .collect::<String>())
+            Some(
+                self.name
+                    .to_lowercase()
+                    .replace(" ", "-")
+                    .replace("_", "-")
+                    .chars()
+                    .filter(|c| c.is_alphanumeric() || *c == '-')
+                    .collect::<String>(),
+            )
         });
-        
+
         Product {
             id: self.id.clone(),
             name: self.name.clone(),

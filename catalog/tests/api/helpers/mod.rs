@@ -1,12 +1,13 @@
 // Catalog-specific test helpers
+pub mod once_cell_app;
+pub mod spawn_app;
+pub mod test_service;
+pub mod test_setup;
+
 use catalog_messages::{
-    ProductCreateRequest, ProductCreateResponse, 
-    ProductGetRequest, ProductGetResponse,
-    ProductDeleteRequest, ProductDeleteResponse,
-    ProductGetBySlugRequest, ProductGetBySlugResponse,
-    ProductSearchRequest, ProductSearchResponse,
-    CreateCategoryRequest, CategoryResponse,
-    Code,
+    CategoryResponse, Code, CreateCategoryRequest, ProductCreateRequest, ProductCreateResponse,
+    ProductDeleteRequest, ProductDeleteResponse, ProductGetBySlugRequest, ProductGetBySlugResponse,
+    ProductGetRequest, ProductGetResponse, ProductSearchRequest, ProductSearchResponse,
 };
 use prost::Message;
 use rust_common::test_helpers::*;
@@ -19,7 +20,7 @@ mod common {
 // Include the generated protobuf messages
 pub mod catalog_messages {
     include!(concat!(env!("OUT_DIR"), "/catalog_messages.rs"));
-    
+
     // Re-export common types for backward compatibility
     pub use super::common::Code;
 }
@@ -51,13 +52,13 @@ pub async fn create_test_product(
         default_variant: None,
         variants: vec![],
     };
-    
+
     let response = app
         .request("catalog.create_product", request.encode_to_vec())
         .await?;
-    
+
     let create_response = ProductCreateResponse::decode(&*response.payload)?;
-    
+
     if let Some(status) = &create_response.status {
         if status.code == Code::Ok as i32 {
             if let Some(product) = &create_response.product {
@@ -65,7 +66,7 @@ pub async fn create_test_product(
             }
         }
     }
-    
+
     Err("Failed to create product".into())
 }
 
@@ -74,14 +75,12 @@ pub async fn get_product(
     app: &TestApp,
     id: &str,
 ) -> Result<ProductGetResponse, Box<dyn std::error::Error + Send + Sync>> {
-    let request = ProductGetRequest {
-        id: id.to_string(),
-    };
-    
+    let request = ProductGetRequest { id: id.to_string() };
+
     let response = app
         .request("catalog.get_product", request.encode_to_vec())
         .await?;
-    
+
     Ok(ProductGetResponse::decode(&*response.payload)?)
 }
 
@@ -93,11 +92,11 @@ pub async fn get_product_by_slug(
     let request = ProductGetBySlugRequest {
         slug: slug.to_string(),
     };
-    
+
     let response = app
         .request("catalog.get_product_by_slug", request.encode_to_vec())
         .await?;
-    
+
     Ok(ProductGetBySlugResponse::decode(&*response.payload)?)
 }
 
@@ -106,14 +105,12 @@ pub async fn delete_product(
     app: &TestApp,
     id: &str,
 ) -> Result<ProductDeleteResponse, Box<dyn std::error::Error + Send + Sync>> {
-    let request = ProductDeleteRequest {
-        id: id.to_string(),
-    };
-    
+    let request = ProductDeleteRequest { id: id.to_string() };
+
     let response = app
         .request("catalog.delete_product", request.encode_to_vec())
         .await?;
-    
+
     Ok(ProductDeleteResponse::decode(&*response.payload)?)
 }
 
@@ -131,11 +128,11 @@ pub async fn search_products(
         limit: Some(10),
         offset: None,
     };
-    
+
     let response = app
         .request("catalog.search_products", request.encode_to_vec())
         .await?;
-    
+
     Ok(ProductSearchResponse::decode(&*response.payload)?)
 }
 
@@ -155,13 +152,13 @@ pub async fn create_test_category(
         is_active: Some(true),
         parent_slug: None,
     };
-    
+
     let response = app
         .request("catalog.create_category", request.encode_to_vec())
         .await?;
-    
+
     let category_response = CategoryResponse::decode(&*response.payload)?;
-    
+
     // CategoryResponse is the actual category object, not a wrapper
     Ok(category_response.id)
 }
@@ -169,30 +166,44 @@ pub async fn create_test_category(
 /// Assertion helpers specific to catalog
 pub mod assertions {
     use super::*;
-    
+
     pub fn assert_product_created(response: &ProductCreateResponse) {
-        assert!(response.product.is_some(), "Product should be present in response");
+        assert!(
+            response.product.is_some(),
+            "Product should be present in response"
+        );
         assert!(response.status.is_some(), "Status should be present");
-        
+
         let status = response.status.as_ref().unwrap();
         assert_eq!(status.code, Code::Ok as i32, "Status should be OK");
-        
+
         let product = response.product.as_ref().unwrap();
         assert!(product.id.is_some(), "Product should have an ID");
-        assert!(!product.id.as_ref().unwrap().is_empty(), "Product ID should not be empty");
+        assert!(
+            !product.id.as_ref().unwrap().is_empty(),
+            "Product ID should not be empty"
+        );
     }
-    
+
     pub fn assert_product_not_found(response: &ProductGetResponse) {
         assert!(response.product.is_none(), "Product should not be present");
         assert!(response.status.is_some(), "Status should be present");
-        
+
         let status = response.status.as_ref().unwrap();
-        assert_eq!(status.code, Code::NotFound as i32, "Status should be NotFound");
+        assert_eq!(
+            status.code,
+            Code::NotFound as i32,
+            "Status should be NotFound"
+        );
     }
-    
+
     pub fn assert_invalid_request(status: &Option<common::Status>) {
         assert!(status.is_some(), "Status should be present");
         let status = status.as_ref().unwrap();
-        assert_eq!(status.code, Code::InvalidArgument as i32, "Status should be InvalidArgument");
+        assert_eq!(
+            status.code,
+            Code::InvalidArgument as i32,
+            "Status should be InvalidArgument"
+        );
     }
 }
