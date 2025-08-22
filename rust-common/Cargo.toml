@@ -20,3 +20,11 @@ async-nats = { version = "0.42.0", features = ["service"] }
 
 # Error handling
 anyhow = "1.0"
+
+# Test dependencies (also needed in regular dependencies for test helpers)
+uuid = { version = "1.10", features = ["v4"] }
+rand = "0.8"
+chrono = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+bson = "2.11"
+prost = "0.14"
