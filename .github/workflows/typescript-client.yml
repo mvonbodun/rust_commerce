@@ -1,0 +1,127 @@
+name: TypeScript Client CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'catalog/proto/**'
+      - 'shared-proto/proto/**'
+      - 'typescript-client/**'
+      - '.github/workflows/typescript-client.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'catalog/proto/**'
+      - 'shared-proto/proto/**'
+      - 'typescript-client/**'
+      - '.github/workflows/typescript-client.yml'
+
+jobs:
+  build-and-test:
+    name: Build and Test TypeScript Client
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: typescript-client/package-lock.json
+      
+      - name: Install Protobuf Compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler
+          protoc --version
+      
+      - name: Install Dependencies
+        working-directory: typescript-client
+        run: npm ci
+      
+      - name: Generate TypeScript Types
+        working-directory: typescript-client
+        run: npm run generate
+      
+      - name: Lint TypeScript Code
+        working-directory: typescript-client
+        run: npm run lint
+        continue-on-error: true  # Don't fail on lint warnings initially
+      
+      - name: Build TypeScript Client
+        working-directory: typescript-client
+        run: npm run build
+      
+      - name: Run Tests
+        working-directory: typescript-client
+        run: npm test
+        continue-on-error: true  # Tests not yet implemented
+      
+      - name: Check for Generated File Changes
+        run: |
+          if [[ -n $(git status --porcelain typescript-client/generated/) ]]; then
+            echo "::warning::Generated files have uncommitted changes. Please run 'npm run generate' and commit the changes."
+            git diff typescript-client/generated/
+          fi
+      
+      - name: Archive Generated Files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-typescript
+          path: |
+            typescript-client/generated/
+            typescript-client/dist/
+
+  publish-npm:
+    name: Publish to NPM
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: Install Protobuf Compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler
+      
+      - name: Install Dependencies
+        working-directory: typescript-client
+        run: npm ci
+      
+      - name: Build Package
+        working-directory: typescript-client
+        run: npm run build
+      
+      - name: Check if version changed
+        id: version-check
+        working-directory: typescript-client
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+          
+          # Check if this version is already published
+          if npm view @rust-commerce/client@$PACKAGE_VERSION version 2>/dev/null; then
+            echo "Version $PACKAGE_VERSION already published"
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "Version $PACKAGE_VERSION not yet published"
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Publish to NPM
+        if: steps.version-check.outputs.should_publish == 'true'
+        working-directory: typescript-client
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm publish --access public
+          echo "Published version ${{ steps.version-check.outputs.version }}"

@@ -1,0 +1,47 @@
+# Source files (only distribute compiled JS)
+src/
+scripts/
+examples/
+
+# Config files
+tsconfig.json
+.eslintrc*
+.prettierrc*
+jest.config.js
+
+# Proto source files (we ship generated TS, not proto)
+../catalog/proto/
+../shared-proto/proto/
+
+# Development files
+*.log
+*.tmp
+.env*
+.gitignore
+.npmignore
+
+# Test files
+__tests__/
+*.test.ts
+*.spec.ts
+coverage/
+.nyc_output/
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# CI/CD
+.github/
+
+# Documentation source (README.md is included by default)
+docs/
+
+# Keep only the essentials:
+# - dist/ (compiled JavaScript)
+# - generated/ (TypeScript types from proto)
+# - package.json
+# - README.md
+# - LICENSE (if exists)

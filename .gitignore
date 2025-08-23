@@ -25,3 +25,8 @@ Cargo.lock
 /logs/*
 /agent_guidance_docs/*
 
+# TypeScript client - see typescript-client/.gitignore for details
+/typescript-client/node_modules/
+/typescript-client/dist/
+/typescript-client/.tsbuildinfo
+

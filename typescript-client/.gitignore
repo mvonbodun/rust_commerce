@@ -1,0 +1,77 @@
+# Dependencies
+node_modules/
+.npm
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Generated files - IMPORTANT DECISION POINT
+# Option 1: EXCLUDE generated files (current setting)
+# Pros: Ensures proto files are single source of truth
+# Cons: Requires proto compilation before using the package
+generated/
+
+# Option 2: INCLUDE generated files (comment out the line above)
+# Pros: Package works immediately after npm install
+# Cons: Risk of generated files being out of sync with proto files
+# 
+# If you comment out 'generated/' above, make sure to:
+# 1. Always regenerate before committing: npm run generate
+# 2. Add a pre-commit hook to ensure files are up to date
+# 3. Have CI verify generated files match proto files
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# ESLint
+.eslintcache
+
+# Package manager locks - IMPORTANT DECISION POINT
+# Including package-lock.json ensures reproducible builds
+# Excluding it allows more flexibility with dependencies
+# 
+# Recommended: INCLUDE for applications, EXCLUDE for libraries
+# Since this is a library, we exclude it:
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Temporary files
+*.tmp
+tmp/
+.cache/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Debug
+.vscode/launch.json
