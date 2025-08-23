@@ -51,13 +51,15 @@ pub trait ResponseAssertions {
 pub mod validators {
     /// Check if a string contains SQL injection attempts
     pub fn contains_sql_injection(input: &str) -> bool {
-        let patterns = ["DROP TABLE",
+        let patterns = [
+            "DROP TABLE",
             "DELETE FROM",
             "INSERT INTO",
             "UPDATE SET",
             "OR 1=1",
             "'; --",
-            "\" OR \""];
+            "\" OR \"",
+        ];
 
         let input_upper = input.to_uppercase();
         patterns.iter().any(|pattern| input_upper.contains(pattern))
@@ -65,13 +67,15 @@ pub mod validators {
 
     /// Check if a string contains XSS attempts
     pub fn contains_xss(input: &str) -> bool {
-        let patterns = ["<script",
+        let patterns = [
+            "<script",
             "</script>",
             "javascript:",
             "onclick=",
             "onerror=",
             "<iframe",
-            "alert("];
+            "alert(",
+        ];
 
         let input_lower = input.to_lowercase();
         patterns.iter().any(|pattern| input_lower.contains(pattern))

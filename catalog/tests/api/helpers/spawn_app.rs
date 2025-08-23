@@ -3,7 +3,10 @@ use futures::StreamExt;
 // So we can't use it directly in tests. Tests should spawn the service via command line.
 use log::{debug, info};
 use rust_catalog::startup::{Application, Settings};
-use rust_common::{load_environment, mask_sensitive_url, test_helpers::{TestApp, TestConfig}};
+use rust_common::{
+    load_environment, mask_sensitive_url,
+    test_helpers::{TestApp, TestConfig},
+};
 // use std::process::{Command};
 use uuid::Uuid;
 
@@ -73,14 +76,16 @@ pub async fn spawn_app() -> TestApp {
 
     // IMPORTANT: Set up the subscription BEFORE starting the application
     // to avoid race condition where the app publishes before we subscribe
-    let subject = format!("application.{}.events", db_name);
+    let subject = format!("application.{db_name}.events");
     let nats_client = async_nats::connect(&nats_url)
         .await
         .expect("Failed to connect to NATS for test app");
-    
-    let mut subscription = nats_client.subscribe(subject.clone()).await
+
+    let mut subscription = nats_client
+        .subscribe(subject.clone())
+        .await
         .expect("Failed to subscribe to NATS subject for test app");
-    debug!("🔔 Subscribed to NATS subject: {}", subject);
+    debug!("🔔 Subscribed to NATS subject: {subject}");
 
     // NOW build and start the application (after subscription is ready)
     let app = Application::build(settings)
@@ -88,7 +93,7 @@ pub async fn spawn_app() -> TestApp {
         .expect("Failed to build application");
 
     // Run the application in the background
-    let _ = tokio::spawn(async move {
+    tokio::spawn(async move {
         if let Err(e) = app.run().await {
             eprintln!("Application error: {e}");
         }
@@ -97,14 +102,16 @@ pub async fn spawn_app() -> TestApp {
     // Wait for the ApplicationStarted event with a timeout
     let wait_future = async {
         while let Some(message) = subscription.next().await {
-            debug!("🔔 Received NATS message on subject {}: {:?}", subject, message);
+            debug!(
+                "🔔 Received NATS message on subject {subject}: {message:?}"
+            );
             if message.payload == "ApplicationStarted".as_bytes() {
                 info!("📣 Received 'ApplicationStarted' event from catalog service");
                 break;
             }
         }
     };
-    
+
     // Add a timeout to prevent hanging forever if the event never comes
     match tokio::time::timeout(std::time::Duration::from_secs(10), wait_future).await {
         Ok(_) => info!("✅ Catalog service is ready"),
@@ -115,7 +122,6 @@ pub async fn spawn_app() -> TestApp {
             tokio::time::sleep(std::time::Duration::from_secs(2)).await;
         }
     }
-
 
     // let catalog_process = Command::new("cargo")
     //     .args(["run", "--bin", "catalog-service"])

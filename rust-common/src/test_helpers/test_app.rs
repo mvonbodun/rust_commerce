@@ -121,7 +121,10 @@ impl TestApp {
 
     /// Explicitly cleanup the test database (useful if Drop isn't working)
     pub async fn cleanup(&self) -> Result<(), mongodb::error::Error> {
-        eprintln!("🧹 Explicitly cleaning up test database: {}", self.test_db_name);
+        eprintln!(
+            "🧹 Explicitly cleaning up test database: {}",
+            self.test_db_name
+        );
         cleanup_test_db(&self.mongodb_client, &self.test_db_name).await
     }
 }

@@ -275,12 +275,12 @@ impl Application {
         // for the subject with the message "ApplicationStarted"
         let subject = format!("application.{}.events", self.database.name());
         nats_client
-            .publish(
-                subject.clone(),
-                "ApplicationStarted".as_bytes().into(),
-            )
+            .publish(subject.clone(), "ApplicationStarted".as_bytes().into())
             .await?;
-        info!("📣 Published 'ApplicationStarted' event to NATS on subject: {}", &subject);
+        info!(
+            "📣 Published 'ApplicationStarted' event to NATS on subject: {}",
+            &subject
+        );
 
         requests
             .for_each_concurrent(25, |request| {

@@ -1,7 +1,7 @@
-use crate::helpers::{self, catalog_messages::*};
 use crate::helpers::*;
+use crate::helpers::{self, catalog_messages::*};
 use prost::Message;
-use rust_common::test_helpers::{fixtures};
+use rust_common::test_helpers::fixtures;
 
 // ============================================================================
 // CATEGORY CREATE TESTS

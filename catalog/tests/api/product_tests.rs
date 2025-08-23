@@ -7,7 +7,7 @@
 use crate::helpers::catalog_messages::*;
 use crate::helpers::{self, *};
 use prost::Message;
-use rust_common::test_helpers::{fixtures};
+use rust_common::test_helpers::fixtures;
 use std::collections::HashMap;
 
 // ============================================================================
