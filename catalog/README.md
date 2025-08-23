@@ -4,43 +4,96 @@ The catalog service manages product information in the rust_commerce microservic
 
 ## Status
 
-✅ **Implemented** - Core handlers and CLI client are complete and functional.
+✅ **Production Ready** - Fully implemented with layered architecture, comprehensive testing, and Docker support.
 
 **Completed:**
+- Layered architecture with domain, handlers, services, and persistence layers
+- Type-safe domain models with parse-don't-validate pattern
 - NATS message handlers for all CRUD operations
-- Domain model with builder pattern and UUID generation
-- Protocol Buffer message conversion
-- CLI client with comprehensive command support
-- Error handling and response formatting
+- Comprehensive integration tests with test isolation
+- Category management with hierarchical tree support
+- Product import/export functionality
+- SEO-friendly slug generation
+- CLI client with full command support
+- Docker multi-stage builds with cargo-chef optimization
+- Protocol Buffer message conversion with shared-proto support
 
-**Next Steps:**
-- Database integration testing
-- Integration tests for NATS messaging
-- Production deployment configuration
+## Architecture
+
+The catalog service implements a layered architecture that serves as the template for all rust_commerce services:
+
+### Layers
+
+1. **Domain Layer** (`domain/`)
+   - Type-safe domain models following "parse don't validate" principle
+   - Value objects like `ProductName` and `ProductRef` with enforced constraints
+   - Invalid states are unrepresentable in the type system
+   - All validation happens at construction time
+
+2. **Handlers Layer** (`handlers/`)
+   - NATS message processing and routing
+   - Protocol Buffer deserialization
+   - Routes requests to appropriate service methods
+   - Converts responses back to Protocol Buffers
+
+3. **Services Layer** (`services/`)
+   - Business logic and orchestration
+   - `ProductService` and `CategoryService` with business methods
+   - Coordinates between multiple DAOs when needed
+   - Injected via `Arc<AppState>` for dependency management
+
+4. **Persistence Layer** (`persistence/`)
+   - MongoDB data access objects (DAOs)
+   - `ProductDao` and `CategoryDao` traits with implementations
+   - Handles all database operations
+   - Index management and query optimization
+
+### Key Design Principles
+
+- **Type-Based Design**: Leverage Rust's type system for correctness
+- **Parse Don't Validate**: Validation happens once at boundaries
+- **Separation of Concerns**: Each layer has a single responsibility
+- **Dependency Injection**: Clean dependency management via AppState
+- **Testability**: Each layer can be tested in isolation
 
 ## Features
 
 - ✅ **Product Management**: Create, read, update, and delete products
 - ✅ **Product Search**: Search products by name, description, category, and brand
-- ✅ **Variant Support**: Handle product variants with different attributes (size, color, etc.)
-- ✅ **Category Management**: Hierarchical category structure support
+- ✅ **Category Management**: Hierarchical category trees with caching
+- ✅ **Product Slugs**: Automatic SEO-friendly URL generation
+- ✅ **Variant Support**: Handle product variants with different attributes
+- ✅ **Import/Export**: Bulk operations for products and categories
 - ✅ **Builder Pattern**: Fluent API for constructing domain models
-- ✅ **UUID Generation**: Automatic ID generation for new products
+- ✅ **UUID Generation**: Automatic ID generation for new entities
 - ✅ **Protocol Buffer Integration**: Full message encoding/decoding
 - ✅ **CLI Client**: Command-line interface for testing and administration
-- 🚧 **Inventory Tracking**: Quantity tracking per variant (planned)
-- 🚧 **Pricing Information**: Multiple price points (list, sale, MSRP) (planned)
 - ✅ **SEO Support**: SEO-friendly titles, descriptions, and keywords
+- ✅ **Integration Tests**: Comprehensive test coverage with isolation
 
 ## API Operations
 
-### Via NATS Messaging
+### Product Operations (via NATS)
 
 - `catalog.create_product` - Create a new product
 - `catalog.get_product` - Retrieve product by ID
+- `catalog.get_product_by_slug` - Retrieve product by SEO slug
 - `catalog.update_product` - Update existing product
 - `catalog.delete_product` - Delete product
 - `catalog.search_products` - Search products with filters
+- `catalog.export_products` - Export products in bulk
+- `catalog.get_product_slugs` - Get all product slugs
+
+### Category Operations (via NATS)
+
+- `catalog.create_category` - Create a new category
+- `catalog.get_category` - Retrieve category by ID
+- `catalog.get_category_by_slug` - Retrieve category by slug
+- `catalog.update_category` - Update existing category
+- `catalog.delete_category` - Delete category
+- `catalog.get_category_tree` - Get hierarchical category tree
+- `catalog.import_categories` - Import categories in bulk
+- `catalog.export_categories` - Export all categories
 
 ## Data Model
 
@@ -88,12 +141,58 @@ cargo run --bin catalog-client -- --help
 
 ## Testing
 
+### Unit Tests
+
+```bash
+# Run all catalog tests
+cargo test -p rust-catalog
+```
+
+### Integration Tests
+
+The catalog service includes comprehensive integration tests with full isolation:
+
+```bash
+# Run integration tests sequentially (recommended)
+./scripts/test-catalog.sh
+
+# Or manually with single thread
+cargo test -p rust-catalog --test '*' -- --test-threads=1
+```
+
+**Test Infrastructure:**
+- Each test spawns its own service instance with `spawn_app()`
+- Unique MongoDB database per test for complete isolation
+- Automatic cleanup after test completion
+- Tests must run sequentially due to NATS subject subscriptions
+
+### Manual Testing
+
 ```bash
 # Test product creation
 cargo run --bin catalog-client -- product-create --name "Sample Product" --brand "Sample Brand"
 
 # Test product search
 cargo run --bin catalog-client -- product-search --query "sample"
+
+# Test category operations
+cargo run --bin catalog-client -- category-create --name "Electronics" --slug "electronics"
+cargo run --bin catalog-client -- category-tree
+```
+
+### Code Quality
+
+Before committing, ensure code quality:
+
+```bash
+# Format code
+cargo fmt -p rust-catalog
+
+# Run linter
+cargo clippy -p rust-catalog --all-targets --all-features
+
+# Combined check
+cargo fmt -p rust-catalog && cargo clippy -p rust-catalog --all-targets --all-features
 ```
 
 ## Catalog Client CLI
@@ -275,11 +374,20 @@ To see help for a specific command:
 cargo run --bin catalog-client -- product-create --help
 ```
 
-## Next Steps
+## Docker Support
 
-1. Implement handler business logic
-2. Add data model conversions between protobuf and domain models
-3. Complete DAO implementations
-4. Add validation and error handling
-5. Implement full product lifecycle operations
-6. Add comprehensive tests
+The catalog service includes optimized Docker support:
+
+```bash
+# Build the catalog service image
+docker-compose build catalog-service
+
+# Run with Docker Compose
+docker-compose up catalog-service
+```
+
+**Docker Features:**
+- Multi-stage builds for minimal image size
+- cargo-chef for efficient dependency caching
+- Shared proto dependencies included
+- Environment-based configuration

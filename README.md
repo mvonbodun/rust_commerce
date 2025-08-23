@@ -48,26 +48,24 @@ Manages pricing and offers with time-based validity:
 - MongoDB persistence with offer-specific collections
 - Time-aware pricing logic with validity periods
 
-### 3. Catalog Service (`catalog/`) 🚧
+### 3. Catalog Service (`catalog/`) ✅
 
-Manages product catalog with comprehensive product information:
+Manages product catalog with comprehensive product information using a modern layered architecture:
 
 - **Product Management**: Create, read, update, and delete products
 - **Product Search**: Advanced search by name, description, category, and brand  
 - **Variant Support**: Handle product variants with attributes (size, color, etc.)
-- **Category Management**: Hierarchical category structures
-- **Inventory Tracking**: Quantity management per variant
-- **Pricing Information**: Multiple price points (list, sale, MSRP)
-- **SEO Support**: SEO-friendly metadata and URLs
+- **Category Management**: Hierarchical category structures with tree caching
+- **Product Slugs**: SEO-friendly URLs with automatic slug generation
+- **Import/Export**: Bulk operations for product and category data
+- **Type-Safe Domain Models**: Parse-don't-validate approach with enforced invariants
 
-**Key Components:**
-- Protocol Buffers definitions for product domain models
-- Service binary (`catalog-service`) listening on NATS queue `catalog.*`
-- Client binary (`catalog-client`) for testing and interaction
-- MongoDB persistence with flexible product schema
-- Handlers for CRUD operations and search functionality
-
-> **Note**: This service is currently scaffolded with placeholder implementations.
+**Architecture Layers:**
+- **Domain Layer**: Type-safe models with validation at construction (parse-don't-validate)
+- **Handlers Layer**: NATS message processing and request routing
+- **Services Layer**: Business logic and orchestration
+- **Persistence Layer**: MongoDB data access with DAO pattern
+- **Integration Tests**: Isolated test framework with per-test databases
 
 ### 4. Future Services
 
@@ -213,6 +211,44 @@ cargo run --bin catalog-client -- product-search --query "sample"
 
 ## Development
 
+### Service Architecture Pattern
+
+The catalog service implements a layered architecture that serves as the template for all services:
+
+#### Architecture Layers
+
+1. **Domain Layer** (`domain/`)
+   - Type-safe domain models following "parse don't validate" principle
+   - Value objects with validation at construction
+   - Invalid states are unrepresentable in the type system
+   - Example: `ProductName`, `ProductRef` with enforced constraints
+
+2. **Handlers Layer** (`handlers/`)
+   - NATS message processing and deserialization
+   - Request routing to appropriate services
+   - Protocol Buffer message conversion
+   - Error response formatting
+
+3. **Services Layer** (`services/`)
+   - Business logic and orchestration
+   - Transaction coordination
+   - Cross-entity operations
+   - Dependency injection via `Arc<AppState>`
+
+4. **Persistence Layer** (`persistence/`)
+   - MongoDB data access objects (DAOs)
+   - Database operations and queries
+   - Collection management
+   - Index creation and optimization
+
+#### Key Design Principles
+
+- **Type-Based Design**: Domain models enforce invariants at compile time
+- **Separation of Concerns**: Clear boundaries between layers
+- **Dependency Injection**: Services and DAOs injected via AppState
+- **Testability**: Each layer can be tested independently
+- **Parse Don't Validate**: Validation happens once at boundaries
+
 ### Project Structure
 
 ```
@@ -263,6 +299,8 @@ Services use Protocol Buffers for message definition:
 
 ### Testing
 
+#### Unit Tests
+
 Run all tests:
 
 ```bash
@@ -275,6 +313,39 @@ Run service-specific tests:
 cargo test -p rust-orders
 cargo test -p rust-price
 cargo test -p rust-catalog
+```
+
+#### Integration Tests
+
+The catalog service includes comprehensive integration tests with test isolation:
+
+```bash
+# Run catalog integration tests sequentially (recommended)
+./scripts/test-catalog.sh
+
+# Or manually with single thread
+cargo test -p rust-catalog --test '*' -- --test-threads=1
+```
+
+**Test Infrastructure:**
+- Each test gets its own MongoDB database for complete isolation
+- Tests spawn the actual service using `spawn_app()` helper
+- Automatic cleanup of test databases after completion
+- `TestApp` helper in `rust-common` provides shared test utilities
+
+#### Code Quality
+
+Before committing code, ensure it passes formatting and linting:
+
+```bash
+# Format all code
+cargo fmt --all
+
+# Run clippy linter
+cargo clippy --all-targets --all-features
+
+# Combined check (recommended before commits)
+cargo fmt --all && cargo clippy --all-targets --all-features
 ```
 
 ### Logging
@@ -333,13 +404,15 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Future Roadmap
 
-- [ ] Complete catalog service implementation
+- [x] Complete catalog service implementation with layered architecture
+- [x] Add comprehensive integration tests for catalog service
+- [x] Docker containerization with multi-stage builds
+- [ ] Migrate inventory, orders, and price services to layered architecture
 - [ ] Add authentication and authorization
-- [ ] Implement inventory management
+- [ ] Implement inventory management service
 - [ ] Add shopping cart functionality
 - [ ] Create web API gateway
 - [ ] Add monitoring and observability
 - [ ] Implement event sourcing patterns
-- [ ] Add integration tests
-- [ ] Docker containerization
 - [ ] Kubernetes deployment manifests
+- [ ] Add distributed tracing with OpenTelemetry
