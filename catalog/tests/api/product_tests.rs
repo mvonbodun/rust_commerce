@@ -1,3 +1,9 @@
+// IMPORTANT: These tests must be run sequentially with --test-threads=1
+// Each test spawns its own catalog service instance that listens on catalog.*
+// Running tests in parallel causes NATS message routing conflicts
+// Use: cargo test --test api product_tests -- --test-threads=1
+// Or use the script: ./scripts/test-catalog.sh product_tests
+
 use crate::helpers::catalog_messages::*;
 use crate::helpers::{self, *};
 use prost::Message;

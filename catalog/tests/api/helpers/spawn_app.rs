@@ -1,3 +1,4 @@
+use futures::StreamExt;
 // Note: startup module is not exported from lib.rs, only accessible from catalog-service binary
 // So we can't use it directly in tests. Tests should spawn the service via command line.
 use log::{debug, info};
@@ -52,7 +53,8 @@ pub async fn spawn_app() -> TestApp {
     load_environment();
 
     // Initialize logger after loading environment (so RUST_LOG from .env is used)
-    // pretty_env_logger::init();
+    // Use try_init() to avoid panicking if already initialized by another test
+    let _ = pretty_env_logger::try_init();
 
     // Create the Settings
     let mut settings: Settings = Settings::from_env();
@@ -69,7 +71,18 @@ pub async fn spawn_app() -> TestApp {
     // Save the NATS URL before moving settings
     let nats_url = settings.nats_url.clone();
 
-    // Build the application
+    // IMPORTANT: Set up the subscription BEFORE starting the application
+    // to avoid race condition where the app publishes before we subscribe
+    let subject = format!("application.{}.events", db_name);
+    let nats_client = async_nats::connect(&nats_url)
+        .await
+        .expect("Failed to connect to NATS for test app");
+    
+    let mut subscription = nats_client.subscribe(subject.clone()).await
+        .expect("Failed to subscribe to NATS subject for test app");
+    debug!("🔔 Subscribed to NATS subject: {}", subject);
+
+    // NOW build and start the application (after subscription is ready)
     let app = Application::build(settings)
         .await
         .expect("Failed to build application");
@@ -81,9 +94,28 @@ pub async fn spawn_app() -> TestApp {
         }
     });
 
-    // Give the service time to start
-    // info!("⏳ Waiting for catalog service to start with database: {db_name}");
-    // tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+    // Wait for the ApplicationStarted event with a timeout
+    let wait_future = async {
+        while let Some(message) = subscription.next().await {
+            debug!("🔔 Received NATS message on subject {}: {:?}", subject, message);
+            if message.payload == "ApplicationStarted".as_bytes() {
+                info!("📣 Received 'ApplicationStarted' event from catalog service");
+                break;
+            }
+        }
+    };
+    
+    // Add a timeout to prevent hanging forever if the event never comes
+    match tokio::time::timeout(std::time::Duration::from_secs(10), wait_future).await {
+        Ok(_) => info!("✅ Catalog service is ready"),
+        Err(_) => {
+            eprintln!("⚠️ Timeout waiting for ApplicationStarted event");
+            eprintln!("   Proceeding anyway - service might still be starting");
+            // Optionally add a small delay to give service more time
+            tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+        }
+    }
+
 
     // let catalog_process = Command::new("cargo")
     //     .args(["run", "--bin", "catalog-service"])

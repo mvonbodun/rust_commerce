@@ -16,7 +16,7 @@ use crate::{
     AppState,
 };
 
-use async_nats::Client as NatsClient;
+use async_nats::{subject, Client as NatsClient};
 use bson::doc;
 use futures::StreamExt;
 use log::{debug, error, info};
@@ -270,6 +270,17 @@ impl Application {
         let routes = self.routes.clone();
         let app_state = self.app_state.clone();
         let nats_client = self.nats_client.clone();
+
+        // Publish event to NATS that the application has started using the database name
+        // for the subject with the message "ApplicationStarted"
+        let subject = format!("application.{}.events", self.database.name());
+        nats_client
+            .publish(
+                subject.clone(),
+                "ApplicationStarted".as_bytes().into(),
+            )
+            .await?;
+        info!("📣 Published 'ApplicationStarted' event to NATS on subject: {}", &subject);
 
         requests
             .for_each_concurrent(25, |request| {
