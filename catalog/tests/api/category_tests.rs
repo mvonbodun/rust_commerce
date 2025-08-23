@@ -2,6 +2,7 @@ use crate::helpers::*;
 use crate::helpers::{self, catalog_messages::*};
 use prost::Message;
 use rust_common::test_helpers::fixtures;
+use shared_proto::common::Code;
 
 // ============================================================================
 // CATEGORY CREATE TESTS
@@ -32,9 +33,17 @@ async fn test_category_create_root_category() {
         .await
         .expect("Request should succeed");
 
-    let category = CategoryResponse::decode(&*response.payload).expect("Response should decode");
+    let create_response =
+        CreateCategoryResponse::decode(&*response.payload).expect("Response should decode");
 
-    // CategoryResponse IS the category itself
+    // Check status
+    assert!(create_response.status.is_some());
+    let status = create_response.status.as_ref().unwrap();
+    assert_eq!(status.code, Code::Ok as i32);
+
+    // Check category
+    assert!(create_response.category.is_some());
+    let category = create_response.category.as_ref().unwrap();
     assert!(!category.id.is_empty());
     assert_eq!(category.name, builder.name);
     assert_eq!(category.slug, builder.slug);
@@ -73,8 +82,17 @@ async fn test_category_create_child_category() {
         .await
         .expect("Request should succeed");
 
-    let category = CategoryResponse::decode(&*response.payload).expect("Response should decode");
+    let create_response =
+        CreateCategoryResponse::decode(&*response.payload).expect("Response should decode");
 
+    // Check status
+    assert!(create_response.status.is_some());
+    let status = create_response.status.as_ref().unwrap();
+    assert_eq!(status.code, Code::Ok as i32);
+
+    // Check category
+    assert!(create_response.category.is_some());
+    let category = create_response.category.as_ref().unwrap();
     assert_eq!(category.parent_id, Some(parent_id));
 }
 
@@ -211,8 +229,17 @@ async fn test_category_update_name_and_description() {
         .await
         .expect("Request should succeed");
 
-    let category = CategoryResponse::decode(&*response.payload).expect("Response should decode");
+    let update_response =
+        UpdateCategoryResponse::decode(&*response.payload).expect("Response should decode");
 
+    // Check status
+    assert!(update_response.status.is_some());
+    let status = update_response.status.as_ref().unwrap();
+    assert_eq!(status.code, Code::Ok as i32);
+
+    // Check category
+    assert!(update_response.category.is_some());
+    let category = update_response.category.as_ref().unwrap();
     assert_eq!(category.name, "Updated Name");
     assert_eq!(category.short_description, "Updated short description");
 }
@@ -243,10 +270,12 @@ async fn test_category_delete_existing() {
         .await
         .expect("Request should succeed");
 
-    // Delete returns common.Status
-    let status =
-        shared_proto::common::Status::decode(&*response.payload).expect("Response should decode");
+    // Delete returns DeleteCategoryResponse
+    let delete_response =
+        DeleteCategoryResponse::decode(&*response.payload).expect("Response should decode");
 
+    assert!(delete_response.status.is_some());
+    let status = delete_response.status.as_ref().unwrap();
     assert_eq!(status.code, Code::Ok as i32);
 
     // Verify it's deleted by trying to get it
@@ -296,7 +325,7 @@ async fn test_category_tree_with_hierarchy() {
     // Get tree
     let request = CategoryTreeRequest {
         max_depth: Some(10),
-        include_inactive: None,
+        include_inactive: Some(false),
         rebuild_cache: None,
     };
 

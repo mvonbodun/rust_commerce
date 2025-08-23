@@ -7,10 +7,10 @@ use prost::Message as ProstMessage;
 use crate::{
     catalog_messages::{
         CategoryExportRequest, CategoryExportResponse, CategoryImportRequest,
-        CategoryImportResponse, CategoryTreeRequest, CategoryTreeResponse,
-        CreateCategoryRequest, CreateCategoryResponse, DeleteCategoryRequest, DeleteCategoryResponse,
-        GetCategoryBySlugRequest, GetCategoryBySlugResponse, GetCategoryRequest, GetCategoryResponse, 
-        UpdateCategoryRequest, UpdateCategoryResponse,
+        CategoryImportResponse, CategoryTreeRequest, CategoryTreeResponse, CreateCategoryRequest,
+        CreateCategoryResponse, DeleteCategoryRequest, DeleteCategoryResponse,
+        GetCategoryBySlugRequest, GetCategoryBySlugResponse, GetCategoryRequest,
+        GetCategoryResponse, UpdateCategoryRequest, UpdateCategoryResponse,
     },
     common::Code,
     services::category_service::CategoryError,
@@ -367,7 +367,7 @@ pub async fn update_category(
                         category: None,
                         status: Some(crate::common::Status {
                             code: Code::Internal as i32,
-                            message: format!("Failed to update category: {}", e),
+                            message: format!("Failed to update category: {e}"),
                             details: vec![],
                         }),
                     };
@@ -441,7 +441,7 @@ pub async fn delete_category(
                     let response = DeleteCategoryResponse {
                         status: Some(crate::common::Status {
                             code: Code::Internal as i32,
-                            message: format!("Failed to delete category: {}", e),
+                            message: format!("Failed to delete category: {e}"),
                             details: vec![],
                         }),
                     };

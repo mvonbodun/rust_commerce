@@ -17,10 +17,10 @@ pub enum CategoryError {
 impl std::fmt::Display for CategoryError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            CategoryError::ValidationError(msg) => write!(f, "Validation error: {}", msg),
-            CategoryError::AlreadyExists(msg) => write!(f, "Already exists: {}", msg),
-            CategoryError::NotFound(msg) => write!(f, "Not found: {}", msg),
-            CategoryError::InternalError(msg) => write!(f, "Internal error: {}", msg),
+            CategoryError::ValidationError(msg) => write!(f, "Validation error: {msg}"),
+            CategoryError::AlreadyExists(msg) => write!(f, "Already exists: {msg}"),
+            CategoryError::NotFound(msg) => write!(f, "Not found: {msg}"),
+            CategoryError::InternalError(msg) => write!(f, "Internal error: {msg}"),
         }
     }
 }
@@ -87,10 +87,9 @@ impl CategoryService {
                 // Slug doesn't exist, continue
             }
             Err(e) => {
-                error!("Error checking for duplicate slug: {}", e);
+                error!("Error checking for duplicate slug: {e}");
                 return Err(CategoryError::InternalError(format!(
-                    "Failed to check for duplicate slug: {}",
-                    e
+                    "Failed to check for duplicate slug: {e}"
                 )));
             }
         }
@@ -146,10 +145,9 @@ impl CategoryService {
                         request.slug
                     )))
                 } else {
-                    error!("Error creating category: {}", e);
+                    error!("Error creating category: {e}");
                     Err(CategoryError::InternalError(format!(
-                        "Failed to create category: {}",
-                        e
+                        "Failed to create category: {e}"
                     )))
                 }
             }

@@ -155,7 +155,7 @@ impl ProductService {
                 if error_str.contains("E11000") || error_str.contains("duplicate key") {
                     error!("Duplicate product detected: {e}");
                     Err(HandlerError::AlreadyExists(
-                        "Product with this product_ref already exists".to_string()
+                        "Product with this product_ref already exists".to_string(),
                     ))
                 } else {
                     error!("Error creating product: {e}");

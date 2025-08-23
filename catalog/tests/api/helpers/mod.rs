@@ -5,7 +5,9 @@ pub mod spawn_app;
 // pub mod test_setup;
 
 use catalog_messages::{
-    CategoryResponse, Code, CreateCategoryRequest, ProductCreateRequest, ProductCreateResponse,
+    Code, CreateCategoryRequest, CreateCategoryResponse, DeleteCategoryRequest,
+    DeleteCategoryResponse, GetCategoryBySlugRequest, GetCategoryBySlugResponse,
+    GetCategoryRequest, GetCategoryResponse, ProductCreateRequest, ProductCreateResponse,
     ProductDeleteRequest, ProductDeleteResponse, ProductGetBySlugRequest, ProductGetBySlugResponse,
     ProductGetRequest, ProductGetResponse, ProductSearchRequest, ProductSearchResponse,
 };
@@ -178,10 +180,76 @@ pub async fn create_test_category(
         )
         .await?;
 
-    let category_response = CategoryResponse::decode(&*response.payload)?;
+    let create_response = CreateCategoryResponse::decode(&*response.payload)?;
 
-    // CategoryResponse is the actual category object, not a wrapper
-    Ok(category_response.id)
+    if let Some(status) = &create_response.status {
+        if status.code == Code::Ok as i32 {
+            if let Some(category) = &create_response.category {
+                return Ok(category.id.clone());
+            }
+        } else {
+            return Err(format!(
+                "Failed to create category: {} - {}",
+                status.code, status.message
+            )
+            .into());
+        }
+    }
+
+    Err("Failed to create category: No status in response".into())
+}
+
+/// Helper to get a category by ID
+pub async fn get_category(
+    app: &TestApp,
+    id: &str,
+) -> Result<GetCategoryResponse, Box<dyn std::error::Error + Send + Sync>> {
+    let request = GetCategoryRequest { id: id.to_string() };
+
+    let response = app
+        .request(
+            crate::helpers::nats_config::category::subjects::GET_CATEGORY,
+            request.encode_to_vec(),
+        )
+        .await?;
+
+    Ok(GetCategoryResponse::decode(&*response.payload)?)
+}
+
+/// Helper to get a category by slug
+pub async fn get_category_by_slug(
+    app: &TestApp,
+    slug: &str,
+) -> Result<GetCategoryBySlugResponse, Box<dyn std::error::Error + Send + Sync>> {
+    let request = GetCategoryBySlugRequest {
+        slug: slug.to_string(),
+    };
+
+    let response = app
+        .request(
+            crate::helpers::nats_config::category::subjects::GET_CATEGORY_BY_SLUG,
+            request.encode_to_vec(),
+        )
+        .await?;
+
+    Ok(GetCategoryBySlugResponse::decode(&*response.payload)?)
+}
+
+/// Helper to delete a category
+pub async fn delete_category(
+    app: &TestApp,
+    id: &str,
+) -> Result<DeleteCategoryResponse, Box<dyn std::error::Error + Send + Sync>> {
+    let request = DeleteCategoryRequest { id: id.to_string() };
+
+    let response = app
+        .request(
+            crate::helpers::nats_config::category::subjects::DELETE_CATEGORY,
+            request.encode_to_vec(),
+        )
+        .await?;
+
+    Ok(DeleteCategoryResponse::decode(&*response.payload)?)
 }
 
 /// Assertion helpers specific to catalog
