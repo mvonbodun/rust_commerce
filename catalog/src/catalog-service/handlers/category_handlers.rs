@@ -6,11 +6,14 @@ use prost::Message as ProstMessage;
 
 use crate::{
     catalog_messages::{
-        self, CategoryExportRequest, CategoryExportResponse, CategoryImportRequest,
-        CategoryImportResponse, CategoryResponse, CategoryTreeRequest, CategoryTreeResponse,
-        CreateCategoryRequest, DeleteCategoryRequest, GetCategoryBySlugRequest,
-        GetCategoryBySlugResponse, GetCategoryRequest, GetCategoryResponse, UpdateCategoryRequest,
+        CategoryExportRequest, CategoryExportResponse, CategoryImportRequest,
+        CategoryImportResponse, CategoryTreeRequest, CategoryTreeResponse,
+        CreateCategoryRequest, CreateCategoryResponse, DeleteCategoryRequest, DeleteCategoryResponse,
+        GetCategoryBySlugRequest, GetCategoryBySlugResponse, GetCategoryRequest, GetCategoryResponse, 
+        UpdateCategoryRequest, UpdateCategoryResponse,
     },
+    common::Code,
+    services::category_service::CategoryError,
     AppState,
 };
 
@@ -27,9 +30,17 @@ pub async fn create_category(
             let result = app_state.category_service.create_category(request).await;
 
             match result {
-                Ok(category_response) => {
-                    debug!("Category created successfully: {category_response:?}");
-                    let response_bytes = category_response.encode_to_vec();
+                Ok(category) => {
+                    debug!("Category created successfully: {category:?}");
+                    let response = CreateCategoryResponse {
+                        category: Some(category),
+                        status: Some(crate::common::Status {
+                            code: Code::Ok as i32,
+                            message: "Category created successfully".to_string(),
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
 
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
@@ -37,25 +48,69 @@ pub async fn create_category(
                         }
                     }
                 }
-                Err(e) => {
-                    error!("Error creating category: {e}");
-                    let response = CategoryResponse {
-                        id: String::new(),
-                        slug: String::new(),
-                        name: String::new(),
-                        short_description: String::new(),
-                        full_description: None,
-                        path: String::new(),
-                        ancestors: vec![],
-                        parent_id: None,
-                        level: 0,
-                        children_count: 0,
-                        product_count: 0,
-                        is_active: false,
-                        display_order: 0,
-                        seo: None,
-                        created_at: None,
-                        updated_at: None,
+                Err(CategoryError::ValidationError(error_msg)) => {
+                    warn!("Validation error creating category: {error_msg}");
+                    let response = CreateCategoryResponse {
+                        category: None,
+                        status: Some(crate::common::Status {
+                            code: Code::InvalidArgument as i32,
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
+                        }
+                    }
+                }
+                Err(CategoryError::AlreadyExists(error_msg)) => {
+                    warn!("Category already exists: {error_msg}");
+                    let response = CreateCategoryResponse {
+                        category: None,
+                        status: Some(crate::common::Status {
+                            code: Code::AlreadyExists as i32,
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
+                        }
+                    }
+                }
+                Err(CategoryError::NotFound(error_msg)) => {
+                    warn!("Not found error creating category: {error_msg}");
+                    let response = CreateCategoryResponse {
+                        category: None,
+                        status: Some(crate::common::Status {
+                            code: Code::NotFound as i32,
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
+                        }
+                    }
+                }
+                Err(CategoryError::InternalError(error_msg)) => {
+                    error!("Internal error creating category: {error_msg}");
+                    let response = CreateCategoryResponse {
+                        category: None,
+                        status: Some(crate::common::Status {
+                            code: Code::Internal as i32,
+                            message: "Internal server error".to_string(),
+                            details: vec![],
+                        }),
                     };
                     let response_bytes = response.encode_to_vec();
 
@@ -69,23 +124,13 @@ pub async fn create_category(
         }
         Err(err) => {
             warn!("Invalid category create request format: {err:?}");
-            let response = CategoryResponse {
-                id: String::new(),
-                slug: String::new(),
-                name: String::new(),
-                short_description: String::new(),
-                full_description: None,
-                path: String::new(),
-                ancestors: vec![],
-                parent_id: None,
-                level: 0,
-                children_count: 0,
-                product_count: 0,
-                is_active: false,
-                display_order: 0,
-                seo: None,
-                created_at: None,
-                updated_at: None,
+            let response = CreateCategoryResponse {
+                category: None,
+                status: Some(crate::common::Status {
+                    code: Code::InvalidArgument as i32,
+                    message: "Invalid request format".to_string(),
+                    details: vec![],
+                }),
             };
             let response_bytes = response.encode_to_vec();
 
@@ -116,8 +161,8 @@ pub async fn get_category(
                 Ok(Some(category)) => {
                     let response = GetCategoryResponse {
                         category: Some(category),
-                        status: Some(catalog_messages::Status {
-                            code: catalog_messages::Code::Ok.into(),
+                        status: Some(crate::common::Status {
+                            code: Code::Ok as i32,
                             message: "Category retrieved successfully".to_string(),
                             details: vec![],
                         }),
@@ -134,8 +179,8 @@ pub async fn get_category(
                 Ok(None) => {
                     let response = GetCategoryResponse {
                         category: None,
-                        status: Some(catalog_messages::Status {
-                            code: catalog_messages::Code::NotFound.into(),
+                        status: Some(crate::common::Status {
+                            code: Code::NotFound as i32,
                             message: "Category not found".to_string(),
                             details: vec![],
                         }),
@@ -152,8 +197,8 @@ pub async fn get_category(
                     error!("Error getting category: {e}");
                     let response = GetCategoryResponse {
                         category: None,
-                        status: Some(catalog_messages::Status {
-                            code: catalog_messages::Code::Internal.into(),
+                        status: Some(crate::common::Status {
+                            code: Code::Internal as i32,
                             message: "Internal server error".to_string(),
                             details: vec![],
                         }),
@@ -172,8 +217,8 @@ pub async fn get_category(
             warn!("Invalid category get request format: {err:?}");
             let response = GetCategoryResponse {
                 category: None,
-                status: Some(catalog_messages::Status {
-                    code: catalog_messages::Code::InvalidArgument.into(),
+                status: Some(crate::common::Status {
+                    code: Code::InvalidArgument as i32,
                     message: "Invalid request format".to_string(),
                     details: vec![],
                 }),
@@ -210,8 +255,8 @@ pub async fn get_category_by_slug(
                 Ok(Some(category)) => {
                     let response = GetCategoryBySlugResponse {
                         category: Some(category),
-                        status: Some(catalog_messages::Status {
-                            code: catalog_messages::Code::Ok.into(),
+                        status: Some(crate::common::Status {
+                            code: Code::Ok as i32,
                             message: "Category retrieved successfully".to_string(),
                             details: vec![],
                         }),
@@ -228,8 +273,8 @@ pub async fn get_category_by_slug(
                 Ok(None) => {
                     let response = GetCategoryBySlugResponse {
                         category: None,
-                        status: Some(catalog_messages::Status {
-                            code: catalog_messages::Code::NotFound.into(),
+                        status: Some(crate::common::Status {
+                            code: Code::NotFound as i32,
                             message: "Category not found".to_string(),
                             details: vec![],
                         }),
@@ -246,8 +291,8 @@ pub async fn get_category_by_slug(
                     error!("Error getting category by slug: {e}");
                     let response = GetCategoryBySlugResponse {
                         category: None,
-                        status: Some(catalog_messages::Status {
-                            code: catalog_messages::Code::Internal.into(),
+                        status: Some(crate::common::Status {
+                            code: Code::Internal as i32,
                             message: "Internal server error".to_string(),
                             details: vec![],
                         }),
@@ -266,8 +311,8 @@ pub async fn get_category_by_slug(
             warn!("Invalid category get by slug request format: {err:?}");
             let response = GetCategoryBySlugResponse {
                 category: None,
-                status: Some(catalog_messages::Status {
-                    code: catalog_messages::Code::InvalidArgument.into(),
+                status: Some(crate::common::Status {
+                    code: Code::InvalidArgument as i32,
                     message: "Invalid request format".to_string(),
                     details: vec![],
                 }),
@@ -298,9 +343,17 @@ pub async fn update_category(
             let result = app_state.category_service.update_category(request).await;
 
             match result {
-                Ok(category_response) => {
-                    debug!("Category updated successfully: {category_response:?}");
-                    let response_bytes = category_response.encode_to_vec();
+                Ok(category) => {
+                    debug!("Category updated successfully: {category:?}");
+                    let response = UpdateCategoryResponse {
+                        category: Some(category),
+                        status: Some(crate::common::Status {
+                            code: Code::Ok as i32,
+                            message: "Category updated successfully".to_string(),
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
 
                     if let Some(reply) = msg.reply {
                         if let Err(e) = client.publish(reply, response_bytes.into()).await {
@@ -310,23 +363,13 @@ pub async fn update_category(
                 }
                 Err(e) => {
                     error!("Error updating category: {e}");
-                    let response = CategoryResponse {
-                        id: String::new(),
-                        slug: String::new(),
-                        name: String::new(),
-                        short_description: String::new(),
-                        full_description: None,
-                        path: String::new(),
-                        ancestors: vec![],
-                        parent_id: None,
-                        level: 0,
-                        children_count: 0,
-                        product_count: 0,
-                        is_active: false,
-                        display_order: 0,
-                        seo: None,
-                        created_at: None,
-                        updated_at: None,
+                    let response = UpdateCategoryResponse {
+                        category: None,
+                        status: Some(crate::common::Status {
+                            code: Code::Internal as i32,
+                            message: format!("Failed to update category: {}", e),
+                            details: vec![],
+                        }),
                     };
                     let response_bytes = response.encode_to_vec();
 
@@ -340,23 +383,13 @@ pub async fn update_category(
         }
         Err(err) => {
             warn!("Invalid category update request format: {err:?}");
-            let response = CategoryResponse {
-                id: String::new(),
-                slug: String::new(),
-                name: String::new(),
-                short_description: String::new(),
-                full_description: None,
-                path: String::new(),
-                ancestors: vec![],
-                parent_id: None,
-                level: 0,
-                children_count: 0,
-                product_count: 0,
-                is_active: false,
-                display_order: 0,
-                seo: None,
-                created_at: None,
-                updated_at: None,
+            let response = UpdateCategoryResponse {
+                category: None,
+                status: Some(crate::common::Status {
+                    code: Code::InvalidArgument as i32,
+                    message: "Invalid request format".to_string(),
+                    details: vec![],
+                }),
             };
             let response_bytes = response.encode_to_vec();
 
@@ -388,23 +421,12 @@ pub async fn delete_category(
 
             match result {
                 Ok(_success) => {
-                    let response = CategoryResponse {
-                        id: String::new(),
-                        slug: String::new(),
-                        name: String::new(),
-                        short_description: String::new(),
-                        full_description: None,
-                        path: String::new(),
-                        ancestors: vec![],
-                        parent_id: None,
-                        level: 0,
-                        children_count: 0,
-                        product_count: 0,
-                        is_active: false,
-                        display_order: 0,
-                        seo: None,
-                        created_at: None,
-                        updated_at: None,
+                    let response = DeleteCategoryResponse {
+                        status: Some(crate::common::Status {
+                            code: Code::Ok as i32,
+                            message: "Category deleted successfully".to_string(),
+                            details: vec![],
+                        }),
                     };
                     let response_bytes = response.encode_to_vec();
 
@@ -416,23 +438,12 @@ pub async fn delete_category(
                 }
                 Err(e) => {
                     error!("Error deleting category: {e}");
-                    let response = CategoryResponse {
-                        id: String::new(),
-                        slug: String::new(),
-                        name: String::new(),
-                        short_description: String::new(),
-                        full_description: None,
-                        path: String::new(),
-                        ancestors: vec![],
-                        parent_id: None,
-                        level: 0,
-                        children_count: 0,
-                        product_count: 0,
-                        is_active: false,
-                        display_order: 0,
-                        seo: None,
-                        created_at: None,
-                        updated_at: None,
+                    let response = DeleteCategoryResponse {
+                        status: Some(crate::common::Status {
+                            code: Code::Internal as i32,
+                            message: format!("Failed to delete category: {}", e),
+                            details: vec![],
+                        }),
                     };
                     let response_bytes = response.encode_to_vec();
 
@@ -446,23 +457,12 @@ pub async fn delete_category(
         }
         Err(err) => {
             warn!("Invalid category delete request format: {err:?}");
-            let response = CategoryResponse {
-                id: String::new(),
-                slug: String::new(),
-                name: String::new(),
-                short_description: String::new(),
-                full_description: None,
-                path: String::new(),
-                ancestors: vec![],
-                parent_id: None,
-                level: 0,
-                children_count: 0,
-                product_count: 0,
-                is_active: false,
-                display_order: 0,
-                seo: None,
-                created_at: None,
-                updated_at: None,
+            let response = DeleteCategoryResponse {
+                status: Some(crate::common::Status {
+                    code: Code::InvalidArgument as i32,
+                    message: "Invalid request format".to_string(),
+                    details: vec![],
+                }),
             };
             let response_bytes = response.encode_to_vec();
 
@@ -500,8 +500,8 @@ pub async fn export_categories(
                 Ok(categories) => {
                     let response = CategoryExportResponse {
                         categories,
-                        status: Some(catalog_messages::Status {
-                            code: catalog_messages::Code::Ok.into(),
+                        status: Some(crate::common::Status {
+                            code: Code::Ok as i32,
                             message: "Categories exported successfully".to_string(),
                             details: vec![],
                         }),
@@ -519,8 +519,8 @@ pub async fn export_categories(
                     error!("Error exporting categories: {e}");
                     let response = CategoryExportResponse {
                         categories: vec![],
-                        status: Some(catalog_messages::Status {
-                            code: catalog_messages::Code::Internal.into(),
+                        status: Some(crate::common::Status {
+                            code: Code::Internal as i32,
                             message: "Internal server error".to_string(),
                             details: vec![],
                         }),
@@ -539,8 +539,8 @@ pub async fn export_categories(
             warn!("Invalid category export request format: {err:?}");
             let response = CategoryExportResponse {
                 categories: vec![],
-                status: Some(catalog_messages::Status {
-                    code: catalog_messages::Code::InvalidArgument.into(),
+                status: Some(crate::common::Status {
+                    code: Code::InvalidArgument as i32,
                     message: "Invalid request format".to_string(),
                     details: vec![],
                 }),
@@ -582,8 +582,8 @@ pub async fn import_categories(
                         failed_imports: import_result.failed_imports as i32,
                         total_processed: import_result.total_processed as i32,
                         errors: import_result.errors,
-                        status: Some(catalog_messages::Status {
-                            code: catalog_messages::Code::Ok.into(),
+                        status: Some(crate::common::Status {
+                            code: Code::Ok as i32,
                             message: format!(
                                 "Import completed: {} successful, {} failed",
                                 import_result.successful_imports, import_result.failed_imports
@@ -607,8 +607,8 @@ pub async fn import_categories(
                         failed_imports: 0,
                         total_processed: 0,
                         errors: vec![format!("Import failed: {e}")],
-                        status: Some(catalog_messages::Status {
-                            code: catalog_messages::Code::Internal.into(),
+                        status: Some(crate::common::Status {
+                            code: Code::Internal as i32,
                             message: "Internal server error".to_string(),
                             details: vec![],
                         }),
@@ -630,8 +630,8 @@ pub async fn import_categories(
                 failed_imports: 0,
                 total_processed: 0,
                 errors: vec!["Invalid request format".to_string()],
-                status: Some(catalog_messages::Status {
-                    code: catalog_messages::Code::InvalidArgument.into(),
+                status: Some(crate::common::Status {
+                    code: Code::InvalidArgument as i32,
                     message: "Invalid request format".to_string(),
                     details: vec![],
                 }),
@@ -673,8 +673,8 @@ pub async fn get_category_tree(
                 Ok(tree_nodes) => {
                     let response = CategoryTreeResponse {
                         tree: tree_nodes,
-                        status: Some(catalog_messages::Status {
-                            code: catalog_messages::Code::Ok.into(),
+                        status: Some(crate::common::Status {
+                            code: Code::Ok as i32,
                             message: "Category tree retrieved successfully".to_string(),
                             details: vec![],
                         }),
@@ -692,8 +692,8 @@ pub async fn get_category_tree(
                     error!("Error getting category tree: {e}");
                     let response = CategoryTreeResponse {
                         tree: vec![],
-                        status: Some(catalog_messages::Status {
-                            code: catalog_messages::Code::Internal.into(),
+                        status: Some(crate::common::Status {
+                            code: Code::Internal as i32,
                             message: "Internal server error".to_string(),
                             details: vec![],
                         }),
@@ -712,8 +712,8 @@ pub async fn get_category_tree(
             warn!("Invalid category tree request format: {err:?}");
             let response = CategoryTreeResponse {
                 tree: vec![],
-                status: Some(catalog_messages::Status {
-                    code: catalog_messages::Code::InvalidArgument.into(),
+                status: Some(crate::common::Status {
+                    code: Code::InvalidArgument as i32,
                     message: "Invalid request format".to_string(),
                     details: vec![],
                 }),

@@ -52,6 +52,30 @@ message DeleteCategoryRequest {
     string id = 1;
 }
 
+// Response wrappers for consistency with Product API
+message CreateCategoryResponse {
+    optional CategoryResponse category = 1;
+    common.Status status = 2;
+}
+
+message UpdateCategoryResponse {
+    optional CategoryResponse category = 1;
+    common.Status status = 2;
+}
+
+message DeleteCategoryResponse {
+    common.Status status = 1;
+}
+
+message MoveCategoryResponse {
+    common.Status status = 1;
+}
+
+message ReorderChildrenResponse {
+    common.Status status = 1;
+}
+
+// The actual category data structure
 message CategoryResponse {
     string id = 1;
     string slug = 2;
@@ -173,7 +197,7 @@ service CategoryService {
     };
     
     // Category CRUD operations
-    rpc CreateCategory(CreateCategoryRequest) returns (CategoryResponse) {
+    rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse) {
         option (nats.options.subject) = "create_category";
     }
     
@@ -185,11 +209,11 @@ service CategoryService {
         option (nats.options.subject) = "get_category_by_slug";
     }
     
-    rpc UpdateCategory(UpdateCategoryRequest) returns (CategoryResponse) {
+    rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryResponse) {
         option (nats.options.subject) = "update_category";
     }
     
-    rpc DeleteCategory(DeleteCategoryRequest) returns (common.Status) {
+    rpc DeleteCategory(DeleteCategoryRequest) returns (DeleteCategoryResponse) {
         option (nats.options.subject) = "delete_category";
     }
     
@@ -208,7 +232,7 @@ service CategoryService {
         option (nats.options.subject) = "get_descendants";
     }
     
-    rpc MoveCategory(MoveCategoryRequest) returns (common.Status) {
+    rpc MoveCategory(MoveCategoryRequest) returns (MoveCategoryResponse) {
         option (nats.options.subject) = "move_category";
     }
     
@@ -228,7 +252,7 @@ service CategoryService {
     }
     
     // Utility operations
-    rpc ReorderChildren(ReorderChildrenRequest) returns (common.Status) {
+    rpc ReorderChildren(ReorderChildrenRequest) returns (ReorderChildrenResponse) {
         option (nats.options.subject) = "reorder_children";
     }
 }

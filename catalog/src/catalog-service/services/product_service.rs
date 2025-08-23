@@ -11,6 +11,8 @@ use std::sync::Arc;
 pub enum HandlerError {
     InternalError(String),
     ValidationError(String),
+    AlreadyExists(String),
+    NotFound(String),
 }
 
 pub struct ProductService {
@@ -149,10 +151,18 @@ impl ProductService {
         match result {
             Ok(product) => Ok(product),
             Err(e) => {
-                error!("Error creating product: {e}");
-                Err(HandlerError::InternalError(format!(
-                    "Failed to create product: {e}"
-                )))
+                let error_str = e.to_string();
+                if error_str.contains("E11000") || error_str.contains("duplicate key") {
+                    error!("Duplicate product detected: {e}");
+                    Err(HandlerError::AlreadyExists(
+                        "Product with this product_ref already exists".to_string()
+                    ))
+                } else {
+                    error!("Error creating product: {e}");
+                    Err(HandlerError::InternalError(format!(
+                        "Failed to create product: {e}"
+                    )))
+                }
             }
         }
     }
@@ -208,7 +218,7 @@ impl ProductService {
 
         // Map the proto product to domain product
         let domain_product = Product {
-            id: product.id,
+            id: Some(product_id.clone()), // Use the product_id parameter, not the one from request
             name: product.name,
             long_description: product.long_description,
             brand: product.brand,

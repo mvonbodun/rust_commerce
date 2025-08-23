@@ -1,0 +1,66 @@
+name: rust_commerce_test
+
+services:
+  # MongoDB for tests
+  mongodb-test:
+    image: mongo:7.0
+    container_name: rust-commerce-mongodb-test
+    ports:
+      - "27018:27017"  # Different port to avoid conflicts
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: testpass123
+      MONGO_INITDB_DATABASE: test_commerce
+    networks:
+      - rust-commerce-test
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # NATS for tests
+  nats-test:
+    image: nats:latest
+    container_name: rust-commerce-nats-test
+    ports:
+      - "4223:4222"  # Different port to avoid conflicts
+      - "8223:8222"  # HTTP monitoring
+    command: ["--http_port", "8222", "--js"]
+    networks:
+      - rust-commerce-test
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "4222"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Catalog service for tests
+  catalog-service-test:
+    build:
+      context: .
+      dockerfile: catalog/Dockerfile
+    container_name: rust-commerce-catalog-test
+    environment:
+      - RUST_ENV=test
+      - MONGODB_URL=mongodb://admin:testpass123@mongodb-test:27017/?authSource=admin
+      - NATS_URL=nats://nats-test:4222
+      - CATALOG_DB_NAME=test_catalog
+      - RUST_LOG=debug
+    depends_on:
+      mongodb-test:
+        condition: service_healthy
+      nats-test:
+        condition: service_healthy
+    networks:
+      - rust-commerce-test
+
+  # Add other services as needed for complete integration tests
+  # inventory-service-test:
+  # orders-service-test:
+  # price-service-test:
+
+networks:
+  rust-commerce-test:
+    name: rust-commerce-test
+    driver: bridge

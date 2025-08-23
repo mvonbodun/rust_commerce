@@ -20,12 +20,15 @@ import {
 } from '../../generated/product';
 import {
   CreateCategoryRequest,
-  CategoryResponse,
+  CreateCategoryResponse,
   GetCategoryRequest,
-  GetCategoryBySlugRequest,
-  UpdateCategoryRequest,
-  DeleteCategoryRequest,
   GetCategoryResponse,
+  GetCategoryBySlugRequest,
+  GetCategoryBySlugResponse,
+  UpdateCategoryRequest,
+  UpdateCategoryResponse,
+  DeleteCategoryRequest,
+  DeleteCategoryResponse,
   CategoryTreeRequest,
   CategoryTreeResponse,
 } from '../../generated/category';
@@ -115,52 +118,52 @@ export class CatalogClient {
   }
 
   // Category methods
-  async createCategory(request: CreateCategoryRequest): Promise<CategoryResponse> {
+  async createCategory(request: CreateCategoryRequest): Promise<CreateCategoryResponse> {
     return this.natsClient.request(
       NatsConfig.Category.methods.CreateCategory.subject,
       request,
       (msg) => CreateCategoryRequest.encode(msg).finish(),
-      (data) => CategoryResponse.decode(data),
+      (data) => CreateCategoryResponse.decode(data),
       { timeout: 5000 }
     );
   }
 
-  async getCategory(request: GetCategoryRequest): Promise<CategoryResponse> {
+  async getCategory(request: GetCategoryRequest): Promise<GetCategoryResponse> {
     return this.natsClient.request(
       NatsConfig.Category.methods.GetCategory.subject,
       request,
       (msg) => GetCategoryRequest.encode(msg).finish(),
-      (data) => CategoryResponse.decode(data),
+      (data) => GetCategoryResponse.decode(data),
       { timeout: 5000 }
     );
   }
 
-  async getCategoryBySlug(request: GetCategoryBySlugRequest): Promise<CategoryResponse> {
+  async getCategoryBySlug(request: GetCategoryBySlugRequest): Promise<GetCategoryBySlugResponse> {
     return this.natsClient.request(
       NatsConfig.Category.methods.GetCategoryBySlug.subject,
       request,
       (msg) => GetCategoryBySlugRequest.encode(msg).finish(),
-      (data) => CategoryResponse.decode(data),
+      (data) => GetCategoryBySlugResponse.decode(data),
       { timeout: 5000 }
     );
   }
 
-  async updateCategory(request: UpdateCategoryRequest): Promise<CategoryResponse> {
+  async updateCategory(request: UpdateCategoryRequest): Promise<UpdateCategoryResponse> {
     return this.natsClient.request(
       NatsConfig.Category.methods.UpdateCategory.subject,
       request,
       (msg) => UpdateCategoryRequest.encode(msg).finish(),
-      (data) => CategoryResponse.decode(data),
+      (data) => UpdateCategoryResponse.decode(data),
       { timeout: 5000 }
     );
   }
 
-  async deleteCategory(request: DeleteCategoryRequest): Promise<GetCategoryResponse> {
+  async deleteCategory(request: DeleteCategoryRequest): Promise<DeleteCategoryResponse> {
     return this.natsClient.request(
       NatsConfig.Category.methods.DeleteCategory.subject,
       request,
       (msg) => DeleteCategoryRequest.encode(msg).finish(),
-      (data) => GetCategoryResponse.decode(data),
+      (data) => DeleteCategoryResponse.decode(data),
       { timeout: 5000 }
     );
   }

@@ -72,7 +72,43 @@ pub async fn create_product(
                         }
                     }
                 }
-                Err(HandlerError::InternalError(error_msg)) => {
+                Err(HandlerError::AlreadyExists(error_msg)) => {
+                    warn!("Duplicate product: {error_msg}");
+                    let response = ProductCreateResponse {
+                        product: None,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::AlreadyExists.into(),
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
+                        }
+                    }
+                }
+                Err(HandlerError::NotFound(error_msg)) => {
+                    warn!("Not found error creating product: {error_msg}");
+                    let response = ProductCreateResponse {
+                        product: None,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::NotFound.into(),
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
+                        }
+                    }
+                }
+                Err(HandlerError::AlreadyExists(error_msg)) | Err(HandlerError::NotFound(error_msg)) | Err(HandlerError::InternalError(error_msg)) => {
                     error!("Error creating product: {error_msg}");
                     let response = ProductCreateResponse {
                         product: None,
@@ -201,7 +237,41 @@ pub async fn get_product(
                         }
                     }
                 }
-                Err(HandlerError::InternalError(error_msg)) => {
+                Err(HandlerError::AlreadyExists(error_msg)) => {
+                    // This shouldn't happen for get operations, but handle it anyway
+                    warn!("Unexpected AlreadyExists error getting product: {error_msg}");
+                    let response = ProductGetResponse {
+                        product: None,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::AlreadyExists.into(),
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
+                        }
+                    }
+                }
+                Err(HandlerError::NotFound(error_msg)) => {
+                    let response = ProductGetResponse {
+                        product: None,
+                        status: Some(catalog_messages::Status {
+                            code: catalog_messages::Code::NotFound.into(),
+                            message: error_msg,
+                            details: vec![],
+                        }),
+                    };
+                    let response_bytes = response.encode_to_vec();
+                    if let Some(reply) = msg.reply {
+                        if let Err(e) = client.publish(reply, response_bytes.into()).await {
+                            error!("Failed to send error response: {e}");
+                        }
+                    }
+                }
+                Err(HandlerError::AlreadyExists(error_msg)) | Err(HandlerError::NotFound(error_msg)) | Err(HandlerError::InternalError(error_msg)) => {
                     error!("Error getting product: {error_msg}");
                     let response = ProductGetResponse {
                         product: None,
@@ -313,7 +383,7 @@ pub async fn get_product_by_slug(
                         }
                     }
                 }
-                Err(HandlerError::InternalError(error_msg)) => {
+                Err(HandlerError::AlreadyExists(error_msg)) | Err(HandlerError::NotFound(error_msg)) | Err(HandlerError::InternalError(error_msg)) => {
                     error!("Error getting product by slug: {error_msg}");
                     let response = ProductGetBySlugResponse {
                         product: None,
@@ -427,7 +497,7 @@ pub async fn update_product(
                         }
                     }
                 }
-                Err(HandlerError::InternalError(error_msg)) => {
+                Err(HandlerError::AlreadyExists(error_msg)) | Err(HandlerError::NotFound(error_msg)) | Err(HandlerError::InternalError(error_msg)) => {
                     error!("Error updating product: {error_msg}");
                     let response = ProductUpdateResponse {
                         product: None,
@@ -535,7 +605,7 @@ pub async fn delete_product(
                         }
                     }
                 }
-                Err(HandlerError::InternalError(error_msg)) => {
+                Err(HandlerError::AlreadyExists(error_msg)) | Err(HandlerError::NotFound(error_msg)) | Err(HandlerError::InternalError(error_msg)) => {
                     error!("Error deleting product: {error_msg}");
                     let response = ProductDeleteResponse {
                         status: Some(catalog_messages::Status {
@@ -640,7 +710,7 @@ pub async fn search_products(
                         }
                     }
                 }
-                Err(HandlerError::InternalError(error_msg)) => {
+                Err(HandlerError::AlreadyExists(error_msg)) | Err(HandlerError::NotFound(error_msg)) | Err(HandlerError::InternalError(error_msg)) => {
                     error!("Error searching products: {error_msg}");
                     let response = ProductSearchResponse {
                         products: vec![],
@@ -746,7 +816,7 @@ pub async fn export_products(
                         }
                     }
                 }
-                Err(HandlerError::InternalError(error_msg)) => {
+                Err(HandlerError::AlreadyExists(error_msg)) | Err(HandlerError::NotFound(error_msg)) | Err(HandlerError::InternalError(error_msg)) => {
                     error!("Error exporting products: {error_msg}");
                     let response = ProductExportResponse {
                         products: vec![],

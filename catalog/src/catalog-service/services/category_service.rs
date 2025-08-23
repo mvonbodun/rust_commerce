@@ -3,8 +3,29 @@ use crate::{
     domain::{Category, CategorySeo},
     persistence::category_dao::CategoryDao,
 };
-use log::debug;
+use log::{debug, error};
 use std::sync::Arc;
+
+#[derive(Debug)]
+pub enum CategoryError {
+    ValidationError(String),
+    AlreadyExists(String),
+    NotFound(String),
+    InternalError(String),
+}
+
+impl std::fmt::Display for CategoryError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            CategoryError::ValidationError(msg) => write!(f, "Validation error: {}", msg),
+            CategoryError::AlreadyExists(msg) => write!(f, "Already exists: {}", msg),
+            CategoryError::NotFound(msg) => write!(f, "Not found: {}", msg),
+            CategoryError::InternalError(msg) => write!(f, "Internal error: {}", msg),
+        }
+    }
+}
+
+impl std::error::Error for CategoryError {}
 
 type BuildNodeFut<'a> = std::pin::Pin<
     Box<
@@ -40,24 +61,38 @@ impl CategoryService {
         &self,
         request: CreateCategoryRequest,
         invalidate_cache: bool,
-    ) -> Result<CategoryResponse, Box<dyn std::error::Error + Send + Sync>> {
+    ) -> Result<CategoryResponse, CategoryError> {
         // Validate input
         if request.name.trim().is_empty() {
-            return Err("Category name cannot be empty".into());
+            return Err(CategoryError::ValidationError(
+                "Category name cannot be empty".to_string(),
+            ));
         }
 
         if request.slug.trim().is_empty() {
-            return Err("Category slug cannot be empty".into());
+            return Err(CategoryError::ValidationError(
+                "Category slug cannot be empty".to_string(),
+            ));
         }
 
         // Check if slug already exists
-        if (self
-            .category_dao
-            .get_category_by_slug(&request.slug)
-            .await?)
-            .is_some()
-        {
-            return Err(format!("Category with slug '{}' already exists", request.slug).into());
+        match self.category_dao.get_category_by_slug(&request.slug).await {
+            Ok(Some(_)) => {
+                return Err(CategoryError::AlreadyExists(format!(
+                    "Category with slug '{}' already exists",
+                    request.slug
+                )));
+            }
+            Ok(None) => {
+                // Slug doesn't exist, continue
+            }
+            Err(e) => {
+                error!("Error checking for duplicate slug: {}", e);
+                return Err(CategoryError::InternalError(format!(
+                    "Failed to check for duplicate slug: {}",
+                    e
+                )));
+            }
         }
 
         // Create category model
@@ -85,23 +120,47 @@ impl CategoryService {
         }
 
         // Create category with cache control
-        let created_category = if invalidate_cache {
-            self.category_dao.create_category(category).await?
+        let result = if invalidate_cache {
+            self.category_dao.create_category(category).await
         } else {
             // Use a direct insert without cache invalidation for batch operations
             // TODO: Add create_category_no_cache_invalidation to DAO
-            self.category_dao.create_category(category).await?
+            self.category_dao.create_category(category).await
         };
 
-        // Convert to response
-        Ok(self.category_to_response(created_category))
+        match result {
+            Ok(created_category) => {
+                // Convert to response
+                Ok(self.category_to_response(created_category))
+            }
+            Err(e) => {
+                let error_str = e.to_string();
+                if error_str.contains("Parent category") && error_str.contains("not found") {
+                    Err(CategoryError::NotFound(format!(
+                        "Parent category with ID {} not found",
+                        request.parent_id.as_deref().unwrap_or("unknown")
+                    )))
+                } else if error_str.contains("duplicate") || error_str.contains("already exists") {
+                    Err(CategoryError::AlreadyExists(format!(
+                        "Category with slug '{}' already exists",
+                        request.slug
+                    )))
+                } else {
+                    error!("Error creating category: {}", e);
+                    Err(CategoryError::InternalError(format!(
+                        "Failed to create category: {}",
+                        e
+                    )))
+                }
+            }
+        }
     }
 
     /// Create a new category
     pub async fn create_category(
         &self,
         request: CreateCategoryRequest,
-    ) -> Result<CategoryResponse, Box<dyn std::error::Error + Send + Sync>> {
+    ) -> Result<CategoryResponse, CategoryError> {
         self.create_category_internal(request, true).await
     }
 

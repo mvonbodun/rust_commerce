@@ -27,8 +27,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: typescript-client/package-lock.json
       
       - name: Install Protobuf Compiler
         run: |
@@ -38,7 +36,7 @@ jobs:
       
       - name: Install Dependencies
         working-directory: typescript-client
-        run: npm ci
+        run: npm install
       
       - name: Generate TypeScript Types
         working-directory: typescript-client
@@ -53,11 +51,6 @@ jobs:
         working-directory: typescript-client
         run: npm run build
       
-      - name: Run Tests
-        working-directory: typescript-client
-        run: npm test
-        continue-on-error: true  # Tests not yet implemented
-      
       - name: Check for Generated File Changes
         run: |
           if [[ -n $(git status --porcelain typescript-client/generated/) ]]; then
@@ -65,18 +58,120 @@ jobs:
             git diff typescript-client/generated/
           fi
       
-      - name: Archive Generated Files
+      - name: Archive Build Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: generated-typescript
+          name: typescript-build
           path: |
             typescript-client/generated/
             typescript-client/dist/
 
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27018:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: testpass123
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand({ping: 1})'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      
+      nats:
+        image: nats:latest
+        ports:
+          - 4223:4222
+          - 8223:8222
+        options: >-
+          --health-cmd "nc -z localhost 4222"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler
+      
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      
+      - name: Build Catalog Service
+        run: cargo build --release -p rust-catalog --bin catalog-service
+      
+      - name: Start Catalog Service
+        env:
+          MONGODB_URL: mongodb://admin:testpass123@localhost:27018/?authSource=admin
+          NATS_URL: nats://localhost:4223
+          CATALOG_DB_NAME: test_catalog
+          RUST_LOG: debug
+        run: |
+          nohup ./target/release/catalog-service > catalog.log 2>&1 &
+          echo $! > catalog.pid
+          
+          # Wait for service to be ready
+          for i in {1..30}; do
+            if grep -q "Catalog service is ready" catalog.log 2>/dev/null; then
+              echo "✅ Catalog service started"
+              break
+            fi
+            echo "Waiting for catalog service... ($i/30)"
+            sleep 2
+          done
+          
+          # Show logs for debugging
+          echo "=== Catalog Service Logs ==="
+          tail -50 catalog.log
+      
+      - name: Install TypeScript Dependencies
+        working-directory: typescript-client
+        run: npm install
+      
+      - name: Generate TypeScript Types
+        working-directory: typescript-client
+        run: npm run generate
+      
+      - name: Run Integration Tests
+        working-directory: typescript-client
+        env:
+          NATS_TEST_URL: nats://localhost:4223
+        run: npm run test:integration
+      
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            typescript-client/coverage/
+            catalog.log
+      
+      - name: Stop Services
+        if: always()
+        run: |
+          if [ -f catalog.pid ]; then
+            kill $(cat catalog.pid) || true
+          fi
+
   publish-npm:
     name: Publish to NPM
-    needs: build-and-test
+    needs: [build-and-test, integration-tests]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:

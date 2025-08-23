@@ -31,7 +31,8 @@
   "include": [
     "src/**/*",
     "generated/**/*",
-    "scripts/**/*"
+    "scripts/**/*",
+    "tests/**/*"
   ],
   "exclude": [
     "node_modules",
