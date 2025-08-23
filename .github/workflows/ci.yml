@@ -145,6 +145,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y protobuf-compiler pkg-config libssl-dev netcat-openbsd
+          # Install mongosh for MongoDB connectivity testing
+          wget -qO - https://www.mongodb.org/static/pgp/server-7.0.asc | sudo apt-key add -
+          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-mongosh
       - name: Cache cargo
         uses: Swatinem/rust-cache@v2
         with:
@@ -165,84 +170,28 @@ jobs:
           echo "NATS did not start in time"; exit 1
       - name: Build workspace
         run: cargo build --workspace --all-targets
-      - name: Start catalog-service
+      - name: Setup test environment
         run: |
-          RUST_LOG=debug nohup cargo run -p rust-catalog --bin catalog-service >/tmp/catalog.log 2>&1 &
-          echo $! > /tmp/catalog.pid
-      - name: Start inventory-service
-        run: |
-          RUST_LOG=debug nohup cargo run -p rust-inventory --bin inventory-service >/tmp/inventory.log 2>&1 &
-          echo $! > /tmp/inventory.pid
-      - name: Start order-service
-        run: |
-          RUST_LOG=debug nohup cargo run -p rust-orders --bin order-service >/tmp/orders.log 2>&1 &
-          echo $! > /tmp/orders.pid
-      - name: Start price-service
-        run: |
-          RUST_LOG=debug nohup cargo run -p rust-price --bin price-service >/tmp/price.log 2>&1 &
-          echo $! > /tmp/price.pid
-      - name: Wait for services to be ready
-        run: |
-          echo "Waiting for services to start and register with NATS..."
-          sleep 15
+          echo "Integration tests will spawn their own service instances with unique databases"
+          echo "This avoids conflicts between test runs and ensures test isolation"
           
-          # Check if services are still running
-          for service in catalog inventory orders price; do
-            if [ -f /tmp/${service}.pid ]; then
-              pid=$(cat /tmp/${service}.pid)
-              if ! kill -0 $pid 2>/dev/null; then
-                echo "ERROR: ${service}-service process is not running"
-                echo "=== ${service} service log ==="
-                cat /tmp/${service}.log
-                echo "=========================="
-                exit 1
-              else
-                echo "${service}-service is running (PID: $pid)"
-              fi
-            fi
-          done
+          # Verify NATS is accessible
+          echo "Testing NATS connectivity..."
+          curl -s http://127.0.0.1:8222/varz | grep -q '"port":4222' && echo "✓ NATS is running on port 4222" || exit 1
           
-          echo "All services appear to be running. Service logs:"
-          for service in catalog inventory orders price; do
-            echo "=== ${service} service startup log ==="
-            head -20 /tmp/${service}.log
-            echo "=========================="
-          done
-      - name: Test service NATS connectivity
-        run: |
-          echo "Testing NATS connectivity to services..."
-          # Test basic NATS connection
-          cargo run -p rust-inventory --bin inventory-client -- --help >/dev/null 2>&1 || echo "Inventory client build check passed"
-          
-          # Check NATS server status
-          curl -s http://127.0.0.1:8222/connz | head -20 || echo "Could not get NATS connection info"
-          
-          # Wait a bit more for NATS subscriptions to be fully established
-          sleep 5
-          
-          echo "Services should now be ready for integration tests"
+          # Verify MongoDB is accessible
+          echo "Testing MongoDB connectivity..."
+          echo 'db.adminCommand({ping: 1})' | mongosh "mongodb://admin:password123@localhost:27017/?authSource=admin" --quiet && echo "✓ MongoDB is accessible" || exit 1
       - name: Run integration tests
-        run: cargo test --workspace --tests -- --nocapture
-      - name: Upload service logs on failure
+        run: |
+          echo "Running integration tests synchronously to avoid NATS conflicts..."
+          # Run integration tests with single thread to avoid NATS subject conflicts
+          cargo test --workspace --tests -- --test-threads=1 --nocapture
+      - name: Display test output on failure
         if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: service-logs-failure
-          path: |
-            /tmp/catalog.log
-            /tmp/inventory.log
-            /tmp/orders.log
-            /tmp/price.log
-      - name: Upload service logs for debugging
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: service-logs-debug
-          path: |
-            /tmp/catalog.log
-            /tmp/inventory.log
-            /tmp/orders.log
-            /tmp/price.log
+        run: |
+          echo "Integration tests failed. Check the test output above for details."
+          echo "Each test spawns its own service instance with a unique database."
 
 
   deploy-catalog:
