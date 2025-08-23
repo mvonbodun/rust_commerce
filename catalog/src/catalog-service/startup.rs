@@ -16,7 +16,7 @@ use crate::{
     AppState,
 };
 
-use async_nats::{subject, Client as NatsClient};
+use async_nats::Client as NatsClient;
 use bson::doc;
 use futures::StreamExt;
 use log::{debug, error, info};

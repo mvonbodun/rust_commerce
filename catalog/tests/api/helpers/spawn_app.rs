@@ -54,7 +54,7 @@ pub async fn spawn_app() -> TestApp {
 
     // Initialize logger after loading environment (so RUST_LOG from .env is used)
     // Use try_init() to avoid panicking if already initialized by another test
-    let _ = pretty_env_logger::try_init();
+    // let _ = pretty_env_logger::try_init();
 
     // Create the Settings
     let mut settings: Settings = Settings::from_env();

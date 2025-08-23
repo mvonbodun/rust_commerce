@@ -1,3 +1,8 @@
+// Alternative test infrastructure using a global shared app instance
+// Currently not used - tests use spawn_app.rs which creates a new instance per test
+// This approach could be useful for faster test execution by sharing a single service
+// across all tests, but requires careful test isolation
+
 use mongodb::Client;
 use once_cell::sync::Lazy;
 use rust_common::test_helpers::TestApp;

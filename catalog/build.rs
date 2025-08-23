@@ -4,7 +4,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Include the shared proto path
     config.compile_protos(
-        &["proto/catalog.proto", "proto/category.proto"],
+        &["proto/product.proto", "proto/category.proto"],
         &["proto/", "../shared-proto/proto/"],
     )?;
     Ok(())
