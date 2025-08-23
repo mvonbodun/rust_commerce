@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y lld clang protobuf-compiler && rm -rf /
 FROM chef AS planner
 # Copy manifests for path dependency and the service
 COPY rust-common/Cargo.toml /app/rust-common/Cargo.toml
+COPY shared-proto/Cargo.toml /app/shared-proto/Cargo.toml
 COPY orders/Cargo.toml /app/orders/Cargo.toml
 WORKDIR /app/orders
 RUN cargo chef prepare --recipe-path recipe.json
@@ -18,6 +19,8 @@ WORKDIR /app/orders
 COPY --from=planner /app/orders/recipe.json /app/orders/recipe.json
 # Provide path dependency sources before cooking deps
 COPY rust-common/ /app/rust-common/
+# Copy shared-proto for protobuf compilation
+COPY shared-proto/ /app/shared-proto/
 # Cook dependency layers only (no app sources yet)
 RUN cargo chef cook --release --recipe-path recipe.json
 # Now copy full service sources
