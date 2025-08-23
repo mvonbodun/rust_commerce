@@ -42,7 +42,10 @@ async fn test_product_create_with_all_fields() {
     };
 
     let response = app
-        .request("catalog.create_product", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::product::subjects::CREATE_PRODUCT,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -85,7 +88,10 @@ async fn test_product_create_with_minimal_fields() {
     };
 
     let response = app
-        .request("catalog.create_product", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::product::subjects::CREATE_PRODUCT,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -122,7 +128,10 @@ async fn test_product_create_fails_with_missing_name() {
     };
 
     let response = app
-        .request("catalog.create_product", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::product::subjects::CREATE_PRODUCT,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -159,7 +168,10 @@ async fn test_product_create_fails_with_missing_product_ref() {
     };
 
     let response = app
-        .request("catalog.create_product", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::product::subjects::CREATE_PRODUCT,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -197,7 +209,10 @@ async fn test_product_create_with_sql_injection_attempt() {
         };
 
         let response = app
-            .request("catalog.create_product", request.encode_to_vec())
+            .request(
+                crate::helpers::nats_config::product::subjects::CREATE_PRODUCT,
+                request.encode_to_vec(),
+            )
             .await
             .expect("Request should succeed");
 
@@ -573,7 +588,7 @@ async fn test_product_search_with_xss_attempt() {
 //     };
 
 //     let response = app
-//         .request("catalog.export_products", request.encode_to_vec())
+//         .request(crate::helpers::nats_config::product::subjects::EXPORT_PRODUCTS, request.encode_to_vec())
 //         .await
 //         .expect("Request should succeed");
 
@@ -622,7 +637,10 @@ async fn test_product_export_with_products() {
     };
 
     let response = app
-        .request("catalog.export_products", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::product::subjects::EXPORT_PRODUCTS,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -661,7 +679,10 @@ async fn test_product_export_with_pagination() {
     };
 
     let response = app
-        .request("catalog.export_products", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::product::subjects::EXPORT_PRODUCTS,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -679,7 +700,10 @@ async fn test_product_export_with_pagination() {
     };
 
     let response = app
-        .request("catalog.export_products", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::product::subjects::EXPORT_PRODUCTS,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 

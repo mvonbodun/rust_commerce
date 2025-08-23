@@ -35,5 +35,8 @@ pub mod catalog_messages {
     pub use super::common::{Code, Status};
 }
 
+// Include the generated NATS configuration
+include!(concat!(env!("OUT_DIR"), "/nats_config.rs"));
+
 // Re-export the domain types at the crate level for easier importing
 pub use domain::*;

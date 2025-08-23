@@ -256,7 +256,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             println!("Sending create_product request...");
             let response = client
-                .request("catalog.create_product", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::product::subjects::CREATE_PRODUCT,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let create_response = ProductCreateResponse::decode(&*response.payload)?;
@@ -269,7 +272,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             println!("Sending get_product request for ID: {id}");
             let response = client
-                .request("catalog.get_product", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::product::subjects::GET_PRODUCT,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let get_response = ProductGetResponse::decode(&*response.payload)?;
@@ -282,7 +288,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             println!("Sending get_product_by_slug request for slug: {slug}");
             let response = client
-                .request("catalog.get_product_by_slug", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::product::subjects::GET_PRODUCT_BY_SLUG,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let get_response = ProductGetBySlugResponse::decode(&*response.payload)?;
@@ -295,7 +304,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             println!("Sending delete_product request for ID: {id}");
             let response = client
-                .request("catalog.delete_product", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::product::subjects::DELETE_PRODUCT,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let delete_response = ProductDeleteResponse::decode(&*response.payload)?;
@@ -324,7 +336,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             println!("Sending search_products request...");
             let response = client
-                .request("catalog.search_products", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::product::subjects::SEARCH_PRODUCTS,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let search_response = ProductSearchResponse::decode(&*response.payload)?;
@@ -376,7 +391,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let request_bytes = product_request.encode_to_vec();
 
                 match client
-                    .request("catalog.create_product", request_bytes.into())
+                    .request(
+                        rust_catalog::nats_config::product::subjects::CREATE_PRODUCT,
+                        request_bytes.into(),
+                    )
                     .await
                 {
                     Ok(response) => match ProductCreateResponse::decode(&*response.payload) {
@@ -439,7 +457,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let request_bytes = export_request.encode_to_vec();
 
                 let response = client
-                    .request("catalog.export_products", request_bytes.into())
+                    .request(
+                        rust_catalog::nats_config::product::subjects::EXPORT_PRODUCTS,
+                        request_bytes.into(),
+                    )
                     .await?;
 
                 let export_response = ProductExportResponse::decode(&*response.payload)?;
@@ -584,7 +605,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Creating category '{name}'...");
 
             let response = client
-                .request("catalog.create_category", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::category::subjects::CREATE_CATEGORY,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let category_response = CategoryResponse::decode(&*response.payload)?;
@@ -600,7 +624,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Getting category with ID: {id}");
 
             let response = client
-                .request("catalog.get_category", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::category::subjects::GET_CATEGORY,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let get_response = GetCategoryResponse::decode(&*response.payload)?;
@@ -631,7 +658,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Getting category with slug: {slug}");
 
             let response = client
-                .request("catalog.get_category_by_slug", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::category::subjects::GET_CATEGORY_BY_SLUG,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let get_response = GetCategoryBySlugResponse::decode(&*response.payload)?;
@@ -676,7 +706,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Updating category with ID: {id}");
 
             let response = client
-                .request("catalog.update_category", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::category::subjects::UPDATE_CATEGORY,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let category_response = CategoryResponse::decode(&*response.payload)?;
@@ -692,7 +725,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Deleting category with ID: {id}");
 
             let response = client
-                .request("catalog.delete_category", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::category::subjects::DELETE_CATEGORY,
+                    request_bytes.into(),
+                )
                 .await?;
 
             // The handler sends a CategoryResponse, not a Status
@@ -712,7 +748,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("Exporting categories...");
 
             let response = client
-                .request("catalog.export_categories", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::category::subjects::EXPORT_CATEGORIES,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let export_response = CategoryExportResponse::decode(&*response.payload)?;
@@ -772,7 +811,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
 
             let response = client
-                .request("catalog.import_categories", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::category::subjects::IMPORT_CATEGORIES,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let import_response = CategoryImportResponse::decode(&*response.payload)?;
@@ -805,7 +847,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
 
             let response = client
-                .request("catalog.get_category_tree", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::category::subjects::GET_CATEGORY_TREE,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let tree_response = CategoryTreeResponse::decode(&*response.payload)?;
@@ -869,7 +914,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("  🎛️ Include inactive: {include_inactive}");
 
             let response = client
-                .request("catalog.get_product_slugs", request_bytes.into())
+                .request(
+                    rust_catalog::nats_config::product::subjects::GET_PRODUCT_SLUGS,
+                    request_bytes.into(),
+                )
                 .await?;
 
             let slugs_response = GetProductSlugsResponse::decode(&*response.payload)?;

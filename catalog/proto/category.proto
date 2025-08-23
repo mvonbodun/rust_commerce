@@ -4,6 +4,7 @@ package catalog_messages;
 
 import "common/status.proto";
 import "google/protobuf/timestamp.proto";
+import "nats/options.proto";
 
 // Category CRUD Messages
 message CreateCategoryRequest {
@@ -159,4 +160,75 @@ message CategoryImportResponse {
 message ReorderChildrenRequest {
     string parent_id = 1;
     repeated string ordered_ids = 2;
+}
+
+// Category Service Definition
+service CategoryService {
+    option (nats.options.queue) = "catalog-queue";
+    option (nats.options.subject_prefix) = "catalog";
+    option (nats.options.metadata) = {
+        display_name: "Category Service"
+        description: "Manages hierarchical product categories with SEO support"
+        version: "1.0.0"
+    };
+    
+    // Category CRUD operations
+    rpc CreateCategory(CreateCategoryRequest) returns (CategoryResponse) {
+        option (nats.options.subject) = "create_category";
+    }
+    
+    rpc GetCategory(GetCategoryRequest) returns (GetCategoryResponse) {
+        option (nats.options.subject) = "get_category";
+    }
+    
+    rpc GetCategoryBySlug(GetCategoryBySlugRequest) returns (GetCategoryBySlugResponse) {
+        option (nats.options.subject) = "get_category_by_slug";
+    }
+    
+    rpc UpdateCategory(UpdateCategoryRequest) returns (CategoryResponse) {
+        option (nats.options.subject) = "update_category";
+    }
+    
+    rpc DeleteCategory(DeleteCategoryRequest) returns (common.Status) {
+        option (nats.options.subject) = "delete_category";
+    }
+    
+    // Tree operations
+    rpc GetCategoryTree(CategoryTreeRequest) returns (CategoryTreeResponse) {
+        option (nats.options.subject) = "get_category_tree";
+        option (nats.options.timeout_ms) = 10000;  // Longer timeout for tree building
+    }
+    
+    // Hierarchy operations
+    rpc GetChildren(GetChildrenRequest) returns (GetChildrenResponse) {
+        option (nats.options.subject) = "get_children";
+    }
+    
+    rpc GetDescendants(GetDescendantsRequest) returns (GetDescendantsResponse) {
+        option (nats.options.subject) = "get_descendants";
+    }
+    
+    rpc MoveCategory(MoveCategoryRequest) returns (common.Status) {
+        option (nats.options.subject) = "move_category";
+    }
+    
+    rpc GetCategoryPath(GetCategoryPathRequest) returns (CategoryPathResponse) {
+        option (nats.options.subject) = "get_category_path";
+    }
+    
+    // Import/Export operations
+    rpc ExportCategories(CategoryExportRequest) returns (CategoryExportResponse) {
+        option (nats.options.subject) = "export_categories";
+        option (nats.options.timeout_ms) = 30000;  // Longer timeout for export
+    }
+    
+    rpc ImportCategories(CategoryImportRequest) returns (CategoryImportResponse) {
+        option (nats.options.subject) = "import_categories";
+        option (nats.options.timeout_ms) = 60000;  // Longer timeout for import
+    }
+    
+    // Utility operations
+    rpc ReorderChildren(ReorderChildrenRequest) returns (common.Status) {
+        option (nats.options.subject) = "reorder_children";
+    }
 }

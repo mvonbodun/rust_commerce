@@ -180,90 +180,127 @@ impl Application {
     }
 
     fn setup_routes() -> Arc<std::collections::HashMap<String, handlers::RouteHandler>> {
-        info!("🛣️  Setting up message router...");
+        info!("🛣️  Setting up message router from proto definitions...");
         let mut router = Router::new();
 
-        // Product routes
-        router
-            .add_route(
-                "create_product".to_owned(),
-                Box::new(|d, c, m| Box::pin(create_product(d, c, m))),
-            )
-            .add_route(
-                "get_product".to_owned(),
-                Box::new(|d, c, m| Box::pin(get_product(d, c, m))),
-            )
-            .add_route(
-                "get_product_by_slug".to_owned(),
-                Box::new(|d, c, m| Box::pin(get_product_by_slug(d, c, m))),
-            )
-            .add_route(
-                "update_product".to_owned(),
-                Box::new(|d, c, m| Box::pin(update_product(d, c, m))),
-            )
-            .add_route(
-                "delete_product".to_owned(),
-                Box::new(|d, c, m| Box::pin(delete_product(d, c, m))),
-            )
-            .add_route(
-                "search_products".to_owned(),
-                Box::new(|d, c, m| Box::pin(search_products(d, c, m))),
-            )
-            .add_route(
-                "export_products".to_owned(),
-                Box::new(|d, c, m| Box::pin(export_products(d, c, m))),
-            )
-            .add_route(
-                "get_product_slugs".to_owned(),
-                Box::new(|d, c, m| Box::pin(get_product_slugs(d, c, m))),
-            );
+        // Product routes from generated configuration
+        for (method, _subject) in crate::nats_config::product::routes() {
+            match method {
+                "create_product" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(create_product(d, c, m))),
+                ),
+                "get_product" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(get_product(d, c, m))),
+                ),
+                "get_product_by_slug" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(get_product_by_slug(d, c, m))),
+                ),
+                "update_product" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(update_product(d, c, m))),
+                ),
+                "delete_product" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(delete_product(d, c, m))),
+                ),
+                "search_products" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(search_products(d, c, m))),
+                ),
+                "export_products" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(export_products(d, c, m))),
+                ),
+                "get_product_slugs" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(get_product_slugs(d, c, m))),
+                ),
+                _ => &mut router,
+            };
+        }
 
-        // Category routes
-        router
-            .add_route(
-                "create_category".to_owned(),
-                Box::new(|d, c, m| Box::pin(create_category(d, c, m))),
-            )
-            .add_route(
-                "get_category".to_owned(),
-                Box::new(|d, c, m| Box::pin(get_category(d, c, m))),
-            )
-            .add_route(
-                "get_category_by_slug".to_owned(),
-                Box::new(|d, c, m| Box::pin(get_category_by_slug(d, c, m))),
-            )
-            .add_route(
-                "update_category".to_owned(),
-                Box::new(|d, c, m| Box::pin(update_category(d, c, m))),
-            )
-            .add_route(
-                "delete_category".to_owned(),
-                Box::new(|d, c, m| Box::pin(delete_category(d, c, m))),
-            )
-            .add_route(
-                "export_categories".to_owned(),
-                Box::new(|d, c, m| Box::pin(export_categories(d, c, m))),
-            )
-            .add_route(
-                "import_categories".to_owned(),
-                Box::new(|d, c, m| Box::pin(import_categories(d, c, m))),
-            )
-            .add_route(
-                "get_category_tree".to_owned(),
-                Box::new(|d, c, m| Box::pin(get_category_tree(d, c, m))),
-            );
+        // Category routes from generated configuration
+        for (method, _subject) in crate::nats_config::category::routes() {
+            match method {
+                "create_category" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(create_category(d, c, m))),
+                ),
+                "get_category" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(get_category(d, c, m))),
+                ),
+                "get_category_by_slug" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(get_category_by_slug(d, c, m))),
+                ),
+                "update_category" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(update_category(d, c, m))),
+                ),
+                "delete_category" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(delete_category(d, c, m))),
+                ),
+                "export_categories" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(export_categories(d, c, m))),
+                ),
+                "import_categories" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(import_categories(d, c, m))),
+                ),
+                "get_category_tree" => router.add_route(
+                    method.to_owned(),
+                    Box::new(|d, c, m| Box::pin(get_category_tree(d, c, m))),
+                ),
+                // TODO: Implement these handlers
+                // "get_children" => router.add_route(
+                //     method.to_owned(),
+                //     Box::new(|d, c, m| Box::pin(get_children(d, c, m))),
+                // ),
+                // "get_descendants" => router.add_route(
+                //     method.to_owned(),
+                //     Box::new(|d, c, m| Box::pin(get_descendants(d, c, m))),
+                // ),
+                // "move_category" => router.add_route(
+                //     method.to_owned(),
+                //     Box::new(|d, c, m| Box::pin(move_category(d, c, m))),
+                // ),
+                // "get_category_path" => router.add_route(
+                //     method.to_owned(),
+                //     Box::new(|d, c, m| Box::pin(get_category_path(d, c, m))),
+                // ),
+                // "reorder_children" => router.add_route(
+                //     method.to_owned(),
+                //     Box::new(|d, c, m| Box::pin(reorder_children(d, c, m))),
+                // ),
+                _ => &mut router,
+            };
+        }
 
-        info!("✅ Configured 8 product routes and 8 category routes");
+        let product_count = crate::nats_config::product::routes().len();
+        let category_count = crate::nats_config::category::routes().len();
+        info!(
+            "✅ Configured {product_count} product routes and {category_count} category routes from proto definitions"
+        );
         Arc::new(router.route_map)
     }
 
     pub async fn run(self) -> Result<(), Box<dyn Error + Send + Sync>> {
-        info!("📡 Subscribing to NATS queue: catalog.*");
+        // Use generated configuration for NATS subscription
+        let subscription_pattern = format!("{}.*", crate::nats_config::product::SUBJECT_PREFIX);
+        let queue_name = crate::nats_config::product::QUEUE;
+
+        info!("📡 Subscribing to NATS queue '{queue_name}' with pattern: {subscription_pattern}");
         let requests = self
             .nats_client
-            .queue_subscribe("catalog.*", "queue".to_owned())
+            .queue_subscribe(subscription_pattern.clone(), queue_name.to_owned())
             .await?;
-        info!("✅ Successfully subscribed to catalog.* queue");
+        info!("✅ Successfully subscribed to {subscription_pattern} on queue '{queue_name}'");
 
         info!("🚀 Catalog service is ready and listening for requests");
 

@@ -25,7 +25,10 @@ async fn test_category_create_root_category() {
     };
 
     let response = app
-        .request("catalog.create_category", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::category::subjects::CREATE_CATEGORY,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -63,7 +66,10 @@ async fn test_category_create_child_category() {
     };
 
     let response = app
-        .request("catalog.create_category", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::category::subjects::CREATE_CATEGORY,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -91,7 +97,10 @@ async fn test_category_get_existing() {
     };
 
     let response = app
-        .request("catalog.get_category", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::category::subjects::GET_CATEGORY,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -116,7 +125,10 @@ async fn test_category_get_non_existent() {
     };
 
     let response = app
-        .request("catalog.get_category", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::category::subjects::GET_CATEGORY,
+            request.encode_to_vec(),
+        )
         .await;
 
     // Should return NotFound status for non-existent category
@@ -147,7 +159,10 @@ async fn test_category_get_by_slug_existing() {
     let request = GetCategoryBySlugRequest { slug: slug.clone() };
 
     let response = app
-        .request("catalog.get_category_by_slug", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::category::subjects::GET_CATEGORY_BY_SLUG,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -189,7 +204,10 @@ async fn test_category_update_name_and_description() {
     };
 
     let response = app
-        .request("catalog.update_category", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::category::subjects::UPDATE_CATEGORY,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -218,7 +236,10 @@ async fn test_category_delete_existing() {
     };
 
     let response = app
-        .request("catalog.delete_category", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::category::subjects::DELETE_CATEGORY,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -232,7 +253,10 @@ async fn test_category_delete_existing() {
     let get_request = GetCategoryRequest { id: category_id };
 
     let get_response = app
-        .request("catalog.get_category", get_request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::category::subjects::GET_CATEGORY,
+            get_request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 
@@ -277,7 +301,10 @@ async fn test_category_tree_with_hierarchy() {
     };
 
     let response = app
-        .request("catalog.get_category_tree", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::category::subjects::GET_CATEGORY_TREE,
+            request.encode_to_vec(),
+        )
         .await
         .expect("Request should succeed");
 

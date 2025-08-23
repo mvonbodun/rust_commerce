@@ -1,0 +1,189 @@
+syntax = "proto3";
+
+package catalog_messages;
+
+import "google/protobuf/timestamp.proto";
+import "nats/options.proto";
+import "product.proto";
+import "category.proto";
+
+// Define all events published by the catalog service
+option (nats.options.events) = {
+    name: "ProductCreated"
+    subject: "catalog.events.product.created"
+    description: "Emitted when a new product is created"
+    message_type: "ProductCreatedEvent"
+    is_publisher: true
+};
+
+option (nats.options.events) = {
+    name: "ProductUpdated"
+    subject: "catalog.events.product.updated"
+    description: "Emitted when a product is updated"
+    message_type: "ProductUpdatedEvent"
+    is_publisher: true
+};
+
+option (nats.options.events) = {
+    name: "ProductDeleted"
+    subject: "catalog.events.product.deleted"
+    description: "Emitted when a product is deleted"
+    message_type: "ProductDeletedEvent"
+    is_publisher: true
+};
+
+option (nats.options.events) = {
+    name: "CategoryCreated"
+    subject: "catalog.events.category.created"
+    description: "Emitted when a new category is created"
+    message_type: "CategoryCreatedEvent"
+    is_publisher: true
+};
+
+option (nats.options.events) = {
+    name: "CategoryUpdated"
+    subject: "catalog.events.category.updated"
+    description: "Emitted when a category is updated"
+    message_type: "CategoryUpdatedEvent"
+    is_publisher: true
+};
+
+option (nats.options.events) = {
+    name: "CategoryDeleted"
+    subject: "catalog.events.category.deleted"
+    description: "Emitted when a category is deleted"
+    message_type: "CategoryDeletedEvent"
+    is_publisher: true
+};
+
+option (nats.options.events) = {
+    name: "CategoryTreeRebuilt"
+    subject: "catalog.events.category.tree_rebuilt"
+    description: "Emitted when the category tree cache is rebuilt"
+    message_type: "CategoryTreeRebuiltEvent"
+    is_publisher: true
+};
+
+// Product Events
+message ProductCreatedEvent {
+    string product_id = 1;
+    string name = 2;
+    string product_ref = 3;
+    optional string brand = 4;
+    optional string slug = 5;
+    repeated string category_ids = 6;
+    google.protobuf.Timestamp created_at = 7;
+    string created_by = 8;
+}
+
+message ProductUpdatedEvent {
+    string product_id = 1;
+    string name = 2;
+    string product_ref = 3;
+    optional string brand = 4;
+    optional string slug = 5;
+    repeated string changed_fields = 6;  // List of fields that were updated
+    google.protobuf.Timestamp updated_at = 7;
+    string updated_by = 8;
+}
+
+message ProductDeletedEvent {
+    string product_id = 1;
+    string product_ref = 2;
+    google.protobuf.Timestamp deleted_at = 3;
+    string deleted_by = 4;
+}
+
+// Category Events
+message CategoryCreatedEvent {
+    string category_id = 1;
+    string name = 2;
+    string slug = 3;
+    optional string parent_id = 4;
+    string path = 5;
+    int32 level = 6;
+    google.protobuf.Timestamp created_at = 7;
+    string created_by = 8;
+}
+
+message CategoryUpdatedEvent {
+    string category_id = 1;
+    string name = 2;
+    string slug = 3;
+    optional string parent_id = 4;
+    string path = 5;
+    repeated string changed_fields = 6;  // List of fields that were updated
+    google.protobuf.Timestamp updated_at = 7;
+    string updated_by = 8;
+}
+
+message CategoryDeletedEvent {
+    string category_id = 1;
+    string slug = 2;
+    repeated string affected_product_ids = 3;  // Products that were in this category
+    repeated string affected_subcategory_ids = 4;  // Subcategories that were deleted
+    google.protobuf.Timestamp deleted_at = 5;
+    string deleted_by = 6;
+}
+
+message CategoryTreeRebuiltEvent {
+    int32 total_categories = 1;
+    int32 max_depth = 2;
+    google.protobuf.Timestamp rebuilt_at = 3;
+    string triggered_by = 4;
+}
+
+// Bulk operation events
+message BulkProductsImportedEvent {
+    int32 total_imported = 1;
+    int32 successful = 2;
+    int32 failed = 3;
+    google.protobuf.Timestamp imported_at = 4;
+    string imported_by = 5;
+}
+
+message BulkCategoriesImportedEvent {
+    int32 total_imported = 1;
+    int32 successful = 2;
+    int32 failed = 3;
+    google.protobuf.Timestamp imported_at = 4;
+    string imported_by = 5;
+}
+
+// Define events consumed by the catalog service (from other services)
+option (nats.options.events) = {
+    name: "OrderPlaced"
+    subject: "orders.events.order.placed"
+    description: "Consumed to update product popularity/sales metrics"
+    message_type: "OrderPlacedEvent"
+    is_publisher: false
+};
+
+option (nats.options.events) = {
+    name: "InventoryUpdated"
+    subject: "inventory.events.stock.updated"
+    description: "Consumed to update product availability status"
+    message_type: "InventoryUpdatedEvent"  
+    is_publisher: false
+};
+
+// External events consumed by catalog service
+message OrderPlacedEvent {
+    string order_id = 1;
+    repeated OrderItem items = 2;
+    google.protobuf.Timestamp placed_at = 3;
+    
+    message OrderItem {
+        string product_id = 1;
+        string sku = 2;
+        int32 quantity = 3;
+    }
+}
+
+message InventoryUpdatedEvent {
+    string sku = 1;
+    string product_id = 2;
+    int32 available_quantity = 3;
+    bool in_stock = 4;
+    google.protobuf.Timestamp updated_at = 5;
+}

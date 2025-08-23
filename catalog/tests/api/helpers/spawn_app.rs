@@ -102,9 +102,7 @@ pub async fn spawn_app() -> TestApp {
     // Wait for the ApplicationStarted event with a timeout
     let wait_future = async {
         while let Some(message) = subscription.next().await {
-            debug!(
-                "🔔 Received NATS message on subject {subject}: {message:?}"
-            );
+            debug!("🔔 Received NATS message on subject {subject}: {message:?}");
             if message.payload == "ApplicationStarted".as_bytes() {
                 info!("📣 Received 'ApplicationStarted' event from catalog service");
                 break;

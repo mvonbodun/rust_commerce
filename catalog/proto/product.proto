@@ -5,6 +5,7 @@ package catalog_messages;
 import "common/status.proto";
 import "category.proto";
 import "google/protobuf/timestamp.proto";
+import "nats/options.proto";
 
 message ProductCreateRequest {
     string name = 1;
@@ -169,29 +170,51 @@ message Packaging {
     optional string weight_unit = 5;
 }
 
-// Catalog Service Definition
-service CatalogService {
-    // Product methods
-    rpc CreateProduct(ProductCreateRequest) returns (ProductCreateResponse);
-    rpc GetProduct(ProductGetRequest) returns (ProductGetResponse);
-    rpc UpdateProduct(ProductUpdateRequest) returns (ProductUpdateResponse);
-    rpc DeleteProduct(ProductDeleteRequest) returns (ProductDeleteResponse);
-    rpc SearchProducts(ProductSearchRequest) returns (ProductSearchResponse);
-    rpc ExportProducts(ProductExportRequest) returns (ProductExportResponse);
-    rpc GetProductSlugs(GetProductSlugsRequest) returns (GetProductSlugsResponse);
+// Product Service Definition
+service ProductService {
+    option (nats.options.queue) = "catalog-queue";
+    option (nats.options.subject_prefix) = "catalog";
+    option (nats.options.metadata) = {
+        display_name: "Product Service"
+        description: "Manages product catalog with variants, SEO, and search capabilities"
+        version: "1.0.0"
+    };
     
-    // Category methods  
-    rpc CreateCategory(CreateCategoryRequest) returns (CategoryResponse);
-    rpc GetCategory(GetCategoryRequest) returns (CategoryResponse);
-    rpc GetCategoryBySlug(GetCategoryBySlugRequest) returns (CategoryResponse);
-    rpc UpdateCategory(UpdateCategoryRequest) returns (CategoryResponse);
-    rpc DeleteCategory(DeleteCategoryRequest) returns (common.Status);
-    rpc GetCategoryTree(CategoryTreeRequest) returns (CategoryTreeResponse);
-    rpc GetCategoryPath(GetCategoryPathRequest) returns (CategoryPathResponse);
-    rpc GetChildren(GetChildrenRequest) returns (GetChildrenResponse);
-    rpc GetDescendants(GetDescendantsRequest) returns (GetDescendantsResponse);
-    rpc MoveCategory(MoveCategoryRequest) returns (common.Status);
-    rpc ExportCategories(CategoryExportRequest) returns (CategoryExportResponse);
-    rpc ImportCategories(CategoryImportRequest) returns (CategoryImportResponse);
-    rpc ReorderChildren(ReorderChildrenRequest) returns (common.Status);
+    // Product CRUD operations
+    rpc CreateProduct(ProductCreateRequest) returns (ProductCreateResponse) {
+        option (nats.options.subject) = "create_product";
+    }
+    
+    rpc GetProduct(ProductGetRequest) returns (ProductGetResponse) {
+        option (nats.options.subject) = "get_product";
+    }
+    
+    rpc GetProductBySlug(ProductGetBySlugRequest) returns (ProductGetBySlugResponse) {
+        option (nats.options.subject) = "get_product_by_slug";
+    }
+    
+    rpc UpdateProduct(ProductUpdateRequest) returns (ProductUpdateResponse) {
+        option (nats.options.subject) = "update_product";
+    }
+    
+    rpc DeleteProduct(ProductDeleteRequest) returns (ProductDeleteResponse) {
+        option (nats.options.subject) = "delete_product";
+    }
+    
+    // Search and query operations
+    rpc SearchProducts(ProductSearchRequest) returns (ProductSearchResponse) {
+        option (nats.options.subject) = "search_products";
+        option (nats.options.timeout_ms) = 10000;  // Longer timeout for search
+    }
+    
+    // Bulk operations
+    rpc ExportProducts(ProductExportRequest) returns (ProductExportResponse) {
+        option (nats.options.subject) = "export_products";
+        option (nats.options.timeout_ms) = 30000;  // Longer timeout for export
+    }
+    
+    rpc GetProductSlugs(GetProductSlugsRequest) returns (GetProductSlugsResponse) {
+        option (nats.options.subject) = "get_product_slugs";
+    }
 }
+

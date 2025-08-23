@@ -25,6 +25,9 @@ pub mod catalog_messages {
     pub use super::common::Code;
 }
 
+// Include the generated NATS configuration
+include!(concat!(env!("OUT_DIR"), "/nats_config.rs"));
+
 /// Helper to create a product and return its ID
 pub async fn create_test_product(
     app: &TestApp,
@@ -54,7 +57,10 @@ pub async fn create_test_product(
     };
 
     let response = app
-        .request("catalog.create_product", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::product::subjects::CREATE_PRODUCT,
+            request.encode_to_vec(),
+        )
         .await?;
 
     let create_response = ProductCreateResponse::decode(&*response.payload)?;
@@ -78,7 +84,10 @@ pub async fn get_product(
     let request = ProductGetRequest { id: id.to_string() };
 
     let response = app
-        .request("catalog.get_product", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::product::subjects::GET_PRODUCT,
+            request.encode_to_vec(),
+        )
         .await?;
 
     Ok(ProductGetResponse::decode(&*response.payload)?)
@@ -94,7 +103,10 @@ pub async fn get_product_by_slug(
     };
 
     let response = app
-        .request("catalog.get_product_by_slug", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::product::subjects::GET_PRODUCT_BY_SLUG,
+            request.encode_to_vec(),
+        )
         .await?;
 
     Ok(ProductGetBySlugResponse::decode(&*response.payload)?)
@@ -108,7 +120,10 @@ pub async fn delete_product(
     let request = ProductDeleteRequest { id: id.to_string() };
 
     let response = app
-        .request("catalog.delete_product", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::product::subjects::DELETE_PRODUCT,
+            request.encode_to_vec(),
+        )
         .await?;
 
     Ok(ProductDeleteResponse::decode(&*response.payload)?)
@@ -130,7 +145,10 @@ pub async fn search_products(
     };
 
     let response = app
-        .request("catalog.search_products", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::product::subjects::SEARCH_PRODUCTS,
+            request.encode_to_vec(),
+        )
         .await?;
 
     Ok(ProductSearchResponse::decode(&*response.payload)?)
@@ -154,7 +172,10 @@ pub async fn create_test_category(
     };
 
     let response = app
-        .request("catalog.create_category", request.encode_to_vec())
+        .request(
+            crate::helpers::nats_config::category::subjects::CREATE_CATEGORY,
+            request.encode_to_vec(),
+        )
         .await?;
 
     let category_response = CategoryResponse::decode(&*response.payload)?;

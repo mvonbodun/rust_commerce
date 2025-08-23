@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package nats.options;
+
+import "google/protobuf/descriptor.proto";
+
+// Service-level options for NATS configuration
+extend google.protobuf.ServiceOptions {
+  // The NATS queue name for load balancing across service instances
+  string queue = 50001;
+  
+  // The subject prefix for all RPCs in this service
+  string subject_prefix = 50002;
+}
+
+// Method-level options for NATS configuration
+extend google.protobuf.MethodOptions {
+  // Override the subject for this specific method
+  // If not specified, will use: {subject_prefix}.{method_name_snake_case}
+  string subject = 50003;
+  
+  // Mark this method as an event publisher (not request-reply)
+  bool is_event = 50004;
+  
+  // Timeout in milliseconds for this RPC (default: 5000)
+  int32 timeout_ms = 50005;
+}
+
+// File-level options for event definitions
+extend google.protobuf.FileOptions {
+  // List of events that can be published or subscribed to
+  repeated EventDefinition events = 50006;
+}
+
+// Definition of an event that can be published or subscribed to
+message EventDefinition {
+  // The name of the event (e.g., "ProductCreated")
+  string name = 1;
+  
+  // The NATS subject for this event (e.g., "catalog.events.product.created")
+  string subject = 2;
+  
+  // Human-readable description of when this event is emitted
+  string description = 3;
+  
+  // The protobuf message type for this event (e.g., "ProductCreatedEvent")
+  string message_type = 4;
+  
+  // Whether this event is published by this service (true) or consumed (false)
+  bool is_publisher = 5;
+}
+
+// Metadata for documenting service capabilities
+message ServiceMetadata {
+  // Human-readable name of the service
+  string display_name = 1;
+  
+  // Description of what this service does
+  string description = 2;
+  
+  // Version of the service API
+  string version = 3;
+  
+  // List of other services this service depends on
+  repeated string dependencies = 4;
+}
+
+// Extension for service metadata
+extend google.protobuf.ServiceOptions {
+  ServiceMetadata metadata = 50007;
+}
