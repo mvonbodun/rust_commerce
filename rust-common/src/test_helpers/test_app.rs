@@ -132,16 +132,31 @@ impl TestApp {
 /// Cleanup on drop
 impl Drop for TestApp {
     fn drop(&mut self) {
-        let client = self.mongodb_client.clone();
-        let db_name = self.test_db_name.clone();
+        // Skip cleanup in CI environments
+        // The MongoDB container will be destroyed anyway
+        if std::env::var("CI").is_ok() || std::env::var("GITHUB_ACTIONS").is_ok() {
+            return;
+        }
 
-        // Spawn a blocking task to clean up the database
-        // We can't use async in Drop, so we spawn a task
-        std::thread::spawn(move || {
-            let rt = tokio::runtime::Runtime::new().unwrap();
-            rt.block_on(async {
-                let _ = cleanup_test_db(&client, &db_name).await;
+        // Only attempt cleanup if we're not already panicking
+        // This prevents double-panic scenarios
+        if !std::thread::panicking() {
+            let client = self.mongodb_client.clone();
+            let db_name = self.test_db_name.clone();
+
+            // Best effort cleanup - don't panic if it fails
+            std::thread::spawn(move || {
+                // Use .ok() to ignore runtime creation errors
+                if let Ok(rt) = tokio::runtime::Runtime::new() {
+                    // Ignore cleanup errors - they're not critical
+                    rt.block_on(async {
+                        // Add a timeout to prevent hanging
+                        let timeout = tokio::time::Duration::from_secs(2);
+                        let _ =
+                            tokio::time::timeout(timeout, cleanup_test_db(&client, &db_name)).await;
+                    });
+                }
             });
-        });
+        }
     }
 }

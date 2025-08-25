@@ -167,8 +167,10 @@ async fn test_category_get_by_slug_existing() {
     let app = helpers::spawn_app::spawn_app().await;
 
     let slug = fixtures::valid_slug();
-    let mut builder = fixtures::category::CategoryBuilder::default();
-    builder.slug = slug.clone();
+    let builder = fixtures::category::CategoryBuilder {
+        slug: slug.clone(),
+        ..Default::default()
+    };
 
     let category_id = create_test_category(&app, builder)
         .await

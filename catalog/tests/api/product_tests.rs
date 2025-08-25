@@ -314,8 +314,10 @@ async fn test_product_get_by_slug_existing() {
 
     // Create a product with a specific slug
     let slug = fixtures::valid_slug();
-    let mut builder = fixtures::product::ProductBuilder::default();
-    builder.slug = Some(slug.clone());
+    let builder = fixtures::product::ProductBuilder {
+        slug: Some(slug.clone()),
+        ..Default::default()
+    };
 
     let product_id = create_test_product(&app, builder.clone())
         .await
@@ -361,8 +363,10 @@ async fn test_product_get_by_slug_with_special_characters() {
     ];
 
     for slug in special_slugs {
-        let mut builder = fixtures::product::ProductBuilder::default();
-        builder.slug = Some(slug.to_string());
+        let builder = fixtures::product::ProductBuilder {
+            slug: Some(slug.to_string()),
+            ..Default::default()
+        };
 
         let product_id = create_test_product(&app, builder)
             .await
@@ -474,14 +478,20 @@ async fn test_product_search_by_name() {
 
     // Create products with specific names
     let search_term = "SpecialSearchProduct";
-    let mut builder1 = fixtures::product::ProductBuilder::default();
-    builder1.name = format!("{search_term} One");
+    let builder1 = fixtures::product::ProductBuilder {
+        name: format!("{search_term} One"),
+        ..Default::default()
+    };
 
-    let mut builder2 = fixtures::product::ProductBuilder::default();
-    builder2.name = format!("{search_term} Two");
+    let builder2 = fixtures::product::ProductBuilder {
+        name: format!("{search_term} Two"),
+        ..Default::default()
+    };
 
-    let mut builder3 = fixtures::product::ProductBuilder::default();
-    builder3.name = "Different Product".to_string();
+    let builder3 = fixtures::product::ProductBuilder {
+        name: "Different Product".to_string(),
+        ..Default::default()
+    };
 
     create_test_product(&app, builder1)
         .await
@@ -623,8 +633,10 @@ async fn test_product_export_with_products() {
     // Create some products to export
     let mut product_ids = vec![];
     for i in 0..3 {
-        let mut builder = fixtures::product::ProductBuilder::default();
-        builder.name = format!("Export Test Product {i}");
+        let builder = fixtures::product::ProductBuilder {
+            name: format!("Export Test Product {i}"),
+            ..Default::default()
+        };
         let id = create_test_product(&app, builder)
             .await
             .expect("Should create product");
@@ -665,8 +677,10 @@ async fn test_product_export_with_pagination() {
 
     // Create multiple products
     for i in 0..5 {
-        let mut builder = fixtures::product::ProductBuilder::default();
-        builder.name = format!("Paginated Product {i}");
+        let builder = fixtures::product::ProductBuilder {
+            name: format!("Paginated Product {i}"),
+            ..Default::default()
+        };
         create_test_product(&app, builder)
             .await
             .expect("Should create product");
